@@ -16,6 +16,8 @@
 
 - Come to next meeting\!
 
+---
+
 ### Wed, Sept 16
 
 **Time:** 1 \- 2:30 PM  
@@ -44,13 +46,13 @@
 - [ ] Make github kanban board  
       - [ ] Ian
 
-      
-
 Coming up soonish
 
 * System architecture & data flow diagram  
 * Requirements  
 * proposal
+
+---
 
 ### Thurs, Sept 17
 
@@ -58,7 +60,7 @@ Coming up soonish
 **Location:** lecture  
 **Attendees:** all
 
-Agenda:
+#### Agenda:
 
 - [ ] Learn about DFD stuff and system architecture  
 - [ ] If there are any further to-dos, assign to Eric and Joe
@@ -74,6 +76,8 @@ Agenda:
 - [ ] Start thinking about and writing down functional requirements  
       - [ ] Everyone
 
+---
+
 ## Week 2
 
 ### Wed, Sept 23
@@ -82,7 +86,7 @@ Agenda:
 **Location:** EME 2252  
 **Attendees:** all
 
-Agenda:
+#### Agenda:
 
 - [ ] Questions for our client  
 - [x] ~~Discuss last client meeting~~  
@@ -101,13 +105,15 @@ Agenda:
 - [ ] Next class: Eric, Joe, Nash attend Client meeting, take notes, answer our questions  
 - [ ] Everyone: do some research on potential tech stacks and come to next meeting with some suggestions
 
+---
+
 ### Thurs, Sept 24
 
 **Time:**  12:30–2 PM  
 **Location:** lecture  
 **Attendees:** Eric, Joe, Nash (Ian away for wedding)
 
-Agenda:
+#### Agenda:
 
 - [ ] Attend Client Session  
 - [ ] Answer our questions  
@@ -115,11 +121,9 @@ Agenda:
 
 #### Notes:
 
-- 
+- meeting successful. Full notes in Google Drive.
 
-#### Actionables:
-
-- 
+---
 
 ### Sat, Sept 26th
 
@@ -127,15 +131,15 @@ Agenda:
 **Location:** EME 1164  
 **Attendees:** all
 
-Agenda:
+#### Agenda:
 
 - [x] ~~Team name~~  
 - [x] ~~Review client meeting~~  
 - [x] ~~Clarify requirements~~  
-- [ ] Formalize requirements and put them into work breakdown structure  
+- [x] Formalize requirements and put them into work breakdown structure  
 - [x] ~~Review Tech Stack research~~  
 - [x] ~~Select tech stack~~  
-- [ ] Write project overview  
+- [x] Write project overview  
 - [x] ~~Value proposition~~
 
 #### Notes:
