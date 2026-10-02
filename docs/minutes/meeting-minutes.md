@@ -38,10 +38,10 @@ _No notes. Team not yet formed._
 
 #### Agenda:
 
-- [x] ~~team contract~~  
-- [x] ~~Discuss expectations, get to know each other~~  
-- [ ] Setup github kanban board  
-- [x] ~~Discuss project ideas/interests/motivations at a high level~~
+- team contract  
+- Discuss expectations, get to know each other  
+- Setup github kanban board  
+- Discuss project ideas/interests/motivations at a high level
 
 #### Notes:
 
@@ -51,12 +51,12 @@ _No notes. Team not yet formed._
 
 #### Actionables:
 
-- [ ] Clean up team contract, get it signed and handed in  
-      - [ ] Nash  
-- [ ] Join github repo  
-      - [ ] Everyone  
-- [ ] Make github kanban board  
-      - [ ] Ian
+- Clean up team contract, get it signed and handed in  
+      - Nash  
+- Join github repo  
+      - Everyone  
+- Make github kanban board  
+      - Ian
 
 Coming up soonish
 
@@ -74,8 +74,8 @@ Coming up soonish
 
 #### Agenda:
 
-- [ ] Learn about DFD stuff and system architecture  
-- [ ] If there are any further to-dos, assign to Eric and Joe
+- Learn about DFD stuff and system architecture  
+- If there are any further to-dos, assign to Eric and Joe
 
 #### Notes:
 
@@ -85,8 +85,8 @@ Coming up soonish
 
 #### Actionables:
 
-- [ ] Start thinking about and writing down functional requirements  
-      - [ ] Everyone
+- Start thinking about and writing down functional requirements  
+      - Everyone
 
 ---
 
@@ -111,9 +111,9 @@ Coming up soonish
 
 #### Agenda:
 
-- [ ] Questions for our client  
-- [x] ~~Discuss last client meeting~~  
-- [ ] Todos for the weekend/sunday hand-in
+- Questions for our client  
+- Discuss last client meeting  
+- Todos for the weekend/sunday hand-in
 
 #### Notes:
 
@@ -125,8 +125,8 @@ Coming up soonish
 
 #### Da plan:
 
-- [ ] Next class: Eric, Joe, Nash attend Client meeting, take notes, answer our questions  
-- [ ] Everyone: do some research on potential tech stacks and come to next meeting with some suggestions
+- Next class: Eric, Joe, Nash attend Client meeting, take notes, answer our questions  
+- Everyone: do some research on potential tech stacks and come to next meeting with some suggestions
 
 ---
 
@@ -138,9 +138,9 @@ Coming up soonish
 
 #### Agenda:
 
-- [ ] Attend Client Session  
-- [ ] Answer our questions  
-- [ ] Research tech stacks
+- Attend Client Session  
+- Answer our questions  
+- Research tech stacks
 
 #### Notes:
 
@@ -156,14 +156,14 @@ Coming up soonish
 
 #### Agenda:
 
-- [x] Team name
-- [x] Review client meeting
-- [x] Clarify requirements 
-- [x] Formalize requirements and put them into work breakdown structure  
-- [x] Review Tech Stack research 
-- [x] Select tech stack
-- [x] Write project overview  
-- [x] Value proposition
+- Team name
+- Review client meeting
+- Clarify requirements 
+- Formalize requirements and put them into work breakdown structure  
+- Review Tech Stack research 
+- Select tech stack
+- Write project overview  
+- Value proposition
 
 #### Notes:
 
