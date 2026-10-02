@@ -2,4 +2,4 @@ import pyetest
 
 @pytest.fixture
 def test_mock():
-    return "This is a mock fixture for testing purposes."
+    return "this is a placeholder and will be changed later."
