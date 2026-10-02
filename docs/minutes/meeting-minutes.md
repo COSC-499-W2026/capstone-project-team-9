@@ -1,8 +1,20 @@
 # Meeting minutes
 
+> **Key**
+> 
+> 🏫 = lecture/check-in <br>
+> 🔴 = proper in-person meeting / work-block <br>
+> 📱 = discord check-in / call
+
 ## Week 1
 
-### Tue, Sept 15
+_No notes. Team not yet formed._
+
+---
+
+## Week 2
+
+### 🏫 Tue, Sept 15
 
 **Time:** 12:30–1 PM  
 **Location:** In Lecture  
@@ -18,7 +30,7 @@
 
 ---
 
-### Wed, Sept 16
+### 🔴 Wed, Sept 16
 
 **Time:** 1 \- 2:30 PM  
 **Location:** EME 1162  
@@ -54,7 +66,7 @@ Coming up soonish
 
 ---
 
-### Thurs, Sept 17
+### 🏫 Thurs, Sept 17
 
 **Time:**  12:30–1 PM  
 **Location:** lecture  
@@ -78,9 +90,20 @@ Coming up soonish
 
 ---
 
-## Week 2
+## Week 3
 
-### Wed, Sept 23
+### 🏫 Tues, Sept 22
+
+**Time:**  12:30–1 PM  
+**Location:** Online 
+**Attendees:** Ian
+
+#### Notes:
+- took notes on Youry's project on behalf of the team
+
+---
+
+### 🔴 Wed, Sept 23
 
 **Time:**  11–1 PM  
 **Location:** EME 2252  
@@ -107,7 +130,7 @@ Coming up soonish
 
 ---
 
-### Thurs, Sept 24
+### 🏫 Thurs, Sept 24
 
 **Time:**  12:30–2 PM  
 **Location:** lecture  
@@ -125,9 +148,9 @@ Coming up soonish
 
 ---
 
-### Sat, Sept 26th
+### 🔴 Sat, Sept 26th
 
-**Time:** 11am \- 3pm  
+**Time:** 11am - 5pm  
 **Location:** EME 1164  
 **Attendees:** all
 
@@ -154,3 +177,15 @@ Coming up soonish
 - chill until next class, we deserve it :)
 
 ---
+
+## Week 4
+
+### 🏫 Tues, Sept 29
+
+**Time:**  12:30-1 PM  
+**Location:** In Lecture 
+**Attendees:** Ian
+
+#### Notes:
+
+- 
