@@ -15,7 +15,7 @@ def sample_data():
 
 @pytest.fixture
 def mock_api_client(mocker, sample_data):
-    """same with this but for mocking"""
+    """same with this but for mocking, will delete when actual tests exsists"""
     client = mocker.Mock()
     client.get_users.return_value = sample_data["users"]
     client.get_status.return_value = sample_data["status"]
