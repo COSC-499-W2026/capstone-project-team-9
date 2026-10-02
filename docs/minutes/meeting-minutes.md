@@ -2,9 +2,9 @@
 
 > **Key**
 > 
-> 🏫 = lecture/check-in <br>
-> 🔴 = proper in-person meeting / work-block <br>
-> 📱 = discord check-in / call
+> 🏫 = lecture/check-in  
+> 🔴 = proper in-person meeting / work-block  
+> 📱 = discord check-in / call  
 
 ## Week 1
 
@@ -30,7 +30,7 @@ _No notes. Team not yet formed._
 
 ---
 
-### 🔴 Wed, Sept 16
+### 🔴 **Wed, Sept 16**
 
 **Time:** 1 \- 2:30 PM  
 **Location:** EME 1162  
@@ -95,7 +95,7 @@ Coming up soonish
 ### 🏫 Tues, Sept 22
 
 **Time:**  12:30–1 PM  
-**Location:** Online 
+**Location:** Online  
 **Attendees:** Ian
 
 #### Notes:
@@ -103,7 +103,7 @@ Coming up soonish
 
 ---
 
-### 🔴 Wed, Sept 23
+### 🔴 **Wed, Sept 23**
 
 **Time:**  11–1 PM  
 **Location:** EME 2252  
@@ -148,7 +148,7 @@ Coming up soonish
 
 ---
 
-### 🔴 Sat, Sept 26th
+### 🔴 **Sat, Sept 26th**
 
 **Time:** 11am - 5pm  
 **Location:** EME 1164  
@@ -183,9 +183,55 @@ Coming up soonish
 ### 🏫 Tues, Sept 29
 
 **Time:**  12:30-1 PM  
-**Location:** In Lecture 
-**Attendees:** Ian
+**Location:** In Lecture  
+**Attendees:** Ian, Joe, Eric (Nash sick)  
 
 #### Notes:
+- discussed system architecture at a high level with Bowen and other game teams
 
-- 
+#### Actionables:
+- Eric: setup Pytest
+- Joe: setup FastAPI boilerplate
+- Ian: DB spec/design
+- Nash: if ur super sick, just be sick. Or if you can, do more tech stack research.
+
+---
+
+### 🏫 Thurs, Oct 1
+
+**Time:**  12:30-1 PM  
+**Location:** In Lecture  
+**Attendees:** Ian, Joe, Eric (Nash sick)  
+
+#### Notes
+- put tasks in Kanban board
+- Ian showed DrawDB tool
+- brainstormed further PRs that could be completed this weekend
+
+---
+
+### 🔴 **Friday, Oct 2**
+
+**Time:**  11-1 PM  
+**Location:** EME 2254  
+**Attendees:** Ian, Joe, Eric (Nash sick)  
+
+#### Agenda
+- develop high level System Architecture as a group
+- identify components and assign data flow diagrams
+- review further todos (PRs, logs, evals, etc)
+
+#### Notes
+- discussed progress on actionables (db design, fastAPI setup, and pyTest setup all almost done)
+- worked through system architecture on whiteboard
+  - investigated data abstraction layers: ORM/SQLModel, FastAPI `models/` vs `repositories/`
+  - investigated using `oAuth2` with FastAPI
+- identified "major processes" - for level 1 data-flow diagrams
+- worked through rough drafts for: DFD level 0, DFD level 1 for game loop, login and game item management
+
+#### Actionables
+- Before Sunday night...
+  1. Put in and review Pull Requests for stuff that is already almost done (db design, fastAPI setup, pyTest setup, docs)
+  2. finish diagrams (assigned on project board)
+  3. do further PRs/coding tasks if time allows (Docker, DB Schema, Coverage.py)
+  4. Do team and individual logs
