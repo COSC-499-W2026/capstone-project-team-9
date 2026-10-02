@@ -133,19 +133,24 @@ Coming up soonish
 
 #### Agenda:
 
-- [x] ~~Team name~~  
-- [x] ~~Review client meeting~~  
-- [x] ~~Clarify requirements~~  
+- [x] Team name
+- [x] Review client meeting
+- [x] Clarify requirements 
 - [x] Formalize requirements and put them into work breakdown structure  
-- [x] ~~Review Tech Stack research~~  
-- [x] ~~Select tech stack~~  
+- [x] Review Tech Stack research 
+- [x] Select tech stack
 - [x] Write project overview  
-- [x] ~~Value proposition~~
+- [x] Value proposition
 
 #### Notes:
 
-- 
+- picked a proper team name: _**The ENJIneers**_
+- completed all agenda items (see above)
+- discussed tech stack beyond what is on proposal
+- handed in proposal
 
 #### Actionables:
 
-- 
+- chill until next class, we deserve it :)
+
+---
