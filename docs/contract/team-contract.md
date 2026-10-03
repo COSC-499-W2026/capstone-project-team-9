@@ -6,9 +6,9 @@
 Team 9 / The ENJIneers
 
 #### Team members
-- Eric Villeneuve ([evillene](https://github.com/))
-- Nash Lovegren ([MaddoxJTG]())
-- Joseph Mondelli ([Jmondelli](https://github.com/))
+- Eric Villeneuve ([evillene](https://github.com/evillene))
+- Nash Lovegren ([MaddoxJTG](https://github.com/MaddoxJTG))
+- Joseph Mondelli ([Jmondelli](https://github.com/Jmondelli))
 - Ian Steyn ([iansteyn](https://github.com/iansteyn))
 
 ## Meetings
