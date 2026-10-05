@@ -20,6 +20,28 @@ This repo contains the source code for Team 9's Capstone Software Engineering pr
 4. Start the server: `fastapi dev src/main.py`
 5. Check http://127.0.0.1:8000/docs
 
+## How to run with docker
+Requires Docker Desktop to be installed and running.
+
+First time, or after changing `requirements.txt` or the `Dockerfile`:
+
+```bash
+docker compose up --build
+```
+
+Every other time:
+
+```bash
+docker compose up
+```
+
+- API: http://127.0.0.1:8000
+- Docs: http://127.0.0.1:8000/docs
+
+Edits to files in `src/` reload automatically, so no rebuild is needed for code changes.
+
+Rebuild with `docker compose up --build` after pulling changes that touch `requirements.txt` or the `Dockerfile`.
+
 > ## Project-Starter
 > Please use the provided folder structure for your project. You are free to organize any additional internal folder structure as required by the project. 
 > 
