@@ -1,5 +1,5 @@
 ### DFD level 0
-![ DFD level 0](images/Level-0-DFD.png)
+![ DFD level 0](./images/DFD-0.png)
 
 **Purpose:** This shows the system at a high level.
 
