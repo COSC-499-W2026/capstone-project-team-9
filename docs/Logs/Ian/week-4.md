@@ -16,7 +16,15 @@ The database design will continue to grow and change, but this is the solid base
 
 --- 
 
-Other important non-code PRs I worked on:
+It's very late as I write this, so I'll just quickly list some other important stuff I did this week:
+
+## Other important non-code PRs I worked on:
+- System Architecture (PR [#35](https://github.com/COSC-499-W2026/capstone-project-team-9/pull/35))
+
+## Other non-code tasks I worked on:
+- setting up the documentation structure and doing meeting minutes (PR [#24](https://github.com/COSC-499-W2026/capstone-project-team-9/pull/24))
+- adding and managing the team's todos in the kanban board
+- teaching everyone Git and GitHub practices (the rest of the team is less familiar with these tools than me)
 
 
 
