@@ -1,5 +1,5 @@
 ### Login DFD level 1
-![ Login DFD level 1](images/login-DFD.png)
+![ Login DFD level 1](./images/DFD-1-login.png)
 
 **Purpose:** This component allows two types of user logins to be
 stored in the database, as well as a guest user.

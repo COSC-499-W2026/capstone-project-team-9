@@ -1,5 +1,5 @@
 ### Class management DFD level 1
-![Class management DFD level 1](images/Class-Management.jpeg)
+![Class management DFD level 1](./images/DFD-1-class-management.jpeg)
 
 **Purpose:** This component lets an instructor create and manage classes, assign games to them, and view class reports. It also lets students join a class using a class code.
 
