@@ -2,17 +2,18 @@
 
 This repo contains the source code for Team 9's Capstone Software Engineering project.
 
+## Links 
+
+### Early Planning
+
 - [🔗 Team Contract](./docs/contract/team-contract.md)
 - [🔗 Project Proposal](./docs/proposal/project-proposal.pdf)
 
-### DFD level 1
--[Game Item Management](docs/DFD/game-item-management.md)
--[Level 0 DFD](docs/DFD/DFD-level-0.md)
-- [Game loop](docs/DFD/game-loop.md)
-- [Login](docs/DFD/login-DFD.md)
-- [Student Management](docs/DFD/student-management.md)
-- [Class Management](docs/DFD/class-management.md)
-- [Student view](docs/DFD/student-view.md)
+### System Design
+
+- [🔗 System Architecture](./docs/system-design/system-architecture/system-architecture.md)
+- [🔗 Data Flow Diagrams (level 0 and level 1)](./docs/system-design/data-flow-diagrams)
+- [🔗 Database Design Documents](./docs/system-design/db-design)
 
 ## How to run with fast api
 1. Create a venv: `python -m venv .venv`
