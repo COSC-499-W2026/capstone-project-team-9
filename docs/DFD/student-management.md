@@ -1,7 +1,7 @@
 ### Student management DFD level 1
 ![Student management DFD level 1](images/Student-Management.jpeg)
 
-**Purpose:** This component lets an instructor create, update, and delete student accounts and view reports on individual student scores.
+**Purpose:** This component lets an instructor update, and delete student accounts and view reports on individual student scores.
 
 **Processes**
 - 1 Manage students: takes student data and CUD requests from the instructor and saves the modified student data.
