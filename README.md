@@ -7,6 +7,9 @@ This repo contains the source code for Team 9's Capstone Software Engineering pr
 
 ### DFD level 1
 - [Game loop](docs/DFD/game-loop.md)
+- [Login](docs/DFD/login-DFD.md)
+- [Student Management](docs/DFD/student-management.md)
+- [Class Management](docs/DFD/class-management.md)
 - [Student view](docs/DFD/student-view.md)
 
 ## How to run with fast api
