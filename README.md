@@ -7,6 +7,7 @@ This repo contains the source code for Team 9's Capstone Software Engineering pr
 
 ### DFD level 1
 [Game loop](docs/DFD/game-loop.md)
+[Login](docs/DFD/login-DFD.md)
 
 ## How to run with fast api
 1. Create a venv: `python -m venv .venv`
