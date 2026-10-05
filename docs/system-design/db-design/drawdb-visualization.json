@@ -1,0 +1,981 @@
+{
+  "tables": [
+    {
+      "id": "PUnoI8pDnFhQs3z_VlBtU",
+      "name": "User",
+      "x": -395.2780700780085,
+      "y": -1465.5435708804953,
+      "locked": false,
+      "fields": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": false,
+          "unsigned": true,
+          "notNull": true,
+          "increment": true,
+          "comment": "",
+          "id": "Si5oJBlGgGxoE4j-oPwtl"
+        },
+        {
+          "id": "SquitEF9FLwwtJj97j6OM",
+          "name": "name",
+          "type": "TEXT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "6GF47NBAOUUn1ZPpJ4IXu",
+          "name": "email",
+          "type": "TEXT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": true,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "UImGTq4MIaF2XLh8HWc--",
+          "name": "password",
+          "type": "TEXT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "J_PBm07fq0IoPmPJ1VydY",
+          "name": "role",
+          "type": "TEXT",
+          "default": "",
+          "check": "permission IN ('student', 'instructor', 'admin')",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "qfQCec6BYwPiM2oF9fLVF",
+          "name": "created_at",
+          "type": "TIMESTAMPTZ",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "uniqueConstraints": [],
+      "color": "#a3244c",
+      "collapsed": false,
+      "width": 221
+    },
+    {
+      "id": "jMfSdgZBLanmnZtWIaAB1",
+      "name": "Course",
+      "x": 416.8412328083631,
+      "y": -1543.1677935160799,
+      "locked": false,
+      "fields": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": false,
+          "unsigned": true,
+          "notNull": true,
+          "increment": true,
+          "comment": "",
+          "id": "bzn_Vq0YZj6CP5hr8pkbI"
+        },
+        {
+          "id": "hSSVfV6x-S5t5u3H3HuDZ",
+          "name": "language_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "8YMDXJOzKVX0Bvg_XYq8o",
+          "name": "owner_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "uniqueConstraints": [],
+      "color": "#175e7a",
+      "collapsed": false,
+      "width": 214
+    },
+    {
+      "id": "MHO_l7yZORdf_I5awcrFv",
+      "name": "Enrollment",
+      "x": 15.671170353020216,
+      "y": -1645.789467629695,
+      "locked": false,
+      "fields": [
+        {
+          "id": "UiTxnUVnc97_tNsN82pMN",
+          "name": "user_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "xTCkm8wuepPaB6ozlDTcm",
+          "name": "course_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "2Rm3gLFt-9w7MzB1rbfa-",
+          "name": "is_instructor",
+          "type": "BOOLEAN",
+          "default": "FALSE",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        }
+      ],
+      "comment": "This doesn't refer to their overall user permissions role, but rather their permissions for this specific course. The idea is that an owner of a course could allow a TA etc to do instructor tasks for this specific course",
+      "indices": [],
+      "uniqueConstraints": [],
+      "color": "#175e7a",
+      "collapsed": false
+    },
+    {
+      "id": "4ii2MQrRpq7PnDAAdzxI8",
+      "name": "Language",
+      "x": 604.6538921090788,
+      "y": -1130.5204367746292,
+      "locked": false,
+      "fields": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": false,
+          "unsigned": true,
+          "notNull": true,
+          "increment": true,
+          "comment": "",
+          "id": "vYSrCLfJdqK_5SJrWnCCh"
+        },
+        {
+          "id": "smVl8OO9f8DtZ8selLMIA",
+          "name": "name",
+          "type": "TEXT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": true,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "uniqueConstraints": [],
+      "color": "#3a7a17",
+      "collapsed": false,
+      "width": 180
+    },
+    {
+      "id": "JH5MGyYNqNfvkfRPMXk4u",
+      "name": "Clue",
+      "x": 15.399102725283683,
+      "y": -769.7760184618179,
+      "locked": false,
+      "fields": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": false,
+          "unsigned": true,
+          "notNull": true,
+          "increment": true,
+          "comment": "",
+          "id": "WlXWmA7IzeYzOP47Brykn"
+        },
+        {
+          "id": "lYLNu28khp9sg4XsilPOS",
+          "name": "audio",
+          "type": "BYTEA",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "i8UlzqgWDZE6trCM0H55V",
+          "name": "difficulty_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "k8VOcoN8TrTphaBBgnBkR",
+          "name": "language_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "a-Ve8rqQfWy9-cOobx2by",
+          "name": "answer_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "ylCbaLKltmgA49MHa8Pwq",
+          "name": "creator_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "OitxHvpUWzEd_jy-GrWgP",
+          "name": "created_at",
+          "type": "TIMESTAMPTZ",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "I9JIx1RaHztxYXQEoSmPW",
+          "name": "updated_at",
+          "type": "TIMESTAMPTZ",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "uniqueConstraints": [],
+      "color": "#6ceb28",
+      "collapsed": false
+    },
+    {
+      "id": "dNNEX1MevCLUiG_IzvWWU",
+      "name": "Difficulty",
+      "x": 564.3739172225539,
+      "y": -970.4125428708321,
+      "locked": false,
+      "fields": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": false,
+          "unsigned": true,
+          "notNull": true,
+          "increment": true,
+          "comment": "",
+          "id": "03m2jJLeHBVgGDKlP4umH"
+        },
+        {
+          "id": "H3i3CtXJa08MWjLYCEHGN",
+          "name": "name",
+          "type": "TEXT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": true,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "uniqueConstraints": [],
+      "color": "#3a7a17",
+      "collapsed": false
+    },
+    {
+      "id": "xtGue2Ao_HGnCNBpaoKHC",
+      "name": "Game",
+      "x": 24.73479906883415,
+      "y": -1338.9745657467035,
+      "locked": false,
+      "fields": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": false,
+          "unsigned": true,
+          "notNull": true,
+          "increment": true,
+          "comment": "",
+          "id": "JgQYIh9EHZgcluZb4x9-X"
+        },
+        {
+          "id": "OBT3hb-eCV4JqkK7s4BjU",
+          "name": "num_items",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "F_glU3aLx5A_Cgp78JeHf",
+          "name": "difficulty_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "7SAzkvOccFMfg-j3aG_m2",
+          "name": "language_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "ylfrJFSASJ2LKdaA_4bxP",
+          "name": "due_at",
+          "type": "TIMESTAMPTZ",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "yHey9nPV0D1exU1QlSHPx",
+          "name": "course_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "We3QntzlYL2dMUU1MQUkH",
+          "name": "creator_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "i-G7PAejacicjBoK2VYJD",
+          "name": "created_at",
+          "type": "TIMESTAMPTZ",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "801aWYK-_27KViikcxV1M",
+          "name": "updated_at",
+          "type": "TIMESTAMPTZ",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "uniqueConstraints": [],
+      "color": "#6ceb28",
+      "collapsed": false
+    },
+    {
+      "id": "0_V91jf-OF1EoFEycDtj7",
+      "name": "ClueUsage",
+      "x": 17.457794900670137,
+      "y": -926.906193338781,
+      "locked": false,
+      "fields": [
+        {
+          "id": "MRKhfG-Q0cR7F_ZfMNX_w",
+          "name": "game_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "name": "clue_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": false,
+          "unsigned": true,
+          "notNull": true,
+          "increment": true,
+          "comment": "",
+          "id": "9ie6vOwVrs0NGoYNeiIDn"
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "uniqueConstraints": [],
+      "color": "#3a7a17",
+      "collapsed": false
+    },
+    {
+      "id": "cb5WlyUhYgCOZX6Ei9Yy4",
+      "name": "Answer",
+      "x": -433.91480584812456,
+      "y": -620.5118115388278,
+      "locked": false,
+      "fields": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": false,
+          "unsigned": true,
+          "notNull": true,
+          "increment": true,
+          "comment": "",
+          "id": "tpA3IqAMGgcclAIcOY-ru"
+        },
+        {
+          "id": "Cwp57Eic9r4b5m5wiqSiR",
+          "name": "name",
+          "type": "TEXT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": true,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "YPu4AVSv8tznj4r5iq8-M",
+          "name": "image",
+          "type": "BYTEA",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "5pOSxanHepiP6K3E4-hgz",
+          "name": "creator_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "_dBjqqB484V7bPqtomZYP",
+          "name": "created_at",
+          "type": "TIMESTAMPTZ",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "bwNByVm8JVb2L2YWU1B40",
+          "name": "updated_at",
+          "type": "TIMESTAMPTZ",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "uniqueConstraints": [],
+      "color": "#6ceb28",
+      "collapsed": false
+    }
+  ],
+  "relationships": [
+    {
+      "startTableId": "MHO_l7yZORdf_I5awcrFv",
+      "startFieldId": "UiTxnUVnc97_tNsN82pMN",
+      "endTableId": "PUnoI8pDnFhQs3z_VlBtU",
+      "endFieldId": "Si5oJBlGgGxoE4j-oPwtl",
+      "cardinality": "many_to_one",
+      "fields": [
+        {
+          "startFieldId": "UiTxnUVnc97_tNsN82pMN",
+          "endFieldId": "Si5oJBlGgGxoE4j-oPwtl"
+        }
+      ],
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade",
+      "name": "fk_Enrollment_user_id_User",
+      "color": "#808080",
+      "id": "1TyWKvwxDY-c0BVzauwDZ",
+      "manyLabel": ""
+    },
+    {
+      "startTableId": "MHO_l7yZORdf_I5awcrFv",
+      "startFieldId": "xTCkm8wuepPaB6ozlDTcm",
+      "endTableId": "jMfSdgZBLanmnZtWIaAB1",
+      "endFieldId": "bzn_Vq0YZj6CP5hr8pkbI",
+      "cardinality": "many_to_one",
+      "fields": [
+        {
+          "startFieldId": "xTCkm8wuepPaB6ozlDTcm",
+          "endFieldId": "bzn_Vq0YZj6CP5hr8pkbI"
+        }
+      ],
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "has",
+      "color": "#808080",
+      "id": "XzRPrgLIR8_KjZ-hKeo-n",
+      "manyLabel": ""
+    },
+    {
+      "startTableId": "jMfSdgZBLanmnZtWIaAB1",
+      "startFieldId": "hSSVfV6x-S5t5u3H3HuDZ",
+      "endTableId": "4ii2MQrRpq7PnDAAdzxI8",
+      "endFieldId": "vYSrCLfJdqK_5SJrWnCCh",
+      "cardinality": "many_to_one",
+      "fields": [
+        {
+          "startFieldId": "hSSVfV6x-S5t5u3H3HuDZ",
+          "endFieldId": "vYSrCLfJdqK_5SJrWnCCh"
+        }
+      ],
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "isOn",
+      "color": "#808080",
+      "id": "KHlPsYCTKFj8ZtSAtUIqb"
+    },
+    {
+      "startTableId": "JH5MGyYNqNfvkfRPMXk4u",
+      "startFieldId": "k8VOcoN8TrTphaBBgnBkR",
+      "endTableId": "4ii2MQrRpq7PnDAAdzxI8",
+      "endFieldId": "vYSrCLfJdqK_5SJrWnCCh",
+      "cardinality": "many_to_one",
+      "fields": [
+        {
+          "startFieldId": "k8VOcoN8TrTphaBBgnBkR",
+          "endFieldId": "vYSrCLfJdqK_5SJrWnCCh"
+        }
+      ],
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "isIn",
+      "color": "#808080",
+      "id": "1HViofOU33nLkEijrow5c",
+      "manyLabel": "n"
+    },
+    {
+      "startTableId": "JH5MGyYNqNfvkfRPMXk4u",
+      "startFieldId": "i8UlzqgWDZE6trCM0H55V",
+      "endTableId": "dNNEX1MevCLUiG_IzvWWU",
+      "endFieldId": "03m2jJLeHBVgGDKlP4umH",
+      "cardinality": "many_to_one",
+      "fields": [
+        {
+          "startFieldId": "i8UlzqgWDZE6trCM0H55V",
+          "endFieldId": "03m2jJLeHBVgGDKlP4umH"
+        }
+      ],
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "is",
+      "color": "#808080",
+      "id": "f5t681ehV9DrDGSheY8I-"
+    },
+    {
+      "startTableId": "0_V91jf-OF1EoFEycDtj7",
+      "startFieldId": "MRKhfG-Q0cR7F_ZfMNX_w",
+      "endTableId": "xtGue2Ao_HGnCNBpaoKHC",
+      "endFieldId": "JgQYIh9EHZgcluZb4x9-X",
+      "cardinality": "many_to_one",
+      "fields": [
+        {
+          "startFieldId": "MRKhfG-Q0cR7F_ZfMNX_w",
+          "endFieldId": "JgQYIh9EHZgcluZb4x9-X"
+        }
+      ],
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade",
+      "name": "fk_ClueUsage_game_id_Game",
+      "color": "#808080",
+      "id": "i4QBmY7INOR3I39tmBqcu"
+    },
+    {
+      "startTableId": "0_V91jf-OF1EoFEycDtj7",
+      "startFieldId": "9ie6vOwVrs0NGoYNeiIDn",
+      "endTableId": "JH5MGyYNqNfvkfRPMXk4u",
+      "endFieldId": "WlXWmA7IzeYzOP47Brykn",
+      "cardinality": "many_to_one",
+      "fields": [
+        {
+          "startFieldId": "9ie6vOwVrs0NGoYNeiIDn",
+          "endFieldId": "WlXWmA7IzeYzOP47Brykn"
+        }
+      ],
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade",
+      "name": "uses",
+      "color": "#808080",
+      "id": "hsSLzxTnta67ESbO8PSQY"
+    },
+    {
+      "startTableId": "xtGue2Ao_HGnCNBpaoKHC",
+      "startFieldId": "7SAzkvOccFMfg-j3aG_m2",
+      "endTableId": "4ii2MQrRpq7PnDAAdzxI8",
+      "endFieldId": "vYSrCLfJdqK_5SJrWnCCh",
+      "cardinality": "many_to_one",
+      "fields": [
+        {
+          "startFieldId": "7SAzkvOccFMfg-j3aG_m2",
+          "endFieldId": "vYSrCLfJdqK_5SJrWnCCh"
+        }
+      ],
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "isIn",
+      "color": "#808080",
+      "id": "dBfJN9i_wa5JsYfwAOVpO"
+    },
+    {
+      "startTableId": "xtGue2Ao_HGnCNBpaoKHC",
+      "startFieldId": "F_glU3aLx5A_Cgp78JeHf",
+      "endTableId": "dNNEX1MevCLUiG_IzvWWU",
+      "endFieldId": "03m2jJLeHBVgGDKlP4umH",
+      "cardinality": "many_to_one",
+      "fields": [
+        {
+          "startFieldId": "F_glU3aLx5A_Cgp78JeHf",
+          "endFieldId": "03m2jJLeHBVgGDKlP4umH"
+        }
+      ],
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "is",
+      "color": "#808080",
+      "id": "xTzmu3jyl4WO-pP7KNp3b"
+    },
+    {
+      "startTableId": "JH5MGyYNqNfvkfRPMXk4u",
+      "startFieldId": "a-Ve8rqQfWy9-cOobx2by",
+      "endTableId": "cb5WlyUhYgCOZX6Ei9Yy4",
+      "endFieldId": "tpA3IqAMGgcclAIcOY-ru",
+      "cardinality": "many_to_one",
+      "fields": [
+        {
+          "startFieldId": "a-Ve8rqQfWy9-cOobx2by",
+          "endFieldId": "tpA3IqAMGgcclAIcOY-ru"
+        }
+      ],
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "fk_Clue_answer_id_Answer",
+      "color": "#808080",
+      "id": "NxHdWcjdh0gagyfKajn2l"
+    },
+    {
+      "startTableId": "jMfSdgZBLanmnZtWIaAB1",
+      "startFieldId": "8YMDXJOzKVX0Bvg_XYq8o",
+      "endTableId": "PUnoI8pDnFhQs3z_VlBtU",
+      "endFieldId": "Si5oJBlGgGxoE4j-oPwtl",
+      "cardinality": "many_to_one",
+      "fields": [
+        {
+          "startFieldId": "8YMDXJOzKVX0Bvg_XYq8o",
+          "endFieldId": "Si5oJBlGgGxoE4j-oPwtl"
+        }
+      ],
+      "updateConstraint": "No action",
+      "deleteConstraint": "Set null",
+      "name": "fk_Course_owner_id_User",
+      "color": "#808080",
+      "id": "8IWqHH6LRVJgb_GjVmkbE"
+    },
+    {
+      "startTableId": "cb5WlyUhYgCOZX6Ei9Yy4",
+      "startFieldId": "5pOSxanHepiP6K3E4-hgz",
+      "endTableId": "PUnoI8pDnFhQs3z_VlBtU",
+      "endFieldId": "Si5oJBlGgGxoE4j-oPwtl",
+      "cardinality": "many_to_one",
+      "fields": [
+        {
+          "startFieldId": "5pOSxanHepiP6K3E4-hgz",
+          "endFieldId": "Si5oJBlGgGxoE4j-oPwtl"
+        }
+      ],
+      "updateConstraint": "No action",
+      "deleteConstraint": "Set null",
+      "name": "fk_Answer_creator_id_User",
+      "color": "#808080",
+      "id": "tFhmzPbL5KRw5rl1nNwzs"
+    },
+    {
+      "startTableId": "JH5MGyYNqNfvkfRPMXk4u",
+      "startFieldId": "ylCbaLKltmgA49MHa8Pwq",
+      "endTableId": "PUnoI8pDnFhQs3z_VlBtU",
+      "endFieldId": "Si5oJBlGgGxoE4j-oPwtl",
+      "cardinality": "many_to_one",
+      "fields": [
+        {
+          "startFieldId": "ylCbaLKltmgA49MHa8Pwq",
+          "endFieldId": "Si5oJBlGgGxoE4j-oPwtl"
+        }
+      ],
+      "updateConstraint": "No action",
+      "deleteConstraint": "Set null",
+      "name": "fk_Clue_creator_id_User",
+      "color": "#808080",
+      "id": "YnO-Xz3BE1uGI5_1bLdQf"
+    },
+    {
+      "startTableId": "xtGue2Ao_HGnCNBpaoKHC",
+      "startFieldId": "We3QntzlYL2dMUU1MQUkH",
+      "endTableId": "PUnoI8pDnFhQs3z_VlBtU",
+      "endFieldId": "Si5oJBlGgGxoE4j-oPwtl",
+      "cardinality": "many_to_one",
+      "fields": [
+        {
+          "startFieldId": "We3QntzlYL2dMUU1MQUkH",
+          "endFieldId": "Si5oJBlGgGxoE4j-oPwtl"
+        }
+      ],
+      "updateConstraint": "No action",
+      "deleteConstraint": "Set null",
+      "name": "fk_Game_creator_id_User",
+      "color": "#808080",
+      "id": "pTAZ34fDCkz2VKnlFIIF5"
+    },
+    {
+      "startTableId": "xtGue2Ao_HGnCNBpaoKHC",
+      "startFieldId": "yHey9nPV0D1exU1QlSHPx",
+      "endTableId": "jMfSdgZBLanmnZtWIaAB1",
+      "endFieldId": "bzn_Vq0YZj6CP5hr8pkbI",
+      "cardinality": "many_to_one",
+      "fields": [
+        {
+          "startFieldId": "yHey9nPV0D1exU1QlSHPx",
+          "endFieldId": "bzn_Vq0YZj6CP5hr8pkbI"
+        }
+      ],
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "fk_Game_course_id_Course",
+      "color": "#808080",
+      "id": "vtR-E5kQFOwYyAZXLAixn"
+    }
+  ],
+  "notes": [],
+  "subjectAreas": [],
+  "views": [],
+  "database": "postgresql",
+  "types": [],
+  "enums": [],
+  "title": "ENJIneers DB design COPY"
+}
