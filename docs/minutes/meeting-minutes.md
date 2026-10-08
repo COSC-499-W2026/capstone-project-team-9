@@ -238,6 +238,8 @@ Coming up soonish
 
 ---
 
+## Week 5
+
 ### 🔴 Tues, Oct 6
 
 **Time:** 12:30-1:30  
@@ -292,3 +294,32 @@ Coming up soonish
 - Eric: start looking into FAST API signup/login and OAuth tools?  
 - Nash: Pyproject.toml  
 - Nash: API endpoint
+
+---
+
+### 🏫 Thurs, Oct 8
+
+**Time:**  12:30-2 PM  
+**Location:** In Lecture Check-in 
+**Attendees:** Ian, Joe, Eric, Nash
+
+#### Agenda
+- TA Check-in
+
+#### Notes
+1st check-in with TA Sadia
+- Reviewed proposal feedback
+  - asked for +1 mark on tech stack choice
+  - discussed reset/shuffle
+  - discussed Python image processing library - Sadia wants us to choose this
+- Discussed Milestone 1 vs 2 - Sadia wants us to have a clearer idea of what our goals are by the end of this milestone
+  - She says if we make it clear in our logs that we did project management work, she will be lenient with the "2 PRs" rule for this next week (because of her specific feedback)
+  - She also says we will need *some* kind of front end in milestone 1 due to the nature of the project, even if it is super basic and ugly
+- Some team discussions of what we want to do by end of term and how to get there:
+  - basically, we want a game that works
+- everybody recognized we have a bit lower capacity rn because of Thanksgiving weekend + midterms this/next week
+
+#### Actionables
+Mostly same as before, except:
+- Ian & Nash meeting on Saturday to do planning/proj management stuff
+- Eric doing image processing research instead of login stuff
