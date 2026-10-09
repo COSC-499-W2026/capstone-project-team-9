@@ -1,11 +1,11 @@
 <mxfile host="app.diagrams.net">
   <diagram name="Page-1" id="0A-KsIcjfPr8Er8WCiq4">
-    <mxGraphModel dx="2398" dy="902" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="2463" dy="940" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="8ZFTeR8GnpJEP1jSoDD7-62" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=light-dark(#FFFFFF,#1A1A1A);strokeColor=none;" value="" vertex="1">
-          <mxGeometry height="990" width="990" x="-170" y="400" as="geometry" />
+          <mxGeometry height="1050" width="990" x="-170" y="340" as="geometry" />
         </mxCell>
         <mxCell id="8ZFTeR8GnpJEP1jSoDD7-44" edge="1" parent="1" source="8ZFTeR8GnpJEP1jSoDD7-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;libavoidRouting=1;endArrow=none;endFill=0;" target="8ZFTeR8GnpJEP1jSoDD7-16">
           <mxGeometry relative="1" as="geometry" />
@@ -23,6 +23,20 @@
         <mxCell id="8ZFTeR8GnpJEP1jSoDD7-71" connectable="0" parent="8ZFTeR8GnpJEP1jSoDD7-44" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="0..*" vertex="1">
           <mxGeometry relative="1" x="-0.9278" y="-1" as="geometry">
             <mxPoint x="-10" y="183" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yQKIUOj0pqpyA4s_uoVh-1" edge="1" parent="1" source="8ZFTeR8GnpJEP1jSoDD7-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" target="8ZFTeR8GnpJEP1jSoDD7-19">
+          <mxGeometry relative="1" x="0.2127" as="geometry">
+            <Array as="points">
+              <mxPoint x="220" y="390" />
+              <mxPoint x="750" y="390" />
+              <mxPoint x="750" y="975" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yQKIUOj0pqpyA4s_uoVh-2" connectable="0" parent="yQKIUOj0pqpyA4s_uoVh-1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;" value="Plays ▶" vertex="1">
+          <mxGeometry relative="1" x="-0.525" y="1" as="geometry">
+            <mxPoint x="79" y="-11" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="8ZFTeR8GnpJEP1jSoDD7-1" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=0;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" value="User" vertex="1">
@@ -368,7 +382,25 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="8ZFTeR8GnpJEP1jSoDD7-63" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=18;fontStyle=1" value="Entity-Relationship (ER) Diagram of Language Game Database" vertex="1">
-          <mxGeometry height="30" width="290" x="-130" y="440" as="geometry" />
+          <mxGeometry height="30" width="290" x="-120" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="yQKIUOj0pqpyA4s_uoVh-3" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;rounded=0;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="60" width="160" x="425" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="yQKIUOj0pqpyA4s_uoVh-4" parent="yQKIUOj0pqpyA4s_uoVh-3" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;rotatable=0;part=1;html=1;whiteSpace=wrap;rounded=0;" value="score&lt;div&gt;started_at&lt;/div&gt;" vertex="1">
+          <mxGeometry height="40" width="160" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="yQKIUOj0pqpyA4s_uoVh-5" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=none;startFill=0;endArrow=none;endFill=0;dashed=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="504.5" y="390" />
+            </Array>
+            <mxPoint x="504.5" y="430" as="sourcePoint" />
+            <mxPoint x="504.5" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yQKIUOj0pqpyA4s_uoVh-6" parent="1" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.basic.4_point_star_2;dx=0.8;" value="put plays here&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="100" width="100" x="480" y="660" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
