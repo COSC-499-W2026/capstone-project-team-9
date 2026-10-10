@@ -295,7 +295,7 @@
     },
     {
       "id": "cb5WlyUhYgCOZX6Ei9Yy4",
-      "name": "Answer",
+      "name": "Target",
       "x": -585.1846860235443,
       "y": -456.3952745617223,
       "locked": false,
@@ -454,7 +454,7 @@
         },
         {
           "id": "a-Ve8rqQfWy9-cOobx2by",
-          "name": "answer_id",
+          "name": "target_id",
           "type": "INTEGER",
           "default": "",
           "check": "",
@@ -738,7 +738,7 @@
     },
     {
       "id": "Le_EfhAufmm3MdRidnWQY",
-      "name": "CompletedClue",
+      "name": "SolvedClue",
       "x": -531.0278079218459,
       "y": -635.820411460776,
       "locked": false,
@@ -905,7 +905,7 @@
       ],
       "updateConstraint": "Restrict",
       "deleteConstraint": "Restrict",
-      "name": "fk_Clue_answer_id_Answer✅",
+      "name": "fk_Clue_target_id_Target✅",
       "color": "#1cd987",
       "id": "NxHdWcjdh0gagyfKajn2l"
     },
@@ -1049,7 +1049,7 @@
       ],
       "updateConstraint": "Restrict",
       "deleteConstraint": "Set null",
-      "name": "fk_Answer_creator_id_User✅",
+      "name": "fk_Target_creator_id_User✅",
       "color": "#a3244c",
       "id": "tFhmzPbL5KRw5rl1nNwzs"
     },
@@ -1096,5 +1096,5 @@
   "database": "postgresql",
   "types": [],
   "enums": [],
-  "title": "ENJIneers DB design Oct 9 2"
+  "title": "ENJIneers DB design Oct 10"
 }
