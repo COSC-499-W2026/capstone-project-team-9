@@ -1,5 +1,8 @@
-# Rationale behind some non-obvious DB design choices
-by @iansteyn
+# Database Design Notes
+
+Rationale behind some non-obvious DB design choices and other notes on DB design.
+
+by [iansteyn](https://github.com/iansteyn) (REAL DESIGN THOUGHTS, NOT AI)
 
 ## Users and their relationships
 
