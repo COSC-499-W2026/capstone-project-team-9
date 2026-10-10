@@ -722,7 +722,7 @@
           "check": "",
           "primary": false,
           "unique": false,
-          "notNull": true,
+          "notNull": false,
           "increment": false,
           "comment": "",
           "size": "",
@@ -765,7 +765,7 @@
           "check": "",
           "primary": false,
           "unique": false,
-          "notNull": true,
+          "notNull": false,
           "increment": false,
           "comment": "",
           "size": "",
@@ -794,7 +794,7 @@
       ],
       "updateConstraint": "Restrict",
       "deleteConstraint": "Cascade",
-      "name": "fk_Enrollment_user_id_User_✅",
+      "name": "fk_Enrollment_user_id_User✅",
       "color": "#a3244c",
       "id": "1TyWKvwxDY-c0BVzauwDZ",
       "manyLabel": ""
@@ -940,8 +940,8 @@
         }
       ],
       "updateConstraint": "Restrict",
-      "deleteConstraint": "No action",
-      "name": "fk_Game_language_id_Language",
+      "deleteConstraint": "Restrict",
+      "name": "fk_Game_language_id_Language✅",
       "color": "#9910a3",
       "id": "dBfJN9i_wa5JsYfwAOVpO"
     },
@@ -957,9 +957,9 @@
           "endFieldId": "03m2jJLeHBVgGDKlP4umH"
         }
       ],
-      "updateConstraint": "No action",
-      "deleteConstraint": "No action",
-      "name": "fk_Game_difficulty_id_Difficulty",
+      "updateConstraint": "Restrict",
+      "deleteConstraint": "Restrict",
+      "name": "fk_Game_difficulty_id_Difficulty✅",
       "color": "#cc68d4",
       "id": "xTzmu3jyl4WO-pP7KNp3b"
     },
@@ -1029,9 +1029,9 @@
           "endFieldId": "JgQYIh9EHZgcluZb4x9-X"
         }
       ],
-      "updateConstraint": "No action",
-      "deleteConstraint": "No action",
-      "name": "fk_Play_game_id_Game",
+      "updateConstraint": "Restrict",
+      "deleteConstraint": "Set null",
+      "name": "fk_Play_game_id_Game✅",
       "color": "#44a310",
       "id": "qGY3YJUZeZHmbLCsLwKAz"
     },
@@ -1065,9 +1065,9 @@
           "endFieldId": "WlXWmA7IzeYzOP47Brykn"
         }
       ],
-      "updateConstraint": "No action",
-      "deleteConstraint": "No action",
-      "name": "fk_ClueProgress_clue_id_Clue",
+      "updateConstraint": "Restrict",
+      "deleteConstraint": "Set null",
+      "name": "fk_ClueProgress_clue_id_Clue✅",
       "color": "#abe302",
       "id": "po5Kk9x8OytjN-3NuyII8"
     },
@@ -1085,7 +1085,7 @@
       ],
       "updateConstraint": "Restrict",
       "deleteConstraint": "Cascade",
-      "name": "fk_ClueProgress_play_id_Play",
+      "name": "fk_ClueProgress_play_id_Play✅",
       "color": "#db698d",
       "id": "FFADF37qPMyMeCANljxgv"
     }
