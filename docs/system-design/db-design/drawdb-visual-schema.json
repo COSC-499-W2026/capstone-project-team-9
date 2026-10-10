@@ -537,7 +537,7 @@
         },
         {
           "id": "OBT3hb-eCV4JqkK7s4BjU",
-          "name": "num_items",
+          "name": "num_clues",
           "type": "INTEGER",
           "default": "",
           "check": "",
