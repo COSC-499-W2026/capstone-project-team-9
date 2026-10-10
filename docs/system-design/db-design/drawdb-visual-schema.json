@@ -3,8 +3,8 @@
     {
       "id": "PUnoI8pDnFhQs3z_VlBtU",
       "name": "User",
-      "x": -429.01951095463323,
-      "y": -1210.582394625005,
+      "x": -428.6735925236436,
+      "y": -1206.709474643245,
       "locked": false,
       "fields": [
         {
@@ -67,7 +67,7 @@
           "name": "role",
           "type": "TEXT",
           "default": "student",
-          "check": "role IN ('student', 'instructor', 'admin')",
+          "check": "\"role\" IN ('student', 'instructor', 'admin')",
           "primary": false,
           "unique": false,
           "notNull": true,
@@ -101,8 +101,8 @@
     {
       "id": "jMfSdgZBLanmnZtWIaAB1",
       "name": "Course",
-      "x": 313.35318886844163,
-      "y": -1281.8430526233094,
+      "x": 315.6491937389129,
+      "y": -1286.6837484927846,
       "locked": false,
       "fields": [
         {
@@ -157,8 +157,8 @@
     {
       "id": "MHO_l7yZORdf_I5awcrFv",
       "name": "Enrollment",
-      "x": -45.49294513478566,
-      "y": -1364.4803186715203,
+      "x": -45.83871667739419,
+      "y": -1343.0558343702298,
       "locked": false,
       "fields": [
         {
@@ -657,8 +657,8 @@
     {
       "id": "PndV4W_dwECf8YvrSmmWT",
       "name": "Play",
-      "x": -481.8068084923995,
-      "y": -907.844635308928,
+      "x": -488.00310147485135,
+      "y": -903.0588175215437,
       "locked": false,
       "fields": [
         {
@@ -739,8 +739,8 @@
     {
       "id": "Le_EfhAufmm3MdRidnWQY",
       "name": "CompletedClue",
-      "x": -529.0777531377282,
-      "y": -637.7706447886388,
+      "x": -531.0278079218459,
+      "y": -635.820411460776,
       "locked": false,
       "fields": [
         {
@@ -749,7 +749,7 @@
           "type": "INTEGER",
           "default": "",
           "check": "",
-          "primary": false,
+          "primary": true,
           "unique": false,
           "notNull": true,
           "increment": false,
@@ -763,9 +763,9 @@
           "type": "INTEGER",
           "default": "",
           "check": "",
-          "primary": false,
+          "primary": true,
           "unique": false,
-          "notNull": false,
+          "notNull": true,
           "increment": false,
           "comment": "",
           "size": "",
@@ -1066,7 +1066,7 @@
         }
       ],
       "updateConstraint": "Restrict",
-      "deleteConstraint": "Set null",
+      "deleteConstraint": "Restrict",
       "name": "fk_ClueProgress_clue_id_Clue✅",
       "color": "#abe302",
       "id": "po5Kk9x8OytjN-3NuyII8"
