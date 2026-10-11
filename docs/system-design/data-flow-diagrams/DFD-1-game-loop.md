@@ -1,5 +1,5 @@
 ### Game loop DFD level 1
-![ Game loop DFD level 1](images/Game-loop-DFD.png)
+![ Game loop DFD level 1](./images/DFD-1-game-loop.png)
 
 **Purpose:** This component runs a single game session for a player,
 from the Play click through to the final score.

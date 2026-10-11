@@ -1,5 +1,5 @@
 ### Student management DFD level 1
-![Student management DFD level 1](images/Student-Management.jpeg)
+![Student management DFD level 1](./images/DFD-1-student-management.jpeg)
 
 **Purpose:** This component lets an instructor update, and delete student accounts and view reports on individual student scores.
 
