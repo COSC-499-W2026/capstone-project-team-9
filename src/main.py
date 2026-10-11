@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.routers import health
+from src.routers import health, location_router
 
 app = FastAPI(
     title="Language Game API"
@@ -17,3 +17,4 @@ app.add_middleware(
 )
 
 app.include_router(health.router)
+app.include_router(location_router.router)
