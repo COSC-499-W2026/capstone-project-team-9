@@ -3,8 +3,8 @@
     {
       "id": "PUnoI8pDnFhQs3z_VlBtU",
       "name": "User",
-      "x": -429.01951095463323,
-      "y": -1210.582394625005,
+      "x": -428.6735925236436,
+      "y": -1206.709474643245,
       "locked": false,
       "fields": [
         {
@@ -67,7 +67,7 @@
           "name": "role",
           "type": "TEXT",
           "default": "student",
-          "check": "role IN ('student', 'instructor', 'admin')",
+          "check": "\"role\" IN ('student', 'instructor', 'admin')",
           "primary": false,
           "unique": false,
           "notNull": true,
@@ -101,8 +101,8 @@
     {
       "id": "jMfSdgZBLanmnZtWIaAB1",
       "name": "Course",
-      "x": 313.35318886844163,
-      "y": -1281.8430526233094,
+      "x": 315.6491937389129,
+      "y": -1286.6837484927846,
       "locked": false,
       "fields": [
         {
@@ -157,8 +157,8 @@
     {
       "id": "MHO_l7yZORdf_I5awcrFv",
       "name": "Enrollment",
-      "x": -45.49294513478566,
-      "y": -1364.4803186715203,
+      "x": -45.83871667739419,
+      "y": -1343.0558343702298,
       "locked": false,
       "fields": [
         {
@@ -295,7 +295,7 @@
     },
     {
       "id": "cb5WlyUhYgCOZX6Ei9Yy4",
-      "name": "Answer",
+      "name": "Target",
       "x": -585.1846860235443,
       "y": -456.3952745617223,
       "locked": false,
@@ -454,7 +454,7 @@
         },
         {
           "id": "a-Ve8rqQfWy9-cOobx2by",
-          "name": "answer_id",
+          "name": "target_id",
           "type": "INTEGER",
           "default": "",
           "check": "",
@@ -537,7 +537,7 @@
         },
         {
           "id": "OBT3hb-eCV4JqkK7s4BjU",
-          "name": "num_items",
+          "name": "num_clues",
           "type": "INTEGER",
           "default": "",
           "check": "",
@@ -657,8 +657,8 @@
     {
       "id": "PndV4W_dwECf8YvrSmmWT",
       "name": "Play",
-      "x": -481.8068084923995,
-      "y": -907.844635308928,
+      "x": -488.00310147485135,
+      "y": -903.0588175215437,
       "locked": false,
       "fields": [
         {
@@ -722,7 +722,7 @@
           "check": "",
           "primary": false,
           "unique": false,
-          "notNull": true,
+          "notNull": false,
           "increment": false,
           "comment": "",
           "size": "",
@@ -738,9 +738,9 @@
     },
     {
       "id": "Le_EfhAufmm3MdRidnWQY",
-      "name": "CompletedClue",
-      "x": -529.0777531377282,
-      "y": -637.7706447886388,
+      "name": "SolvedClue",
+      "x": -531.0278079218459,
+      "y": -635.820411460776,
       "locked": false,
       "fields": [
         {
@@ -749,7 +749,7 @@
           "type": "INTEGER",
           "default": "",
           "check": "",
-          "primary": false,
+          "primary": true,
           "unique": false,
           "notNull": true,
           "increment": false,
@@ -763,7 +763,7 @@
           "type": "INTEGER",
           "default": "",
           "check": "",
-          "primary": false,
+          "primary": true,
           "unique": false,
           "notNull": true,
           "increment": false,
@@ -794,7 +794,7 @@
       ],
       "updateConstraint": "Restrict",
       "deleteConstraint": "Cascade",
-      "name": "fk_Enrollment_user_id_User_✅",
+      "name": "fk_Enrollment_user_id_User✅",
       "color": "#a3244c",
       "id": "1TyWKvwxDY-c0BVzauwDZ",
       "manyLabel": ""
@@ -905,7 +905,7 @@
       ],
       "updateConstraint": "Restrict",
       "deleteConstraint": "Restrict",
-      "name": "fk_Clue_answer_id_Answer✅",
+      "name": "fk_Clue_target_id_Target✅",
       "color": "#1cd987",
       "id": "NxHdWcjdh0gagyfKajn2l"
     },
@@ -940,8 +940,8 @@
         }
       ],
       "updateConstraint": "Restrict",
-      "deleteConstraint": "No action",
-      "name": "fk_Game_language_id_Language",
+      "deleteConstraint": "Restrict",
+      "name": "fk_Game_language_id_Language✅",
       "color": "#9910a3",
       "id": "dBfJN9i_wa5JsYfwAOVpO"
     },
@@ -957,9 +957,9 @@
           "endFieldId": "03m2jJLeHBVgGDKlP4umH"
         }
       ],
-      "updateConstraint": "No action",
-      "deleteConstraint": "No action",
-      "name": "fk_Game_difficulty_id_Difficulty",
+      "updateConstraint": "Restrict",
+      "deleteConstraint": "Restrict",
+      "name": "fk_Game_difficulty_id_Difficulty✅",
       "color": "#cc68d4",
       "id": "xTzmu3jyl4WO-pP7KNp3b"
     },
@@ -1029,9 +1029,9 @@
           "endFieldId": "JgQYIh9EHZgcluZb4x9-X"
         }
       ],
-      "updateConstraint": "No action",
-      "deleteConstraint": "No action",
-      "name": "fk_Play_game_id_Game",
+      "updateConstraint": "Restrict",
+      "deleteConstraint": "Set null",
+      "name": "fk_Play_game_id_Game✅",
       "color": "#44a310",
       "id": "qGY3YJUZeZHmbLCsLwKAz"
     },
@@ -1049,7 +1049,7 @@
       ],
       "updateConstraint": "Restrict",
       "deleteConstraint": "Set null",
-      "name": "fk_Answer_creator_id_User✅",
+      "name": "fk_Target_creator_id_User✅",
       "color": "#a3244c",
       "id": "tFhmzPbL5KRw5rl1nNwzs"
     },
@@ -1065,9 +1065,9 @@
           "endFieldId": "WlXWmA7IzeYzOP47Brykn"
         }
       ],
-      "updateConstraint": "No action",
-      "deleteConstraint": "No action",
-      "name": "fk_ClueProgress_clue_id_Clue",
+      "updateConstraint": "Restrict",
+      "deleteConstraint": "Restrict",
+      "name": "fk_ClueProgress_clue_id_Clue✅",
       "color": "#abe302",
       "id": "po5Kk9x8OytjN-3NuyII8"
     },
@@ -1085,7 +1085,7 @@
       ],
       "updateConstraint": "Restrict",
       "deleteConstraint": "Cascade",
-      "name": "fk_ClueProgress_play_id_Play",
+      "name": "fk_ClueProgress_play_id_Play✅",
       "color": "#db698d",
       "id": "FFADF37qPMyMeCANljxgv"
     }
@@ -1096,5 +1096,5 @@
   "database": "postgresql",
   "types": [],
   "enums": [],
-  "title": "ENJIneers DB design Oct 9 2"
+  "title": "ENJIneers DB design Oct 10"
 }
