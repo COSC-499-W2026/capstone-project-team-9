@@ -3,8 +3,8 @@
     {
       "id": "PUnoI8pDnFhQs3z_VlBtU",
       "name": "User",
-      "x": -395.2780700780085,
-      "y": -1465.5435708804953,
+      "x": -429.01951095463323,
+      "y": -1210.582394625005,
       "locked": false,
       "fields": [
         {
@@ -66,8 +66,8 @@
           "id": "J_PBm07fq0IoPmPJ1VydY",
           "name": "role",
           "type": "TEXT",
-          "default": "",
-          "check": "permission IN ('student', 'instructor', 'admin')",
+          "default": "student",
+          "check": "role IN ('student', 'instructor', 'admin')",
           "primary": false,
           "unique": false,
           "notNull": true,
@@ -101,8 +101,8 @@
     {
       "id": "jMfSdgZBLanmnZtWIaAB1",
       "name": "Course",
-      "x": 416.8412328083631,
-      "y": -1543.1677935160799,
+      "x": 313.35318886844163,
+      "y": -1281.8430526233094,
       "locked": false,
       "fields": [
         {
@@ -150,15 +150,15 @@
       "comment": "",
       "indices": [],
       "uniqueConstraints": [],
-      "color": "#175e7a",
+      "color": "#0d5dbf",
       "collapsed": false,
       "width": 214
     },
     {
       "id": "MHO_l7yZORdf_I5awcrFv",
       "name": "Enrollment",
-      "x": 15.671170353020216,
-      "y": -1645.789467629695,
+      "x": -45.49294513478566,
+      "y": -1364.4803186715203,
       "locked": false,
       "fields": [
         {
@@ -207,14 +207,14 @@
       "comment": "This doesn't refer to their overall user permissions role, but rather their permissions for this specific course. The idea is that an owner of a course could allow a TA etc to do instructor tasks for this specific course",
       "indices": [],
       "uniqueConstraints": [],
-      "color": "#175e7a",
+      "color": "#96b3d4",
       "collapsed": false
     },
     {
       "id": "4ii2MQrRpq7PnDAAdzxI8",
       "name": "Language",
-      "x": 604.6538921090788,
-      "y": -1130.5204367746292,
+      "x": 475.4394914316126,
+      "y": -961.2492549019842,
       "locked": false,
       "fields": [
         {
@@ -248,15 +248,153 @@
       "comment": "",
       "indices": [],
       "uniqueConstraints": [],
-      "color": "#3a7a17",
+      "color": "#9910a3",
       "collapsed": false,
       "width": 180
     },
     {
+      "id": "dNNEX1MevCLUiG_IzvWWU",
+      "name": "Difficulty",
+      "x": 437.9622992124358,
+      "y": -524.386214947441,
+      "locked": true,
+      "fields": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": false,
+          "unsigned": true,
+          "notNull": true,
+          "increment": true,
+          "comment": "",
+          "id": "03m2jJLeHBVgGDKlP4umH"
+        },
+        {
+          "id": "H3i3CtXJa08MWjLYCEHGN",
+          "name": "name",
+          "type": "TEXT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": true,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "uniqueConstraints": [],
+      "color": "#cc68d4",
+      "collapsed": false
+    },
+    {
+      "id": "cb5WlyUhYgCOZX6Ei9Yy4",
+      "name": "Answer",
+      "x": -585.1846860235443,
+      "y": -456.3952745617223,
+      "locked": false,
+      "fields": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": false,
+          "unsigned": true,
+          "notNull": true,
+          "increment": true,
+          "comment": "",
+          "id": "tpA3IqAMGgcclAIcOY-ru"
+        },
+        {
+          "id": "Cwp57Eic9r4b5m5wiqSiR",
+          "name": "name",
+          "type": "TEXT",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": true,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "YPu4AVSv8tznj4r5iq8-M",
+          "name": "image",
+          "type": "BYTEA",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "5pOSxanHepiP6K3E4-hgz",
+          "name": "creator_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "_dBjqqB484V7bPqtomZYP",
+          "name": "created_at",
+          "type": "TIMESTAMPTZ",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "bwNByVm8JVb2L2YWU1B40",
+          "name": "updated_at",
+          "type": "TIMESTAMPTZ",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "uniqueConstraints": [],
+      "color": "#1cd987",
+      "collapsed": false
+    },
+    {
       "id": "JH5MGyYNqNfvkfRPMXk4u",
       "name": "Clue",
-      "x": 15.399102725283683,
-      "y": -769.7760184618179,
+      "x": -45.67757447195686,
+      "y": -599.6515867563216,
       "locked": false,
       "fields": [
         {
@@ -374,55 +512,14 @@
       "comment": "",
       "indices": [],
       "uniqueConstraints": [],
-      "color": "#6ceb28",
-      "collapsed": false
-    },
-    {
-      "id": "dNNEX1MevCLUiG_IzvWWU",
-      "name": "Difficulty",
-      "x": 564.3739172225539,
-      "y": -970.4125428708321,
-      "locked": false,
-      "fields": [
-        {
-          "name": "id",
-          "type": "INTEGER",
-          "default": "",
-          "check": "",
-          "primary": true,
-          "unique": false,
-          "unsigned": true,
-          "notNull": true,
-          "increment": true,
-          "comment": "",
-          "id": "03m2jJLeHBVgGDKlP4umH"
-        },
-        {
-          "id": "H3i3CtXJa08MWjLYCEHGN",
-          "name": "name",
-          "type": "TEXT",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": true,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "size": "",
-          "values": []
-        }
-      ],
-      "comment": "",
-      "indices": [],
-      "uniqueConstraints": [],
-      "color": "#3a7a17",
+      "color": "#abe302",
       "collapsed": false
     },
     {
       "id": "xtGue2Ao_HGnCNBpaoKHC",
       "name": "Game",
-      "x": 24.73479906883415,
-      "y": -1338.9745657467035,
+      "x": -45.464992381398474,
+      "y": -1035.127694170841,
       "locked": false,
       "fields": [
         {
@@ -453,8 +550,8 @@
           "values": []
         },
         {
-          "id": "F_glU3aLx5A_Cgp78JeHf",
-          "name": "difficulty_id",
+          "id": "7SAzkvOccFMfg-j3aG_m2",
+          "name": "language_id",
           "type": "INTEGER",
           "default": "",
           "check": "",
@@ -467,8 +564,8 @@
           "values": []
         },
         {
-          "id": "7SAzkvOccFMfg-j3aG_m2",
-          "name": "language_id",
+          "id": "F_glU3aLx5A_Cgp78JeHf",
+          "name": "difficulty_id",
           "type": "INTEGER",
           "default": "",
           "check": "",
@@ -554,55 +651,14 @@
       "comment": "",
       "indices": [],
       "uniqueConstraints": [],
-      "color": "#6ceb28",
+      "color": "#44a310",
       "collapsed": false
     },
     {
-      "id": "0_V91jf-OF1EoFEycDtj7",
-      "name": "ClueUsage",
-      "x": 17.457794900670137,
-      "y": -926.906193338781,
-      "locked": false,
-      "fields": [
-        {
-          "id": "MRKhfG-Q0cR7F_ZfMNX_w",
-          "name": "game_id",
-          "type": "INTEGER",
-          "default": "",
-          "check": "",
-          "primary": true,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "size": "",
-          "values": []
-        },
-        {
-          "name": "clue_id",
-          "type": "INTEGER",
-          "default": "",
-          "check": "",
-          "primary": true,
-          "unique": false,
-          "unsigned": true,
-          "notNull": true,
-          "increment": true,
-          "comment": "",
-          "id": "9ie6vOwVrs0NGoYNeiIDn"
-        }
-      ],
-      "comment": "",
-      "indices": [],
-      "uniqueConstraints": [],
-      "color": "#3a7a17",
-      "collapsed": false
-    },
-    {
-      "id": "cb5WlyUhYgCOZX6Ei9Yy4",
-      "name": "Answer",
-      "x": -433.91480584812456,
-      "y": -620.5118115388278,
+      "id": "PndV4W_dwECf8YvrSmmWT",
+      "name": "Play",
+      "x": -481.8068084923995,
+      "y": -907.844635308928,
       "locked": false,
       "fields": [
         {
@@ -616,53 +672,23 @@
           "notNull": true,
           "increment": true,
           "comment": "",
-          "id": "tpA3IqAMGgcclAIcOY-ru"
+          "id": "Zen1O1RUxLyZV_hkY1zZb"
         },
         {
-          "id": "Cwp57Eic9r4b5m5wiqSiR",
-          "name": "name",
-          "type": "TEXT",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": true,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "size": "",
-          "values": []
-        },
-        {
-          "id": "YPu4AVSv8tznj4r5iq8-M",
-          "name": "image",
-          "type": "BYTEA",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "size": "",
-          "values": []
-        },
-        {
-          "id": "5pOSxanHepiP6K3E4-hgz",
-          "name": "creator_id",
-          "type": "INTEGER",
+          "id": "tgPmBPYtlZiKN4pK1T-xL",
+          "name": "score",
+          "type": "NUMERIC",
           "default": "",
           "check": "",
           "primary": false,
           "unique": false,
           "notNull": false,
           "increment": false,
-          "comment": "",
-          "size": "",
-          "values": []
+          "comment": ""
         },
         {
-          "id": "_dBjqqB484V7bPqtomZYP",
-          "name": "created_at",
+          "id": "AyOZ11SacyL5X8v0fR7yf",
+          "name": "started_at",
           "type": "TIMESTAMPTZ",
           "default": "",
           "check": "",
@@ -675,9 +701,23 @@
           "values": []
         },
         {
-          "id": "bwNByVm8JVb2L2YWU1B40",
-          "name": "updated_at",
-          "type": "TIMESTAMPTZ",
+          "id": "xdUWoZynsq8Kn-9YIq3JK",
+          "name": "user_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "Cbs7MNL4-VKjB4Ro4o9VW",
+          "name": "game_id",
+          "type": "INTEGER",
           "default": "",
           "check": "",
           "primary": false,
@@ -692,7 +732,50 @@
       "comment": "",
       "indices": [],
       "uniqueConstraints": [],
-      "color": "#6ceb28",
+      "color": "#db698d",
+      "collapsed": false,
+      "width": 234
+    },
+    {
+      "id": "Le_EfhAufmm3MdRidnWQY",
+      "name": "CompletedClue",
+      "x": -529.0777531377282,
+      "y": -637.7706447886388,
+      "locked": false,
+      "fields": [
+        {
+          "id": "fyjHZGafB0VVkMCjIlOPx",
+          "name": "play_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "Y3kGrm_pBD6BcmQK6K6no",
+          "name": "clue_id",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        }
+      ],
+      "comment": "",
+      "indices": [],
+      "uniqueConstraints": [],
+      "color": "#edb7c8",
       "collapsed": false
     }
   ],
@@ -709,10 +792,10 @@
           "endFieldId": "Si5oJBlGgGxoE4j-oPwtl"
         }
       ],
-      "updateConstraint": "No action",
+      "updateConstraint": "Restrict",
       "deleteConstraint": "Cascade",
-      "name": "fk_Enrollment_user_id_User",
-      "color": "#808080",
+      "name": "fk_Enrollment_user_id_User_✅",
+      "color": "#a3244c",
       "id": "1TyWKvwxDY-c0BVzauwDZ",
       "manyLabel": ""
     },
@@ -728,12 +811,30 @@
           "endFieldId": "bzn_Vq0YZj6CP5hr8pkbI"
         }
       ],
-      "updateConstraint": "No action",
-      "deleteConstraint": "No action",
-      "name": "has",
-      "color": "#808080",
+      "updateConstraint": "Restrict",
+      "deleteConstraint": "Cascade",
+      "name": "fk_Enrollment_course_id_Course✅",
+      "color": "#0d5dbf",
       "id": "XzRPrgLIR8_KjZ-hKeo-n",
       "manyLabel": ""
+    },
+    {
+      "startTableId": "jMfSdgZBLanmnZtWIaAB1",
+      "startFieldId": "8YMDXJOzKVX0Bvg_XYq8o",
+      "endTableId": "PUnoI8pDnFhQs3z_VlBtU",
+      "endFieldId": "Si5oJBlGgGxoE4j-oPwtl",
+      "cardinality": "many_to_one",
+      "fields": [
+        {
+          "startFieldId": "8YMDXJOzKVX0Bvg_XYq8o",
+          "endFieldId": "Si5oJBlGgGxoE4j-oPwtl"
+        }
+      ],
+      "updateConstraint": "Restrict",
+      "deleteConstraint": "Set null",
+      "name": "fk_Course_owner_id_User✅",
+      "color": "#a3244c",
+      "id": "8IWqHH6LRVJgb_GjVmkbE"
     },
     {
       "startTableId": "jMfSdgZBLanmnZtWIaAB1",
@@ -747,10 +848,10 @@
           "endFieldId": "vYSrCLfJdqK_5SJrWnCCh"
         }
       ],
-      "updateConstraint": "No action",
-      "deleteConstraint": "No action",
-      "name": "isOn",
-      "color": "#808080",
+      "updateConstraint": "Restrict",
+      "deleteConstraint": "Restrict",
+      "name": "fk_Course_language_id_Language✅",
+      "color": "#9910a3",
       "id": "KHlPsYCTKFj8ZtSAtUIqb"
     },
     {
@@ -765,10 +866,10 @@
           "endFieldId": "vYSrCLfJdqK_5SJrWnCCh"
         }
       ],
-      "updateConstraint": "No action",
-      "deleteConstraint": "No action",
-      "name": "isIn",
-      "color": "#808080",
+      "updateConstraint": "Restrict",
+      "deleteConstraint": "Restrict",
+      "name": "fk_Clue_language_id_Language✅",
+      "color": "#9910a3",
       "id": "1HViofOU33nLkEijrow5c",
       "manyLabel": "n"
     },
@@ -784,47 +885,47 @@
           "endFieldId": "03m2jJLeHBVgGDKlP4umH"
         }
       ],
-      "updateConstraint": "No action",
-      "deleteConstraint": "No action",
-      "name": "is",
-      "color": "#808080",
+      "updateConstraint": "Restrict",
+      "deleteConstraint": "Restrict",
+      "name": "fk_Clue_difficulty_id_Difficulty✅",
+      "color": "#cc68d4",
       "id": "f5t681ehV9DrDGSheY8I-"
     },
     {
-      "startTableId": "0_V91jf-OF1EoFEycDtj7",
-      "startFieldId": "MRKhfG-Q0cR7F_ZfMNX_w",
-      "endTableId": "xtGue2Ao_HGnCNBpaoKHC",
-      "endFieldId": "JgQYIh9EHZgcluZb4x9-X",
+      "startTableId": "JH5MGyYNqNfvkfRPMXk4u",
+      "startFieldId": "a-Ve8rqQfWy9-cOobx2by",
+      "endTableId": "cb5WlyUhYgCOZX6Ei9Yy4",
+      "endFieldId": "tpA3IqAMGgcclAIcOY-ru",
       "cardinality": "many_to_one",
       "fields": [
         {
-          "startFieldId": "MRKhfG-Q0cR7F_ZfMNX_w",
-          "endFieldId": "JgQYIh9EHZgcluZb4x9-X"
+          "startFieldId": "a-Ve8rqQfWy9-cOobx2by",
+          "endFieldId": "tpA3IqAMGgcclAIcOY-ru"
         }
       ],
-      "updateConstraint": "No action",
-      "deleteConstraint": "Cascade",
-      "name": "fk_ClueUsage_game_id_Game",
-      "color": "#808080",
-      "id": "i4QBmY7INOR3I39tmBqcu"
+      "updateConstraint": "Restrict",
+      "deleteConstraint": "Restrict",
+      "name": "fk_Clue_answer_id_Answer✅",
+      "color": "#1cd987",
+      "id": "NxHdWcjdh0gagyfKajn2l"
     },
     {
-      "startTableId": "0_V91jf-OF1EoFEycDtj7",
-      "startFieldId": "9ie6vOwVrs0NGoYNeiIDn",
-      "endTableId": "JH5MGyYNqNfvkfRPMXk4u",
-      "endFieldId": "WlXWmA7IzeYzOP47Brykn",
+      "startTableId": "JH5MGyYNqNfvkfRPMXk4u",
+      "startFieldId": "ylCbaLKltmgA49MHa8Pwq",
+      "endTableId": "PUnoI8pDnFhQs3z_VlBtU",
+      "endFieldId": "Si5oJBlGgGxoE4j-oPwtl",
       "cardinality": "many_to_one",
       "fields": [
         {
-          "startFieldId": "9ie6vOwVrs0NGoYNeiIDn",
-          "endFieldId": "WlXWmA7IzeYzOP47Brykn"
+          "startFieldId": "ylCbaLKltmgA49MHa8Pwq",
+          "endFieldId": "Si5oJBlGgGxoE4j-oPwtl"
         }
       ],
-      "updateConstraint": "No action",
-      "deleteConstraint": "Cascade",
-      "name": "uses",
-      "color": "#808080",
-      "id": "hsSLzxTnta67ESbO8PSQY"
+      "updateConstraint": "Restrict",
+      "deleteConstraint": "Set null",
+      "name": "fk_Clue_creator_id_User✅",
+      "color": "#a3244c",
+      "id": "YnO-Xz3BE1uGI5_1bLdQf"
     },
     {
       "startTableId": "xtGue2Ao_HGnCNBpaoKHC",
@@ -838,10 +939,10 @@
           "endFieldId": "vYSrCLfJdqK_5SJrWnCCh"
         }
       ],
-      "updateConstraint": "No action",
+      "updateConstraint": "Restrict",
       "deleteConstraint": "No action",
-      "name": "isIn",
-      "color": "#808080",
+      "name": "fk_Game_language_id_Language",
+      "color": "#9910a3",
       "id": "dBfJN9i_wa5JsYfwAOVpO"
     },
     {
@@ -858,81 +959,9 @@
       ],
       "updateConstraint": "No action",
       "deleteConstraint": "No action",
-      "name": "is",
-      "color": "#808080",
+      "name": "fk_Game_difficulty_id_Difficulty",
+      "color": "#cc68d4",
       "id": "xTzmu3jyl4WO-pP7KNp3b"
-    },
-    {
-      "startTableId": "JH5MGyYNqNfvkfRPMXk4u",
-      "startFieldId": "a-Ve8rqQfWy9-cOobx2by",
-      "endTableId": "cb5WlyUhYgCOZX6Ei9Yy4",
-      "endFieldId": "tpA3IqAMGgcclAIcOY-ru",
-      "cardinality": "many_to_one",
-      "fields": [
-        {
-          "startFieldId": "a-Ve8rqQfWy9-cOobx2by",
-          "endFieldId": "tpA3IqAMGgcclAIcOY-ru"
-        }
-      ],
-      "updateConstraint": "No action",
-      "deleteConstraint": "No action",
-      "name": "fk_Clue_answer_id_Answer",
-      "color": "#808080",
-      "id": "NxHdWcjdh0gagyfKajn2l"
-    },
-    {
-      "startTableId": "jMfSdgZBLanmnZtWIaAB1",
-      "startFieldId": "8YMDXJOzKVX0Bvg_XYq8o",
-      "endTableId": "PUnoI8pDnFhQs3z_VlBtU",
-      "endFieldId": "Si5oJBlGgGxoE4j-oPwtl",
-      "cardinality": "many_to_one",
-      "fields": [
-        {
-          "startFieldId": "8YMDXJOzKVX0Bvg_XYq8o",
-          "endFieldId": "Si5oJBlGgGxoE4j-oPwtl"
-        }
-      ],
-      "updateConstraint": "No action",
-      "deleteConstraint": "Set null",
-      "name": "fk_Course_owner_id_User",
-      "color": "#808080",
-      "id": "8IWqHH6LRVJgb_GjVmkbE"
-    },
-    {
-      "startTableId": "cb5WlyUhYgCOZX6Ei9Yy4",
-      "startFieldId": "5pOSxanHepiP6K3E4-hgz",
-      "endTableId": "PUnoI8pDnFhQs3z_VlBtU",
-      "endFieldId": "Si5oJBlGgGxoE4j-oPwtl",
-      "cardinality": "many_to_one",
-      "fields": [
-        {
-          "startFieldId": "5pOSxanHepiP6K3E4-hgz",
-          "endFieldId": "Si5oJBlGgGxoE4j-oPwtl"
-        }
-      ],
-      "updateConstraint": "No action",
-      "deleteConstraint": "Set null",
-      "name": "fk_Answer_creator_id_User",
-      "color": "#808080",
-      "id": "tFhmzPbL5KRw5rl1nNwzs"
-    },
-    {
-      "startTableId": "JH5MGyYNqNfvkfRPMXk4u",
-      "startFieldId": "ylCbaLKltmgA49MHa8Pwq",
-      "endTableId": "PUnoI8pDnFhQs3z_VlBtU",
-      "endFieldId": "Si5oJBlGgGxoE4j-oPwtl",
-      "cardinality": "many_to_one",
-      "fields": [
-        {
-          "startFieldId": "ylCbaLKltmgA49MHa8Pwq",
-          "endFieldId": "Si5oJBlGgGxoE4j-oPwtl"
-        }
-      ],
-      "updateConstraint": "No action",
-      "deleteConstraint": "Set null",
-      "name": "fk_Clue_creator_id_User",
-      "color": "#808080",
-      "id": "YnO-Xz3BE1uGI5_1bLdQf"
     },
     {
       "startTableId": "xtGue2Ao_HGnCNBpaoKHC",
@@ -946,10 +975,10 @@
           "endFieldId": "Si5oJBlGgGxoE4j-oPwtl"
         }
       ],
-      "updateConstraint": "No action",
+      "updateConstraint": "Restrict",
       "deleteConstraint": "Set null",
-      "name": "fk_Game_creator_id_User",
-      "color": "#808080",
+      "name": "fk_Game_creator_id_User✅",
+      "color": "#a3244c",
       "id": "pTAZ34fDCkz2VKnlFIIF5"
     },
     {
@@ -964,11 +993,101 @@
           "endFieldId": "bzn_Vq0YZj6CP5hr8pkbI"
         }
       ],
+      "updateConstraint": "Restrict",
+      "deleteConstraint": "Set null",
+      "name": "fk_Game_course_id_Course✅",
+      "color": "#0d5dbf",
+      "id": "vtR-E5kQFOwYyAZXLAixn"
+    },
+    {
+      "startTableId": "PndV4W_dwECf8YvrSmmWT",
+      "startFieldId": "xdUWoZynsq8Kn-9YIq3JK",
+      "endTableId": "PUnoI8pDnFhQs3z_VlBtU",
+      "endFieldId": "Si5oJBlGgGxoE4j-oPwtl",
+      "cardinality": "many_to_one",
+      "fields": [
+        {
+          "startFieldId": "xdUWoZynsq8Kn-9YIq3JK",
+          "endFieldId": "Si5oJBlGgGxoE4j-oPwtl"
+        }
+      ],
+      "updateConstraint": "Restrict",
+      "deleteConstraint": "Cascade",
+      "name": "fk_Play_user_id_User✅",
+      "color": "#a3244c",
+      "id": "xsL6aX8OUe9NbFAFAdeM-"
+    },
+    {
+      "startTableId": "PndV4W_dwECf8YvrSmmWT",
+      "startFieldId": "Cbs7MNL4-VKjB4Ro4o9VW",
+      "endTableId": "xtGue2Ao_HGnCNBpaoKHC",
+      "endFieldId": "JgQYIh9EHZgcluZb4x9-X",
+      "cardinality": "many_to_one",
+      "fields": [
+        {
+          "startFieldId": "Cbs7MNL4-VKjB4Ro4o9VW",
+          "endFieldId": "JgQYIh9EHZgcluZb4x9-X"
+        }
+      ],
       "updateConstraint": "No action",
       "deleteConstraint": "No action",
-      "name": "fk_Game_course_id_Course",
-      "color": "#808080",
-      "id": "vtR-E5kQFOwYyAZXLAixn"
+      "name": "fk_Play_game_id_Game",
+      "color": "#44a310",
+      "id": "qGY3YJUZeZHmbLCsLwKAz"
+    },
+    {
+      "startTableId": "cb5WlyUhYgCOZX6Ei9Yy4",
+      "startFieldId": "5pOSxanHepiP6K3E4-hgz",
+      "endTableId": "PUnoI8pDnFhQs3z_VlBtU",
+      "endFieldId": "Si5oJBlGgGxoE4j-oPwtl",
+      "cardinality": "many_to_one",
+      "fields": [
+        {
+          "startFieldId": "5pOSxanHepiP6K3E4-hgz",
+          "endFieldId": "Si5oJBlGgGxoE4j-oPwtl"
+        }
+      ],
+      "updateConstraint": "Restrict",
+      "deleteConstraint": "Set null",
+      "name": "fk_Answer_creator_id_User✅",
+      "color": "#a3244c",
+      "id": "tFhmzPbL5KRw5rl1nNwzs"
+    },
+    {
+      "startTableId": "Le_EfhAufmm3MdRidnWQY",
+      "startFieldId": "Y3kGrm_pBD6BcmQK6K6no",
+      "endTableId": "JH5MGyYNqNfvkfRPMXk4u",
+      "endFieldId": "WlXWmA7IzeYzOP47Brykn",
+      "cardinality": "many_to_one",
+      "fields": [
+        {
+          "startFieldId": "Y3kGrm_pBD6BcmQK6K6no",
+          "endFieldId": "WlXWmA7IzeYzOP47Brykn"
+        }
+      ],
+      "updateConstraint": "No action",
+      "deleteConstraint": "No action",
+      "name": "fk_ClueProgress_clue_id_Clue",
+      "color": "#abe302",
+      "id": "po5Kk9x8OytjN-3NuyII8"
+    },
+    {
+      "startTableId": "Le_EfhAufmm3MdRidnWQY",
+      "startFieldId": "fyjHZGafB0VVkMCjIlOPx",
+      "endTableId": "PndV4W_dwECf8YvrSmmWT",
+      "endFieldId": "Zen1O1RUxLyZV_hkY1zZb",
+      "cardinality": "many_to_one",
+      "fields": [
+        {
+          "startFieldId": "fyjHZGafB0VVkMCjIlOPx",
+          "endFieldId": "Zen1O1RUxLyZV_hkY1zZb"
+        }
+      ],
+      "updateConstraint": "Restrict",
+      "deleteConstraint": "Cascade",
+      "name": "fk_ClueProgress_play_id_Play",
+      "color": "#db698d",
+      "id": "FFADF37qPMyMeCANljxgv"
     }
   ],
   "notes": [],
@@ -977,5 +1096,5 @@
   "database": "postgresql",
   "types": [],
   "enums": [],
-  "title": "ENJIneers DB design COPY"
+  "title": "ENJIneers DB design Oct 9 2"
 }
