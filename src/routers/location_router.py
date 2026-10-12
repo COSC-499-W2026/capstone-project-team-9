@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from src.schemas.location_schema import LocationCheckRequest, LocationCheckResponse
-from src.services.location_service import verify_location
+from schemas.location_schema import LocationCheckRequest, LocationCheckResponse
+from services.location_service import verify_location
 
 router = APIRouter(prefix="/location", tags=["location"])
 
