@@ -6,7 +6,7 @@ callers only supply the player's coordinates
 from dataclasses import dataclass
 from math import asin, cos, radians, sin, sqrt
 
-from src.repositories.location_repo import get_campus_location
+from repositories.location_repo import get_campus_location
 
 EARTH_RADIUS_M = 6_371_000
 BLOCKED_MESSAGE = "You need to be on the UBCO campus to play. Head to campus and try again!"
