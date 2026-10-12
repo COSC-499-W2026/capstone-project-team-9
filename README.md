@@ -8,6 +8,7 @@ This repo contains the source code for Team 9's Capstone Software Engineering pr
 
 - [🔗 Team Contract](./docs/contract/team-contract.md)
 - [🔗 Project Proposal](./docs/proposal/project-proposal.pdf)
+- [🔗 Requirements Planning pt.2](https://docs.google.com/document/d/1ib5CDUCnfNi2iX7NgINAJ9l41g_lQKTaRL1nvg-tNc4/edit?usp=sharing)
 
 ### System Design
 
