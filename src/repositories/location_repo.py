@@ -1,4 +1,4 @@
-"""Campus location store (DFD D3).
+"""Campus location store.
 
 TODAY: the campus is a single hardcoded circle (center point + radius).
 

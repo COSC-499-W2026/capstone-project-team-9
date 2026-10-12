@@ -1,11 +1,7 @@
-"""Process 1.1 "Verify location".
+"""Process "Verify location".
 
-The service fetches the campus location from the repository (D3) itself, so
-callers only supply the player's coordinates:
-
-    result = verify_location(lat, lon)
-    if not result.allowed:
-        raise HTTPException(403, result.message)
+The service fetches the campus location from the repository itself, so
+callers only supply the player's coordinates
 """
 from dataclasses import dataclass
 from math import asin, cos, radians, sin, sqrt
