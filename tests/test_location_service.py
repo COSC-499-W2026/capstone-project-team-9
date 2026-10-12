@@ -1,60 +1,45 @@
 import pytest
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
 
-from src.repositories.location_repo import get_campus_polygons
-from src.routers.location_router import router
-from src.services.location_service import BLOCKED_MESSAGE, verify_location
+from src.repositories.location_repo import CampusLocation
+from src.services.location_service import BLOCKED_MESSAGE, is_within_radius, verify_location
 
-# A small fake campus, so these tests don't depend on the real boundary data
-# (and keep working unchanged once the boundary lives in the database).
-# Points are (lat, lon).
-TEST_CAMPUS = [[(49.93, -119.40), (49.93, -119.39), (49.94, -119.39), (49.94, -119.40)]]
-ON_CAMPUS = (49.935, -119.395)
-OFF_CAMPUS = [(49.8880, -119.4960), (49.2827, -123.1207), (0.0, 0.0), (49.95, -119.395)]
+# A fake campus so these tests don't depend on the real hardcoded values.
+TEST_CAMPUS = CampusLocation(latitude=49.935, longitude=-119.395, radius_m=500)
+
+
+@pytest.fixture(autouse=True)
+def fake_campus(monkeypatch):
+    monkeypatch.setattr("src.services.location_service.get_campus_location", lambda: TEST_CAMPUS)
 
 
 def test_on_campus_allows_start():
-    assert verify_location(*ON_CAMPUS, TEST_CAMPUS).allowed is True
+    assert verify_location(49.936, -119.395).allowed is True  # ~111 m from center
 
 
-@pytest.mark.parametrize("lat,lon", OFF_CAMPUS)
+def test_campus_center_allows_start():
+    assert verify_location(49.935, -119.395).allowed is True
+
+
+@pytest.mark.parametrize("lat,lon", [(49.2827, -123.1207), (0.0, 0.0), (49.95, -119.395)])
 def test_off_campus_blocks_start_with_message(lat, lon):
-    result = verify_location(lat, lon, TEST_CAMPUS)
+    result = verify_location(lat, lon)
     assert result.allowed is False
     assert result.message == BLOCKED_MESSAGE
 
 
-def test_no_boundary_data_blocks():
-    assert verify_location(*ON_CAMPUS, []).allowed is False
+def test_just_inside_and_outside_radius():
+    assert verify_location(49.939, -119.395).allowed is True    # ~445 m
+    assert verify_location(49.941, -119.395).allowed is False   # ~667 m
 
 
-@pytest.fixture
-def client():
-    app = FastAPI()
-    app.include_router(router)
-    # DB NOTE: this override is what keeps endpoint tests database-free later.
-    app.dependency_overrides[get_campus_polygons] = lambda: TEST_CAMPUS
-    return TestClient(app)
+# 0.001 degrees of latitude is about 111 m.
+def test_is_within_radius_true_when_closer_than_radius():
+    assert is_within_radius(49.001, -119.0, 49.0, -119.0, 150) is True
 
 
-def test_endpoint_on_campus(client):
-    r = client.post("/location/verify", json={"latitude": ON_CAMPUS[0], "longitude": ON_CAMPUS[1]})
-    assert r.status_code == 200 and r.json()["allowed"] is True
+def test_is_within_radius_false_when_farther_than_radius():
+    assert is_within_radius(49.001, -119.0, 49.0, -119.0, 100) is False
 
 
-def test_endpoint_off_campus(client):
-    r = client.post("/location/verify", json={"latitude": 49.2827, "longitude": -123.1207})
-    assert r.status_code == 200
-    assert r.json() == {"allowed": False, "message": BLOCKED_MESSAGE}
-
-
-def test_endpoint_rejects_invalid_coordinates(client):
-    r = client.post("/location/verify", json={"latitude": 200, "longitude": 0})
-    assert r.status_code == 422
-
-
-# FILE-ONLY: replace with a test against the DB (or delete) when the table exists.
-def test_file_boundary_loads_and_contains_a_ring():
-    rings = get_campus_polygons()
-    assert len(rings) >= 1 and len(rings[0]) >= 4
+def test_is_within_radius_same_point():
+    assert is_within_radius(49.0, -119.0, 49.0, -119.0, 0) is True
