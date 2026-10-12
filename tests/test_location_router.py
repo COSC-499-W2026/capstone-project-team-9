@@ -2,8 +2,8 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from src.routers.location_router import router
-from src.services.location_service import LocationResult
+from routers.location_router import router
+from services.location_service import LocationResult
 
 
 @pytest.fixture
@@ -15,7 +15,7 @@ def client():
 
 def test_verify_returns_200_with_allowed_result(client, monkeypatch):
     monkeypatch.setattr(
-        "src.routers.location_router.verify_location", lambda lat, lon: LocationResult(True, "ok")
+        "routers.location_router.verify_location", lambda lat, lon: LocationResult(True, "ok")
     )
     r = client.post("/location/verify", json={"latitude": 49.9, "longitude": -119.4})
     assert r.status_code == 200
@@ -24,7 +24,7 @@ def test_verify_returns_200_with_allowed_result(client, monkeypatch):
 
 def test_verify_returns_200_when_blocked(client, monkeypatch):
     monkeypatch.setattr(
-        "src.routers.location_router.verify_location", lambda lat, lon: LocationResult(False, "no")
+        "routers.location_router.verify_location", lambda lat, lon: LocationResult(False, "no")
     )
     r = client.post("/location/verify", json={"latitude": 0, "longitude": 0})
     assert r.status_code == 200
@@ -38,7 +38,7 @@ def test_verify_passes_coordinates_to_service(client, monkeypatch):
         seen["args"] = (lat, lon)
         return LocationResult(True, "ok")
 
-    monkeypatch.setattr("src.routers.location_router.verify_location", fake)
+    monkeypatch.setattr("routers.location_router.verify_location", fake)
     client.post("/location/verify", json={"latitude": 49.9, "longitude": -119.4})
     assert seen["args"] == (49.9, -119.4)
 

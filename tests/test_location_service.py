@@ -1,7 +1,7 @@
 import pytest
 
-from src.repositories.location_repo import CampusLocation
-from src.services.location_service import BLOCKED_MESSAGE, is_within_radius, verify_location
+from repositories.location_repo import CampusLocation
+from services.location_service import BLOCKED_MESSAGE, is_within_radius, verify_location
 
 # A fake campus so these tests don't depend on the real hardcoded values.
 TEST_CAMPUS = CampusLocation(latitude=49.935, longitude=-119.395, radius_m=500)
@@ -9,7 +9,7 @@ TEST_CAMPUS = CampusLocation(latitude=49.935, longitude=-119.395, radius_m=500)
 
 @pytest.fixture(autouse=True)
 def fake_campus(monkeypatch):
-    monkeypatch.setattr("src.services.location_service.get_campus_location", lambda: TEST_CAMPUS)
+    monkeypatch.setattr("services.location_service.get_campus_location", lambda: TEST_CAMPUS)
 
 
 def test_on_campus_allows_start():
