@@ -1,4 +1,4 @@
-from src.repositories.location_repo import CampusLocation, get_campus_location
+from repositories.location_repo import CampusLocation, get_campus_location
 
 
 # HARDCODED-ONLY: replace with a DB-backed test when the table exists.
