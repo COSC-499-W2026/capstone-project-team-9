@@ -1,5 +1,5 @@
 ### Game item management DFD level 1
-![Game item management DFD level 1](images/Game-Item-Management.jpeg)
+![Game item management DFD level 1](./images/DFD-1-game-item-management.jpeg)
 
 **Purpose:** This component lets an instructor create, update, delete, and view the game items (locations, images, and audio clues) that players use in the game loop.
 

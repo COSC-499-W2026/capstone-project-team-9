@@ -1,5 +1,5 @@
 ### User view DFD level 1
-![ User view DFD level 1](images/Student-view-DFD.png)
+![ User view DFD level 1](./images/DFD-1-student-view.png)
 
 **Purpose:** This component covers everything a logged-in student does outside of playing a game: logging in, managing their profile, joining
 and leaving classes, viewing a class's scoreboard and assigned games, and tracking their own progress and achievements.

@@ -235,3 +235,91 @@ Coming up soonish
   2. finish diagrams (assigned on project board)
   3. do further PRs/coding tasks if time allows (Docker, DB Schema, Coverage.py)
   4. Do team and individual logs
+
+---
+
+## Week 5
+
+### 🔴 Tues, Oct 6
+
+**Time:** 12:30-1:30  
+**Location:** ~~COM 314~~ Picnic bench outside COM  
+**Attendees:** all
+
+#### Agenda
+
+- Review last week’s workflow  
+  - How can we do this sustainably?  
+  - Suggestions for logs  
+  - PR review practices  
+- Review proposal feedback  
+- Prep for check-in: how is everyone’s understanding of…  
+  - Fastapi & system arch  
+  - Pytest & CI  
+  - Venv and Docker  
+  - DB design  
+- Diagrams  
+- Assign todos for this sprint
+
+#### Notes:
+
+- Reviewed last week’s workflow:  
+  - Things will get better as we get into the rhythm of things  
+  - We should ask about logs for non-code work at the meeting  
+  - Reminder to everyone to properly comment on and review PRs  
+  - Decided we are moving our meetings to Tuesdays at 12:30 \- Joe will book a room every week  
+  - Nash is moving our groupchat to a Discord Server  
+- Reviewed Proposal feedback  
+  - Most of it is meh, the only important one to keep in mind is that the instructors are iffy on Canvas LTI integration  
+- Reviewed system and made sure everyone knows what is going on  
+  - FastAPI and system arch \- Nash should review since he wasn’t there on Friday  
+  - Pytest & CI \- ian mentioned we can run our CI tests on more OSs, maybe something to think about for future  
+  - Venv, Docker and Pyproject \- Joe walked everyone through the dockerfile, but there is more investigation/understanding to be done here  
+  - DB design \- Ian shared some core concepts of the current DB design, group discussed how scores will fit in  
+- Note on diagrams  
+  - For future: everyone should save diagrams as `diagram.drawio.png`, which saves XML diagram setup directly to the png and makes them easy to edit for other people  
+- Assigned initial todos for this sprint. Overall:  
+  - Prioritize database setup  
+  - Improve devops/environment setup  
+  - Implement simple API endpoints
+
+#### Actionables
+
+- All: move system requirements into project board as issues
+- Ian: look into venv/docker  
+- Ian: DB schema \+ postgres setup  
+- Joe: GPS / location check endpoint  
+- Joe: at least 1 more endpoint  
+- Eric: Coverage reporting  
+- Eric: start looking into FAST API signup/login and OAuth tools?  
+- Nash: Pyproject.toml  
+- Nash: API endpoint
+
+---
+
+### 🏫 Thurs, Oct 8
+
+**Time:**  12:30-2 PM  
+**Location:** In Lecture Check-in 
+**Attendees:** Ian, Joe, Eric, Nash
+
+#### Agenda
+- TA Check-in
+
+#### Notes
+1st check-in with TA Sadia
+- Reviewed proposal feedback
+  - asked for +1 mark on tech stack choice
+  - discussed reset/shuffle
+  - discussed Python image processing library - Sadia wants us to choose this
+- Discussed Milestone 1 vs 2 - Sadia wants us to have a clearer idea of what our goals are by the end of this milestone
+  - She says if we make it clear in our logs that we did project management work, she will be lenient with the "2 PRs" rule for this next week (because of her specific feedback)
+  - She also says we will need *some* kind of front end in milestone 1 due to the nature of the project, even if it is super basic and ugly
+- Some team discussions of what we want to do by end of term and how to get there:
+  - basically, we want a game that works
+- everybody recognized we have a bit lower capacity rn because of Thanksgiving weekend + midterms this/next week
+
+#### Actionables
+Mostly same as before, except:
+- Ian & Nash meeting on Saturday to do planning/proj management stuff
+- Eric doing image processing research instead of login stuff
