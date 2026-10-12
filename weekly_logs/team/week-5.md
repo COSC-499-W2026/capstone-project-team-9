@@ -30,3 +30,7 @@ The team collectively reviewed all technical pull requests with two reviewers, i
 With everyone's newly merged work for this week, the system DFDs look like the same. However, Ian's database design work has caused updates to the ER diagram and visual database schema. Visual diffs can be seen in [PR #53](https://github.com/COSC-499-W2026/capstone-project-team-9/pull/53). The specific changes include new concepts of "plays", scoring and saved game state. We considered alternative relationships such as a direct connection between Clues and Games, but a more indirect connection was deemed necessary for one game to be available to multiple players (as per the requirements).
 
 With everyone's newly merged work for this week, the system architecture diagram looks the same. We are still considering specific image processing libraries based on Eric's research, and will update our "official" architecture diagrams once his research has been discussed with the whole team.
+
+---
+
+This week's team log was authored by: Ian Steyn
