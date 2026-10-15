@@ -323,3 +323,67 @@ Coming up soonish
 Mostly same as before, except:
 - Ian & Nash meeting on Saturday to do planning/proj management stuff
 - Eric doing image processing research instead of login stuff
+
+---
+
+### Sat, Oct 10
+
+**Time:** 4:30 \- 7pm  
+**Location:** Online  
+**Attendees:** Ian, Nash
+
+#### Agenda
+
+- Rewrite and specify out project requirements and timeline
+
+#### Notes:
+
+- Client question  
+  - Is skipping a question generating a new question for the user or moving the skipped question to the end of the game?
+
+#### Actionables
+
+- Nash will rewrite all issues as full sentences  
+- Ian will double-check and reformat tomorrow
+
+---
+
+## Week 6
+
+### 🔴 Tues, Oct 13
+
+**Time:** 12:30-2  
+**Location:** COM 318  
+**Attendees:** all
+
+#### Agenda:
+
+- New reqs and timeline  
+- Pick stuff
+
+#### Notes:
+
+- Discussed week 4 graded feedback  
+- Talked through the new requirements and timeline doc  
+- Everyone is super busy with midterms right now so we’re not gonna get as much as we might want accomplished this week  
+- Had some trouble defining what was highest priority  
+  - Joe says: work on all task areas simultaneously, so none of them are rushed  
+  - Ian says: work on more focused areas together, so we can iterate on a basic design  
+  - Compromise: work on more focused areas, but acknowledge that a task will sometimes have to be started significantly *before* its “milestone week” \- eg Courses should be started before Week 10
+
+#### Actionables:
+
+- Everyone:
+  - put stuff in project board under their parent issues
+- Eric:  
+  - Coverage testing  
+  - image proc / answer check  
+- Ian:   
+  - Docker cleanup, synthesize pyproject.toml with docker  
+  - Postgres setup  
+- Nash:  
+  - Seed data  
+  - Create user endpoint with auth  
+- Joe:  
+  - Basic “Start game \+ start play”  
+  - Maybe: Look into [vue.js](http://vue.js)/basic front-end setup: something to make requests to backend
