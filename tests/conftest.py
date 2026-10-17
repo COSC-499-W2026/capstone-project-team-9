@@ -1,5 +1,15 @@
 import pytest
+import os
+import sys
 
+if os.getenv("RUNNING_IN_DOCKER") != "true":
+    print(
+        "\n🛑 STOP! You are trying to run tests on your host machine.\n" +
+        "Tests must be run inside Docker to ensure environment parity.\n" +
+        "👉 Run this instead:\n\n" +
+        "    docker compose exec backend pytest\n"
+    )
+    sys.exit(1)
 
 @pytest.fixture
 def sample_data():
