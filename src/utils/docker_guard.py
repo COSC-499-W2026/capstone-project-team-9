@@ -7,7 +7,7 @@ import os
 import sys
 import textwrap
 
-def docker_guard(program : str, alt_command : str) -> None:
+def _docker_guard(program : str, alt_command : str) -> None:
     """
     If a program is running outside Docker, stops it,
     prints a warning and suggests alternate command.
