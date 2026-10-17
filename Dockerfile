@@ -4,6 +4,7 @@ WORKDIR /app
 
 # install the project and test dependencies
 COPY pyproject.toml .
+COPY src/ ./src/
 RUN pip install --no-cache-dir ".[test]"
 
 COPY . .
