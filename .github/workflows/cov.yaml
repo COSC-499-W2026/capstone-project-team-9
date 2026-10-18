@@ -30,7 +30,7 @@ jobs:
       - name: Build coverage report
         shell: bash
         run: |
-          pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=<YOUR_APP_FOLDER> tests/ | tee pytest-coverage.txt
+          pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=src tests/ | tee pytest-coverage.txt
 
       - name: Pytest coverage comment
         uses: MishaKav/pytest-coverage-comment@main
