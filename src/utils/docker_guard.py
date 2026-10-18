@@ -8,8 +8,8 @@ import sys
 import textwrap
 
 
-def docker_guard_tests() -> None:
-    """Stops tests from being run outside of Docker."""
+def ensure_tests_running_in_docker() -> None:
+    """Stops the program if tests are being run outside of Docker."""
     _docker_guard("tests", "docker compose exec backend pytest")
 
 
