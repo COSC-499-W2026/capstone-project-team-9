@@ -1,7 +1,7 @@
 import pytest
-from utils.docker_guard import docker_guard_tests
+from utils.docker_guard import ensure_tests_running_in_docker
 
-docker_guard_tests()
+ensure_tests_running_in_docker()
 
 @pytest.fixture
 def sample_data():
