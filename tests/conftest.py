@@ -1,15 +1,7 @@
 import pytest
-import os
-import sys
+from utils.docker_guard import docker_guard_tests
 
-if os.getenv("RUNNING_IN_DOCKER") != "true":
-    print(
-        "\n🛑 STOP! You are trying to run tests on your host machine.\n" +
-        "Tests must be run inside Docker to ensure environment parity.\n" +
-        "👉 Run this instead:\n\n" +
-        "    docker compose exec backend pytest\n"
-    )
-    sys.exit(1)
+docker_guard_tests()
 
 @pytest.fixture
 def sample_data():
