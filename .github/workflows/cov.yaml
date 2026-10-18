@@ -24,8 +24,9 @@ jobs:
         run: |
           docker compose exec -T backend pytest --junitxml=pytest.xml | tee pytest-coverage.txt
 
-      - name: Write coverage summary
+      - name: Pytest coverage comment
         if: always()
-        run: |
-          echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
-          docker compose exec -T backend coverage report -m --format=markdown >> $GITHUB_STEP_SUMMARY
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          pytest-coverage-path: pytest-coverage.txt
+          junitxml-path: pytest.xml
