@@ -13,6 +13,11 @@ def ensure_tests_running_in_docker() -> None:
     _docker_guard("tests", "docker compose exec backend pytest")
 
 
+def ensure_app_running_in_docker() -> None:
+    """Stops the program if the app is being run outside of Docker."""
+    _docker_guard("the app", "docker compose up")
+
+
 def _docker_guard(program : str, alt_command : str) -> None:
     """
     If a program is running outside Docker, stops it,
