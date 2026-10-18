@@ -24,10 +24,6 @@ jobs:
         run: |
           docker compose exec -T backend pytest --junitxml=pytest.xml | tee pytest-coverage.txt
 
-      - name: Copy JUnit report out of the container
-        if: always()
-        run: docker compose exec -T backend cat pytest.xml > pytest.xml
-
       - name: Write coverage summary
         if: always()
         run: |
