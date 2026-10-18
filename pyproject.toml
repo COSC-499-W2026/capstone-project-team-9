@@ -5,15 +5,16 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "capstone-project-team-9"
 version = "0.1.0"
+requires-python = ">=3.12"
 dependencies = [
-    "fastapi[standard]",
+    "fastapi[standard]>=0.143.3",
 ]
 
 [project.optional-dependencies]
 test = [
-    "pytest",
-    "pytest-cov",
-    "pytest-mock",
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+    "pytest-mock>=3.17.0",
 ]
 
 [tool.pytest.ini_options]
