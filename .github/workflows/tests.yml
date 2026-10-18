@@ -17,10 +17,9 @@ jobs:
           python-version: "3.12"
           cache: pip
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install ".[test]"
+      - name: Build Docker Image
+        run: docker compose build
 
-      - name: Run tests
-        run: pytest --cov=. --cov-report=term-missing
+      - name: Run Tests in Docker
+        run: |
+          docker compose run --rm backend pytest --cov=src --cov-report=term-missing
