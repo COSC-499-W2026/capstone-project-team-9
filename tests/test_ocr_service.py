@@ -3,8 +3,8 @@ from pathlib import Path
 import cv2
 import numpy as np
 import pytest
-from src.services import ocr_service
-from src.services.ocr_service import _extract_codes, matches_room, read_room_codes
+from services import ocr_service
+from services.ocr_service import _extract_codes, matches_room, read_room_codes
 
 # Adjust to wherever your preset photos live. Files are named by room code, e.g. COM301.jpeg
 SUBMISSIONS_DIR = Path(__file__).parent / "db" / "submissions"
