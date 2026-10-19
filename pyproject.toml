@@ -20,4 +20,4 @@ test = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
-addopts = "-v"
+addopts = "-v --cov=src --cov-report=term-missing:skip-covered"
