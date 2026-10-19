@@ -9,3 +9,4 @@ dist/
 pytest.xml
 pytest-coverage.txt
 .coverage
+build/
