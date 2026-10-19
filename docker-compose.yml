@@ -33,7 +33,7 @@ services:
       - "5432:5432"  # Allows you to inspect the DB locally via pgAdmin/DBeaver if you want
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql  # <-- The magic auto-init line
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql  # automatically initializes the database on first spin-up
 
 volumes:
   postgres_data:
