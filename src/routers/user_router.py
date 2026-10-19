@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status
 
-from src.schemas.user_schema import UserCreate, UserResponse
-from src.services.user_service import register_user
+from schemas.user_schema import UserCreate, UserResponse
+from services.user_service import register_user
 
 router = APIRouter(prefix="/users", tags=["users"])
 

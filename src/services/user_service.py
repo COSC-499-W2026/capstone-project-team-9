@@ -1,7 +1,7 @@
 import hashlib
 import secrets
 
-from src.schemas.user_schema import UserCreate
+from schemas.user_schema import UserCreate
 
 users: list[dict] = []
 _next_user_id = 1

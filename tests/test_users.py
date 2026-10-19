@@ -1,8 +1,8 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from src.main import app
-from src.services.user_service import clear_users
+from main import app
+from services.user_service import clear_users
 
 client = TestClient(app)
 
