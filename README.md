@@ -24,6 +24,7 @@ This repo contains the source code for Team 9's Capstone Software Engineering pr
 - [Run unit tests](#run-unit-tests)
 - [Poke around in the container](#poke-around-in-the-container)
 - [Make your IDE happy with a Venv](#make-your-ide-happy-with-a-venv)
+- [Inspect the database](#inspect-the-database)
 
 > [!IMPORTANT]
 > #### Using Docker
@@ -116,6 +117,39 @@ source .venv/bin/activate
 python -m pip install e ".[test]"
 ```
 - Rerun this every now and then if VS Code gives you weird import errors
+
+---
+
+### Initialize the Database
+
+The database will _**initialize automatically**_ when you run `docker compose up`. Once the database container is initialized for the first time, the data inside will be persistent every time you spin it up.
+
+If you need to reset it, run:
+```
+docker compose down -v 
+```
+- This stops all containers and DELETES the data volume - meaning all data in the database is wiped
+- then just run `docker compose up` again to re-initialize it!
+
+---
+
+### Inspect the Database
+
+To enter an interactive Postgres session, run:
+```
+docker compose exec db psql -U <your-user-name> -d language_game_db
+```
+- Replace `<your-user-name>` with the username you set in `.env`
+
+Some postgres commands you can run in there:
+- List all tables: `\dt`
+- Get details of a table: `\d "TableName"`
+
+You can also run SQL commands, like the following (but unless it's for setup/testing purposes, you should probably stick to queries (i.e. `SELECT`) only):
+```SQL
+INSERT INTO "Language" (name) VALUES ('Japanese');
+SELECT * FROM "Language";
+```
 
 ---
 
