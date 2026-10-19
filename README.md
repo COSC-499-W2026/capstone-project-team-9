@@ -65,6 +65,7 @@ Docs: http://127.0.0.1:8000/docs
 Run the test suite (while the container is running):
 ```
 docker compose exec backend pytest
+docker compose exec frontend npm test
 ```
 If you only want to run a specific test file, just add the relative filepath from `tests/` to the end of the command above.
 

@@ -22,4 +22,8 @@ jobs:
 
       - name: Run Tests in Docker
         run: |
-          docker compose run --rm backend python -m pytest --cov=src --cov-report=term-missing
+          docker compose run --rm backend pytest --cov=src --cov-report=term-missing
+
+            - name: Run Frontend Tests in Docker
+        run: |
+          docker compose run --rm frontend sh -c "npm ci && npm test"
