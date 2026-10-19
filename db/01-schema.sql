@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS "User" (
 	"email" TEXT NOT NULL UNIQUE,
 	"password" TEXT NOT NULL,
 	"role" TEXT NOT NULL DEFAULT 'student' CHECK("role" IN ('student', 'instructor', 'admin')),
-	"created_at" TIMESTAMPTZ NOT NULL,
+	"created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 	PRIMARY KEY("id")
 );
 
@@ -41,8 +41,8 @@ CREATE TABLE IF NOT EXISTS "Target" (
 	"name" TEXT NOT NULL UNIQUE,
 	"image" BYTEA NOT NULL,
 	"creator_id" INTEGER,
-	"created_at" TIMESTAMPTZ NOT NULL,
-	"updated_at" TIMESTAMPTZ NOT NULL,
+	"created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+	"updated_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 	PRIMARY KEY("id")
 );
 
@@ -53,8 +53,8 @@ CREATE TABLE IF NOT EXISTS "Clue" (
 	"language_id" INTEGER NOT NULL,
 	"target_id" INTEGER NOT NULL,
 	"creator_id" INTEGER,
-	"created_at" TIMESTAMPTZ NOT NULL,
-	"updated_at" TIMESTAMPTZ NOT NULL,
+	"created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+	"updated_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 	PRIMARY KEY("id")
 );
 
@@ -66,8 +66,8 @@ CREATE TABLE IF NOT EXISTS "Game" (
 	"due_at" TIMESTAMPTZ,
 	"course_id" INTEGER,
 	"creator_id" INTEGER,
-	"created_at" TIMESTAMPTZ NOT NULL,
-	"updated_at" TIMESTAMPTZ NOT NULL,
+	"created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+	"updated_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 	PRIMARY KEY("id")
 );
 
