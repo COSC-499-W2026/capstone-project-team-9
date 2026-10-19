@@ -8,6 +8,9 @@ version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.143.3",
+    "easyocr>=1.7.2",
+    "opencv-python-headless",
+    "numpy",
 ]
 
 [project.optional-dependencies]
