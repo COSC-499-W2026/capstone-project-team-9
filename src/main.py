@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from utils.docker_guard import ensure_app_running_in_docker
 
-from routers import health, location_router
+from routers import health, location_router, user_router
 
 
 @asynccontextmanager
@@ -31,3 +31,8 @@ app.add_middleware(
 
 app.include_router(health.router)
 app.include_router(location_router.router)
+app.include_router(user_router.router)
+
+@app.get("/")
+def root():
+    return {"message": "Language Game API is running"}
