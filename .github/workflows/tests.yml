@@ -22,4 +22,4 @@ jobs:
 
       - name: Run Tests in Docker
         run: |
-          docker compose run --rm backend pytest --cov=src --cov-report=term-missing
+          docker compose run --rm backend python -m pytest --cov=src --cov-report=term-missing
