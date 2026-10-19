@@ -24,6 +24,7 @@ This repo contains the source code for Team 9's Capstone Software Engineering pr
 - [Run unit tests](#run-unit-tests)
 - [Poke around in the container](#poke-around-in-the-container)
 - [Make your IDE happy with a Venv](#make-your-ide-happy-with-a-venv)
+- [Initialize the database](#initialize-the-database)
 - [Inspect the database](#inspect-the-database)
 
 > [!IMPORTANT]
