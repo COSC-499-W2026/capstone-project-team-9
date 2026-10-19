@@ -7,11 +7,11 @@ import numpy as np
 
 MAX_LONG_SIDE_PX = 1600
 FAR_MAX_LONG_SIDE_PX = 2560  # EasyOCR's own default canvas size
-FAR_OPTIONS = {"mag_ratio": 2.0, "min_size": 10}  # magnify, and keep small text boxes
+FAR_OPTIONS = {"min_size": 10}  # keep small text boxes; the image is already upscaled
 ALLOWLIST = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 ROOM_CODE_PATTERN = re.compile(r"[A-Z]{3}\d{3,4}")  # COM301, EME0050
 CODE_LENGTHS = (6, 7)
-MAX_UPSCALE = 4  # don't blow tiny images up more than this
+MAX_UPSCALE = 1  # don't blow tiny images up more than this
 
 # Common OCR confusions, applied by position (first 3 chars are letters, the rest digits)
 TO_LETTER = str.maketrans("012568", "OIZSGB")
