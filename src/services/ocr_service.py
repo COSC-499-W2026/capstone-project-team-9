@@ -12,7 +12,7 @@ CODE_LENGTHS = (6, 7)
 
 # Common OCR confusions, applied by position (first 3 chars are letters, the rest digits)
 TO_LETTER = str.maketrans("012568", "OIZSGB")
-TO_DIGIT = str.maketrans("OQDILZSGB", "000011256")
+TO_DIGIT = str.maketrans("OQDILZSGB", "000112568")
 
 
 @lru_cache(maxsize=1)
