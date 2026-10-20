@@ -387,3 +387,43 @@ Mostly same as before, except:
 - Joe:  
   - Basic “Start game \+ start play”  
   - Maybe: Look into [vue.js](http://vue.js)/basic front-end setup: something to make requests to backend
+
+---
+
+## Week 7
+
+### 🔴 Tues, Oct. 20
+
+**Time:** 12:30 \- 1:30  
+**Location:** EME 2248  
+**Attendees:** all
+
+#### Agenda
+- Review last week’s additions, make sure everyone is on the same page  
+- Assign this week’s tasks  
+- Small PRs  
+- CI broken
+
+#### Notes
+- Discussed everyone’s additions from last week: the new Vue frontend, database container, coverage reporting, frontend tests, OCR, and create user endpoint  
+- Discussed small PRs and how we can make things easier for ourselves \- recognized that reviewing also takes time and is part of the process  
+- Considered adding more todos for everyone, but decided to focus on doing what is on our todo-list well  
+- Lots of blockers from database not being fully ready so that is an absolute priority this week  
+- Joe fixed the CI thing in meeting lol
+
+#### Actionables
+- Eric  
+  - Scene checker \- we agreed this is high priority rn  
+  - OCR followups  
+  - combine coverage testing with main testing workflow  
+- Ian  
+  - Separate frontend from backend  
+  - Seed data  
+  - Data models  
+- Joe  
+  - GET endpoints for Languages, difficulties, game length  
+  - Start game endpoint  
+- Nash  
+  - Improved Password Hashing  
+  - Refactoring User Endpoints  
+  - Front end connection for user (potentially)
