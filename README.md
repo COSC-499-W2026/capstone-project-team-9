@@ -95,7 +95,7 @@ docker compose exec backend bash
 > In _this_ project:
 > - you do not need a venv to run the app or tests
 > - you should not use a venv to run the app or tests
->   - If you do so accidentally, the [docker_guard](./src/utils/docker_guard.py) should stop you
+>   - If you do so accidentally, the [docker_guard](./src/core/docker_guard.py) should stop you
 > 
 > But you _should_ use a venv...
 > - ...to keep your code editor and linter happy! It's basically a way of telling VS Code what packages and Python version you are using so it can give you helpful tooltips and not freak out about import errors.
@@ -170,7 +170,7 @@ SELECT * FROM "Language";
 > │   └── ...          
 > ├── src                     # Source files (alternatively `app`)
 > ├── tests                   # Automated tests 
-> ├── utils                   # Utility files
+> ├── core                   # Utility files
 > └── README.md
 > ```
 > 
