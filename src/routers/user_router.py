@@ -3,13 +3,9 @@ from fastapi import APIRouter, HTTPException, status
 from schemas.user_schema import UserCreate, UserResponse
 from services.user_service import register_user
 
-router = APIRouter(prefix="/users", tags=["users"])
+router = APIRouter(prefix="/user", tags=["user"])
 
-@router.post(
-    "/register",
-    response_model=UserResponse,
-    status_code=status.HTTP_201_CREATED
-)
+@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 def create_user(user_data: UserCreate):
     try:
         return register_user(user_data)

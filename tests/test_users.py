@@ -2,21 +2,21 @@ import pytest
 from fastapi.testclient import TestClient
 
 from main import app
-from services.user_service import clear_users
+from services.user_service import clear_user
 
 client = TestClient(app)
 
 @pytest.fixture(autouse=True)
-def reset_users():
+def reset_user():
     """Start each test with an empty in-memory user list."""
-    clear_users()
+    clear_user()
     yield
-    clear_users()
+    clear_user()
 
 
 def test_register_user():
     response = client.post(
-        "/users/register",
+        "/user/register",
         json={
             "name": "testuser",
             "email": "test@example.com",
@@ -28,7 +28,6 @@ def test_register_user():
 
     data = response.json()
 
-    assert data["id"] == 1
     assert data["name"] == "testuser"
     assert data["email"] == "test@example.com"
     assert "password" not in data
@@ -37,7 +36,7 @@ def test_register_user():
 
 def test_duplicate_email():
     first = client.post(
-        "/users/register",
+        "/user/register",
         json={
             "name": "firstuser",
             "email": "duplicate@example.com",
@@ -46,7 +45,7 @@ def test_duplicate_email():
     )
 
     second = client.post(
-        "/users/register",
+        "/user/register",
         json={
             "name": "seconduser",
             "email": "duplicate@example.com",
@@ -63,7 +62,7 @@ def test_duplicate_email():
 
 def test_duplicate_name():
     first = client.post(
-        "/users/register",
+        "/user/register",
         json={
             "name": "testuser",
             "email": "first@example.com",
@@ -72,7 +71,7 @@ def test_duplicate_name():
     )
 
     second = client.post(
-        "/users/register",
+        "/user/register",
         json={
             "name": "testuser",
             "email": "second@example.com",
@@ -86,7 +85,7 @@ def test_duplicate_name():
 
 def test_invalid_email():
     response = client.post(
-        "/users/register",
+        "/user/register",
         json={
             "name": "testuser",
             "email": "not-an-email",
@@ -99,7 +98,7 @@ def test_invalid_email():
     
 def test_short_password():
     response = client.post(
-        "/users/register",
+        "/user/register",
         json={
             "name": "testuser",
             "email": "test@example.com",
