@@ -3,8 +3,8 @@ import secrets
 
 from schemas.user_schema import UserCreate
 
-users: list[dict] = []
-_next_user_id = 1
+user: list[dict] = []
+
 
 
 def hash_password(password: str) -> str:
@@ -22,32 +22,26 @@ def hash_password(password: str) -> str:
 
 
 def register_user(user_data: UserCreate) -> dict:
-    global _next_user_id
     normalized_email = str(user_data.email).lower()
 
-    for user in users:
+    for existing_user in user:
         if (
-            user["name"].lower() == user_data.name.lower()
-            or user["email"].lower() == normalized_email
+            existing_user["name"].lower() == user_data.name.lower()
+            or existing_user["email"].lower() == normalized_email
         ):
             raise ValueError("Name or email is already registered")
 
     new_user = {
-        "id": _next_user_id,
         "name": user_data.name,
         "email": normalized_email,
         "hashed_password": hash_password(user_data.password)
     }
 
-    users.append(new_user)
-    _next_user_id += 1
+    user.append(new_user)
 
     return new_user.copy()
 
 
-def clear_users() -> None:
+def clear_user() -> None:
     """Reset temporary data for testing."""
-    global _next_user_id
-
-    users.clear()
-    _next_user_id = 1
+    user.clear()
