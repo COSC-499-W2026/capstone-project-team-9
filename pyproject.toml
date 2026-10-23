@@ -8,6 +8,7 @@ version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.143.3",
+    "sqlmodel>=0.0.48",
     "easyocr>=1.7.2",
     "opencv-python-headless>=4.10.0.84",
     "numpy>=1.26.4",
