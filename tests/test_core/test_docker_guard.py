@@ -1,5 +1,5 @@
 import pytest
-from utils.docker_guard import _docker_guard
+from core.docker_guard import _docker_guard
 
 def test_docker_guard_exits_outside(monkeypatch):
     monkeypatch.delenv("RUNNING_IN_DOCKER", raising=False)
