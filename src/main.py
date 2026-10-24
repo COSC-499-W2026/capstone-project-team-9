@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from contextlib import asynccontextmanager
-from core.docker_guard import ensure_app_running_in_docker
+import os
 
+from core.docker_guard import ensure_app_running_in_docker
 from routers import health, location_router, user_router
 
 
@@ -23,7 +23,7 @@ app = FastAPI(
 #this section allows vue (or whatever frontend we choose) to call the API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://localhost:5173"],#this is the port that vue uses
+    allow_origins=[os.getenv("FRONTEND_URL")],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
