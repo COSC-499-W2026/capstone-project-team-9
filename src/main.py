@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from contextlib import asynccontextmanager
-from utils.docker_guard import ensure_app_running_in_docker
+from core.docker_guard import ensure_app_running_in_docker
 
 from routers import health, location_router, user_router
 
