@@ -169,7 +169,7 @@ SELECT * FROM "Language";
 > │   └── ...          
 > ├── src                     # Source files (alternatively `app`)
 > ├── tests                   # Automated tests 
-> ├── core                   # Utility files
+> ├── utils                   # Utility files
 > └── README.md
 > ```
 > 
