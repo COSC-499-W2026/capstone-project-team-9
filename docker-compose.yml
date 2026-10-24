@@ -14,7 +14,7 @@ services:
     image: node:22-slim
     working_dir: /app
     volumes:
-      - ./src/frontend:/app
+      - ./app/frontend:/app
       - /app/node_modules
     ports:
       - "5173:5173"
