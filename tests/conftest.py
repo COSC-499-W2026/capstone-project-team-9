@@ -1,5 +1,5 @@
 import pytest
-from utils.docker_guard import ensure_tests_running_in_docker
+from core.docker_guard import ensure_tests_running_in_docker
 
 ensure_tests_running_in_docker()
 
