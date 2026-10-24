@@ -16,7 +16,7 @@ def reset_user():
 
 def test_register_user():
     response = client.post(
-        "/user/register",
+        "/users/register",
         json={
             "name": "testuser",
             "email": "test@example.com",
@@ -36,7 +36,7 @@ def test_register_user():
 
 def test_duplicate_email():
     first = client.post(
-        "/user/register",
+        "/users/register",
         json={
             "name": "firstuser",
             "email": "duplicate@example.com",
@@ -45,7 +45,7 @@ def test_duplicate_email():
     )
 
     second = client.post(
-        "/user/register",
+        "/users/register",
         json={
             "name": "seconduser",
             "email": "duplicate@example.com",
@@ -62,7 +62,7 @@ def test_duplicate_email():
 
 def test_duplicate_name():
     first = client.post(
-        "/user/register",
+        "/users/register",
         json={
             "name": "testuser",
             "email": "first@example.com",
@@ -71,7 +71,7 @@ def test_duplicate_name():
     )
 
     second = client.post(
-        "/user/register",
+        "/users/register",
         json={
             "name": "testuser",
             "email": "second@example.com",
@@ -85,7 +85,7 @@ def test_duplicate_name():
 
 def test_invalid_email():
     response = client.post(
-        "/user/register",
+        "/users/register",
         json={
             "name": "testuser",
             "email": "not-an-email",
@@ -98,7 +98,7 @@ def test_invalid_email():
     
 def test_short_password():
     response = client.post(
-        "/user/register",
+        "/users/register",
         json={
             "name": "testuser",
             "email": "test@example.com",
