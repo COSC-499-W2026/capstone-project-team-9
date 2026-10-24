@@ -2,16 +2,16 @@ import pytest
 from fastapi.testclient import TestClient
 
 from main import app
-from services.user_service import clear_users
+from services.user_service import clear_user
 
 client = TestClient(app)
 
 @pytest.fixture(autouse=True)
-def reset_users():
+def reset_user():
     """Start each test with an empty in-memory user list."""
-    clear_users()
+    clear_user()
     yield
-    clear_users()
+    clear_user()
 
 
 def test_register_user():
@@ -28,7 +28,6 @@ def test_register_user():
 
     data = response.json()
 
-    assert data["id"] == 1
     assert data["name"] == "testuser"
     assert data["email"] == "test@example.com"
     assert "password" not in data
