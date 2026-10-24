@@ -6,7 +6,9 @@ services:
     volumes:
       - .:/app
     environment:
-      - RUNNING_IN_DOCKER=true
+      RUNNING_IN_DOCKER: true
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      PYTHONPATH: /app/src
 
   frontend:
     image: node:22-slim
@@ -17,7 +19,7 @@ services:
     ports:
       - "5173:5173"
     environment:
-      - BACKEND_URL=${BACKEND_URL}
+      BACKEND_URL: ${BACKEND_URL}
     command: sh -c "npm install && npm run dev"
     depends_on:
       - backend
@@ -33,7 +35,6 @@ services:
       - "5432:5432"  # Allows you to inspect the DB locally via pgAdmin/DBeaver if you want
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql  # automatically initializes the database on first spin-up
 
 volumes:
   postgres_data:
