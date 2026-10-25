@@ -8,9 +8,11 @@ on:
 
 jobs:
   backend-tests:
+    name: Backend Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
 
       - name: Build backend image
         run: docker compose build backend
@@ -20,9 +22,11 @@ jobs:
           docker compose run --rm backend pytest --cov=src --cov-report=term-missing
 
   frontend-tests:
+    name: Frontend Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
 
       - name: Build frontend image
         run: docker compose build frontend
