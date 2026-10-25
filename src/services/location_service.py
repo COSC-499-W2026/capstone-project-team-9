@@ -18,6 +18,10 @@ class LocationResult:
     allowed: bool
     message: str
 
+class TargetLocation:
+    latitude: float
+    longitude: float
+    radius_m: float
 
 def is_within_radius(lat1: float, lon1: float, lat2: float, lon2: float, radius_m: float) -> bool:
     """True if point 1 is within radius_m metres of point 2 (haversine distance)."""
@@ -32,5 +36,11 @@ def verify_location(lat: float, lon: float) -> LocationResult:
     """Return allowed/blocked for the player's coordinates."""
     campus = get_campus_location()
     if is_within_radius(lat, lon, campus.latitude, campus.longitude, campus.radius_m):
+        return LocationResult(True, ALLOWED_MESSAGE)
+    return LocationResult(False, BLOCKED_MESSAGE)
+
+def verify_location_with_target(lat: float, lon: float, target: TargetLocation) -> LocationResult:
+    """Return allowed/blocked for the player's coordinates against a target location."""
+    if is_within_radius(lat, lon, target.latitude, target.longitude, target.radius_m):
         return LocationResult(True, ALLOWED_MESSAGE)
     return LocationResult(False, BLOCKED_MESSAGE)
