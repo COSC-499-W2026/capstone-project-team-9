@@ -5,6 +5,7 @@ export default defineConfig({
   plugins: [vue()],
   test: {
     environment: 'jsdom',
+    include: ['tests/frontend/**/*.{test,spec}.{js,ts}'],
   },
   server: {
     host: true,

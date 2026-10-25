@@ -19,6 +19,7 @@ services:
     volumes:
       - ./app/frontend:/app
       - /app/node_modules
+      - ./tests/frontend:/app/tests/frontend
     ports:
       - "5173:5173"
     environment:
