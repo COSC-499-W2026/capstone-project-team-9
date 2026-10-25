@@ -2,7 +2,7 @@ from pathlib import Path
 from sqlmodel import SQLModel
 import models  # (registers the table models)
 
-EXPECTED_TABLES = {"language"}
+EXPECTED_TABLES = {"language", "difficulty"}
 
 def test_all_table_models_are_registered():
     assert EXPECTED_TABLES <= set(SQLModel.metadata.tables)
