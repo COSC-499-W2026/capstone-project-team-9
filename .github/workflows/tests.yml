@@ -18,8 +18,7 @@ jobs:
         run: docker compose build backend
 
       - name: Run backend tests
-        run: |
-          docker compose run --rm backend pytest --cov=src --cov-report=term-missing
+        run: docker compose run --rm backend pytest
 
   frontend-tests:
     name: Frontend Tests
