@@ -7,18 +7,26 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  backend-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build Docker Image
-        run: docker compose build
+      - name: Build backend image
+        run: docker compose build backend
 
-      - name: Run Tests in Docker
+      - name: Run backend tests
         run: |
           docker compose run --rm backend pytest --cov=src --cov-report=term-missing
 
-      - name: Run Frontend Tests in Docker
+  frontend-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build frontend image
+        run: docker compose build frontend
+
+      - name: Run frontend tests
         run: |
           docker compose run --rm frontend sh -c "npm ci && npm test"
