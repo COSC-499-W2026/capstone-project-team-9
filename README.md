@@ -42,7 +42,7 @@ This repo contains the source code for Team 9's Capstone Software Engineering pr
 
 ### Run the app
 
-Build (or rebuild) the container and run the app:
+Build (or rebuild) the containers and run the app:
 ```bash
 docker compose up --build
 ```
@@ -62,9 +62,11 @@ Docs: http://127.0.0.1:8000/docs
 
 ### Run unit tests
 
-Run the test suite (while the container is running):
+Run the test suite (while the containers are running):
 ```
 docker compose exec backend pytest
+```
+```
 docker compose exec frontend npm test
 ```
 If you only want to run a specific test file, just add the relative filepath from `tests/` to the end of the command above.
