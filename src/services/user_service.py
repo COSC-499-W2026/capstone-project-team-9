@@ -1,10 +1,12 @@
 import hashlib
 import secrets
 
+from models.user_model import User
+from repositories import user_repo
+from repositories.user_repo import DuplicateUserError
 from schemas.user_schema import UserCreate
 
 users: list[dict] = []
-
 
 
 def hash_password(password: str) -> str:
@@ -21,27 +23,19 @@ def hash_password(password: str) -> str:
     return f"{salt.hex()}:{password_hash.hex()}"
 
 
-def register_user(user_data: UserCreate) -> dict:
-    normalized_email = str(user_data.email).lower()
+def register_user(user_data: UserCreate) -> User:
+    email = str(user_data.email).lower()
 
-    for user in users:
-        if (
-            user["name"].lower() == user_data.name.lower()
-            or user["email"].lower() == normalized_email
-        ):
-            raise ValueError("Name or email is already registered")
+    if user_repo.get_user_by_name(user_data.name):
+        raise DuplicateUserError("Username already exists.")
+    
+    if user_repo.get_user_by_email(email):
+        raise DuplicateUserError("Email is already registered.")
 
-    new_user = {
-        "name": user_data.name,
-        "email": normalized_email,
-        "hashed_password": hash_password(user_data.password)
-    }
+    hashed_password = hash_password(user_data.password)
 
-    users.append(new_user)
-
-    return new_user.copy()
-
-
-def clear_user() -> None:
-    """Reset temporary data for testing."""
-    users.clear()
+    return user_repo.create_user(
+        name=user_data.name,
+        email=email,
+        hashed_password=hashed_password,
+    )
