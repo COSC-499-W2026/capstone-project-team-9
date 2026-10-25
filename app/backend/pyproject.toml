@@ -23,6 +23,6 @@ test = [
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests/backend"] # this path may look incorrect, but it is correct inside the Docker container!
 pythonpath = ["src"]
 addopts = "-v --cov=src --cov-report=term-missing:skip-covered"
