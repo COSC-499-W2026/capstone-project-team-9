@@ -16,7 +16,7 @@ def test_target_at_target_location():
 
 def test_target_inside_target_radius():
     """Player is inside the target radius."""
-    result = verify_location_with_target(49.3561, -123.3501, TARGET)
+    result = verify_location_with_target(49.2561, -123.2501, TARGET)
     assert result.allowed
     assert result.message == ALLOWED_MESSAGE
 
@@ -24,8 +24,7 @@ def test_target_inside_target_radius():
 @pytest.mark.parametrize(
     "lat, lon",
     [
-        (49.256, -123.250),  # at target
-        (49.2561, -123.2501),  # inside radius
+        (49.257, -123.251),  # outside the 100 m radius
         (0, 0),  # outside radius
     ],
 )
@@ -43,4 +42,3 @@ def test_target_larger_radius():
     assert result.allowed is False
     assert result_wide.allowed is True
  
-
