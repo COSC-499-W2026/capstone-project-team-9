@@ -1,0 +1,35 @@
+name: CI
+# CI = Continuous Integration
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend-tests:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build backend image
+        run: docker compose build backend
+
+      - name: Run backend tests
+        run: docker compose run --rm backend pytest
+
+  frontend-tests:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build frontend image
+        run: docker compose build frontend
+
+      - name: Run frontend tests
+        run: docker compose run --rm frontend sh -c "npm ci && npm test"

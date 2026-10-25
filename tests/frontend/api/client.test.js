@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { get, post } from '../../src/api/client'
+import { get, post } from '@/api/client'
 
 function mockFetch(response) {
   const fn = vi.fn().mockResolvedValue(response)

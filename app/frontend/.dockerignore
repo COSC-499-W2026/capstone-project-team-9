@@ -1,0 +1,9 @@
+.venv/
+.git
+__pycache__/
+*.pyc
+.env
+.DS_Store
+docs/
+weekly_logs/
+**/node_modules

@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir ".[test]"
 # bake EasyOCR model weights into the image so nothing downloads at runtime
 RUN python -c "import easyocr; easyocr.Reader(['en'], gpu=False)"
 
-COPY . .
+COPY scripts/ ./scripts/
 
 # launch uvicorn ASGI server in container, run the app on it,
 # and bind it to port 8000 so we can access it from outside the container
