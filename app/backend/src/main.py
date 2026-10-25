@@ -4,7 +4,8 @@ from contextlib import asynccontextmanager
 import os
 
 from core.docker_guard import ensure_app_running_in_docker
-from routers import health, location_router, user_router
+
+from routers import health, location_router, user_router, game_options_router
 
 
 @asynccontextmanager
@@ -32,6 +33,7 @@ app.add_middleware(
 app.include_router(health.router)
 app.include_router(location_router.router)
 app.include_router(user_router.router)
+app.include_router(game_options_router.router)
 
 @app.get("/")
 def root():
