@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
 
-vi.mock('../../src/api/client', () => ({ post: vi.fn().mockResolvedValue({ allowed: true }) }))
+vi.mock('@/api/client', () => ({ post: vi.fn().mockResolvedValue({ allowed: true }) }))
 
-import { post } from '../../src/api/client'
-import { verifyLocation } from '../../src/api/location'
+import { post } from '@/api/client'
+import { verifyLocation } from '@/api/location'
 
 describe('verifyLocation', () => {
   it('posts the coordinates to /location/verify', async () => {
