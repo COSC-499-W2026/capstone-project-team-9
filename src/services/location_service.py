@@ -19,6 +19,7 @@ class LocationResult:
     allowed: bool
     message: str
 
+@dataclass(frozen=True)
 class TargetLocation:
     latitude: float
     longitude: float
