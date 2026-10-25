@@ -1,10 +1,9 @@
 import pytest
 
-from src.services.location_service import (
+from services.location_service import (
     ALLOWED_MESSAGE,
     WRONG_PLACE_MESSAGE,
     TargetLocation, 
-    is_within_radius,
     verify_location_with_target)
 
 TARGET = TargetLocation(latitude=49.256, longitude=-123.250, radius_m=100)
