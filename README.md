@@ -116,7 +116,7 @@ source .venv/bin/activate
 ```
 3. Install dependencies:
 ```
-python -m pip install e ".[test]"
+python -m pip install -e "./app/backend[test]" 
 ```
 - Rerun this every now and then if VS Code gives you weird import errors
 
