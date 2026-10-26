@@ -12,6 +12,7 @@ from sqlmodel import Session, SQLModel
 
 from core.db import engine, drop_db, init_db
 from seed_reference import seed_reference
+from seed_dev import seed_dev
 
 if __name__ == "__main__":
 
@@ -23,5 +24,6 @@ if __name__ == "__main__":
 
     with Session(engine) as session:
         seed_reference(session)
+        seed_dev(session)
 
     print("Database reset and seeded.")
