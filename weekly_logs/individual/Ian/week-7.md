@@ -128,13 +128,14 @@ This PR does not break anything else in the system because our regression tests 
 
 This PR applies a very small organizational change in anticipation of further upcoming improvements to the repo organization. I moved `docker_guard.py` out of `utils/` and into `core/`. It fits better there, since it is an infrastructure/core setup tool.
 
-I did this as a separate PR because TODO
+I did this as a separate PR because it could be done independently without breaking anything else.
 
 ---
 
 ## For PR [#147 Separate backend and frontend](https://github.com/COSC-499-W2026/capstone-project-team-9/pull/147)
 
 ### What I did
+
 As part of our requirement for the user to interact with our system via a mobile web interface, our system needs a frontend that is separate from our backend. At this stage in the project, only a very basic version of our frontend is needed, and was already set up last week. However, elements of our frontend and backend were entangled together in an unclean way.
 
 Therefore, in an effort to keep our project maintainable, scalable, and upholding SRP, I reorganized our codebase in a way that cleanly separates the frontend and backend, and implemented configuration code to keep our workflows the same with the new organization. In particular, I:
@@ -159,12 +160,11 @@ When I attempted to run frontend tests after relocating them, they didn't work, 
 
 ### Engineering Practices
 
->  The PR does not contain any temporary workaround because [explain adherence to long term solution or how the PR does not contain code logic]. 
-- adheres to long term solution because...
+The PR does not contain any temporary workaround and adheres to long term solution because...
 - No terminal commands were changed except for what you need to run to install dependencies in your local `venv`
-- separates test workflows as well
-- adheres to instructions given by course instructors
-- is all about planning for the future lol
+- it separates backend and frontend tests as well
+- it adheres to instructions given by course instructors
+- it is, at its core, about preparing the repo for long-term growth
 
 The PR does not contain any new functions.
 
@@ -186,10 +186,9 @@ I did the following...
 
 ### Reviews
 
-> The review by [agent or teammate's name] identified [problem]. Therefore, I did [solution]. 
+The reviesw by Eric and Joe did not identify any problems.
 
 ### Architecture Impacts
-  tests are volume mounted so that it works
 
 > Old directory structure
 > ```
@@ -230,10 +229,8 @@ I did the following...
 > - `<backend config stuff>` is files like the backend `Dockerfile`, `pyproject.toml`, etc
 > - `<frontend config stuff>` is files like `package.json`, `vite.config.js`, etc
 
-> This work is written in [existing/new file name] because [architectural design reason].
-> This work belongs in [existing/new process name] in the DFD because [architectural design reason].
->
-> TODO: maybe tweak sysarch diagram??
+Config work is written in relevant config files for reasons explained above in "Verification and Problem-Solving".
+
 
 ### Testing Receipts
 
@@ -244,34 +241,63 @@ This PR does not break anything else in the system because our regression tests 
 
 ---
 
-## NEXT
+## For PR [#158 Scripts for DB seeding](https://github.com/COSC-499-W2026/capstone-project-team-9/pull/158)
 
 ### What I did
+As part of our requirement to store user and game data, the user needs to do [enumerate sequence of actions in the system]. 
+
+> Therefore, I implemented/generated code so that [list functions supported for which intended user group].
+
+
 ### Verification and Problem-solving
+> When I reviewed the [reference specific part(s) of generated code] for this functionality, I did not find any problems with it because [explain verification approach taken]. 
+OR
+ When I reviewed the [reference specific part(s) of generated code] for this functionality, I noticed [identify problem details and why it is problematic]. Therefore, I did [explain solution taken]. 
+ (Repeat for additional problems found.)
+
 ### Engineering Practices
+> The PR does not contain any temporary workaround because [explain adherence to long term solution or how the PR does not contain code logic]. 
+
+> The PR only contains small functions that are [number of lines] long.
+
+> I did [specific steps taken] to ensure that my feature contribution does not contain any of the following:
+ - hardcoded values
+ - duplicate code
+ - dead code
+ - unnecessary function calls
+ - excessive conditional logic
+ - deep nesting
+ - high cyclomatic complexity
+ - classes/modules/functions with many unrelated responsibilities
+OR
+ By doing [explain specific steps], I found that my feature contribution contained [identify which problem from the list below]. Therefore, I did [explain solution]. 
+ (Repeat for additional problems found.) 
+ Now, I can confirm that my feature contribution does not contain any of the following:
+ - hardcoded values
+ - duplicate code
+ - dead code
+ - unnecessary function calls
+ - excessive conditional logic
+ - deep nesting
+ - high cyclomatic complexity
+ - classes/modules/functions with many unrelated responsibilities
+
 ### Reviews
+> The reviews by Joe and Eric did not identify any problems.
+
 ### Architecture Impacts
+> This work is written in [existing/new file name] because [architectural design reason].
+
+This work does not belong in a DFD.
+
 ### Testing Receipts
-
-Data receipts
-
-Updates:
-- timestamp fields autoupdate
-- TODO: add trigger for autoupdating `updated_at`
-
-This data [latitude, longitude, radius] is modeled as [data type] because [reason]. We considered alternative models such as [explain details and why you did not go with them].
-
-This data [name] uses the input validation [SQLModel] to ensure it adheres to [indicate pattern]
 
 ---
 
-For both PRs:
-- Design considerations: Should I just define/initialize the database purely in SQLModel? Is that a standard pattern; would it make it more maintainable?
-- Should I write the code for inserting starter/seed data (for testing and development) in Python/SQLModel, or separately as a seed.SQL?
-
-Considerations:
-- making `schema.sql` the source of truth is prone to drift. It means that any time we want to make updates/changes, we have to edit it there, AND in `models/`.
-
-A recommendation from Claude: split seed data into two types: reference data that every environment needs (e.g. languages, roles), and test data 
-
-Alembic keeps being mentioned by AI assistants. It's a database migration tool that lets you version the database with migration scripts. But it seems kind of like overkill for the scale of this project, and we need to move past pure devops/setup.Also in early development we would accumulate lots of alembic scripts just because we are changing the DB a lot. So not super helpful.
+## Other non-PR things I did this week
+- Project management 
+  - See: [issues I'm the author of](https://github.com/COSC-499-W2026/capstone-project-team-9/issues?q=is%3Aissue+state%3Aopen+author%3Aiansteyn), [project board table view](https://github.com/orgs/COSC-499-W2026/projects/2/views/3)
+- Updated meeting minutes 
+  - see [docs/minutes/meeting-minutes.md](https://github.com/COSC-499-W2026/capstone-project-team-9/blob/main/docs/minutes/meeting-minutes.md)
+- Thoroughly reviewed PRs
+  - see 
