@@ -11,6 +11,11 @@ def init_db() -> None:
     """Create any missing tables"""
     SQLModel.metadata.create_all(engine)
 
+def drop_db() -> None:
+    """For dev environment use only. Drops all tables. BE CAREFUL!"""
+    if os.getenv("ENV") == "development":
+        SQLModel.metadata.drop_all(engine)
+
 def get_session() -> Iterator[Session]:
     """FastAPI dependency: one DB session per request, closed afterwards."""
     with Session(engine) as session:
