@@ -52,3 +52,10 @@ def test_ocr_skipped_if_location_wrong(fake_ocr):
     assert result.message == WRONG_PLACE_MESSAGE
     assert calls == []
 
+def test_unreadable_image(fake_ocr):
+    """Test that verify_answer returns wrong for an unreadable image at the target location."""
+    calls = fake_ocr(False)
+    result = verify_answer(b"unreadable", *AT_TARGET, "room1", TARGET)
+    assert result.correct is False
+    assert result.message == WRONG_MESSAGE
+    assert calls == ["room1"]
