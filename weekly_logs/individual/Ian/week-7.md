@@ -1,5 +1,8 @@
 # Individual Log - Week 7
 
+>[!NOTE]
+> Most of this log was merged before 12 AM, I just realized I forgot to fill out a few fields and came back to do that. Sorry! The focus was, once again, on merging functional code on time first `:)`
+
 ## For PR [#142 New DB initialization process using SQLModel](https://github.com/COSC-499-W2026/capstone-project-team-9/pull/142)
 
 > associated issues:
