@@ -8,7 +8,6 @@ from schemas.user_schema import UserCreate
 
 
 def hash_password(password: str) -> str:
-    """Securely hash a password using bcrypt."""
     password_bytes = password.encode("utf-8")
 
     hashed_password = bcrypt.hashpw(
@@ -20,7 +19,6 @@ def hash_password(password: str) -> str:
 
 
 def verify_password(password: str, hashed_password: str) -> bool:
-    """Verify a password against its stored bcrypt hash."""
     return bcrypt.checkpw(
         password.encode("utf-8"),
         hashed_password.encode("utf-8"),
