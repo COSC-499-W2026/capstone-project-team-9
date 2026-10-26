@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 
-vi.mock('../../src/api/location', () => ({ verifyLocation: vi.fn() }))
-vi.mock('../../src/utils/geolocation', () => ({ getCurrentCoords: vi.fn() }))
+vi.mock('@/api/location', () => ({ verifyLocation: vi.fn() }))
+vi.mock('@/utils/geolocation', () => ({ getCurrentCoords: vi.fn() }))
 
-import { verifyLocation } from '../../src/api/location'
-import { getCurrentCoords } from '../../src/utils/geolocation'
-import PlayView from '../../src/views/PlayView.vue'
+import { verifyLocation } from '@/api/location'
+import { getCurrentCoords } from '@/utils/geolocation'
+import PlayView from '@/views/PlayView.vue'
 
 async function clickPlay(wrapper) {
   await wrapper.find('button').trigger('click')

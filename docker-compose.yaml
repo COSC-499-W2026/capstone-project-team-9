@@ -1,21 +1,25 @@
 services:
   backend:
-    build: .
+    build:
+      context: ./app/backend
     ports:
       - "8000:8000"
     volumes:
-      - .:/app
+      - ./app/backend:/app
+      - ./tests/backend:/app/tests/backend
     environment:
       RUNNING_IN_DOCKER: true
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      FRONTEND_URL: https://frontend:5173
       PYTHONPATH: /app/src
 
   frontend:
     image: node:22-slim
     working_dir: /app
     volumes:
-      - ./src/frontend:/app
+      - ./app/frontend:/app
       - /app/node_modules
+      - ./tests/frontend:/app/tests/frontend
     ports:
       - "5173:5173"
     environment:
