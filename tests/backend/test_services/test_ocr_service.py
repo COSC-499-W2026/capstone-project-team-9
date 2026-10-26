@@ -9,7 +9,7 @@ from services.ocr_service import _extract_codes, matches_room, read_room_codes
 from services.ocr_service import MAX_LONG_SIDE_PX, MAX_UPSCALE, _resize_to
 
 # Photos live in <repo root>/db/submissions, named by room code, e.g. COM301.jpeg
-SUBMISSIONS_DIR = Path(__file__).parent.parent / "db" / "submissions"
+SUBMISSIONS_DIR = Path(__file__) / "_ocr_test_pics"
 
 
 @pytest.fixture
