@@ -1,5 +1,8 @@
 # Individual Log - Week 7
 
+>[!NOTE]
+> Most of this log was merged before 12 AM, I just realized I forgot to fill out a few fields and came back to do that. Sorry! The focus was, once again, on merging functional code on time first `:)`
+
 ## For PR [#142 New DB initialization process using SQLModel](https://github.com/COSC-499-W2026/capstone-project-team-9/pull/142)
 
 > associated issues:
@@ -134,6 +137,10 @@ I did this as a separate PR because it could be done independently without break
 
 ## For PR [#147 Separate backend and frontend](https://github.com/COSC-499-W2026/capstone-project-team-9/pull/147)
 
+> Associated Issues:
+> - [#119 Directory restructure to separate frontend and backend](https://github.com/COSC-499-W2026/capstone-project-team-9/issues/119)
+> - [#149 Separate backend and frontend CI workflow](https://github.com/COSC-499-W2026/capstone-project-team-9/issues/149)
+
 ### What I did
 
 As part of our requirement for the user to interact with our system via a mobile web interface, our system needs a frontend that is separate from our backend. At this stage in the project, only a very basic version of our frontend is needed, and was already set up last week. However, elements of our frontend and backend were entangled together in an unclean way.
@@ -186,7 +193,7 @@ I did the following...
 
 ### Reviews
 
-The reviesw by Eric and Joe did not identify any problems.
+The reviews by Eric and Joe did not identify any problems.
 
 ### Architecture Impacts
 
@@ -236,7 +243,7 @@ Config work is written in relevant config files for reasons explained above in "
 
 This PR does not add any new unit tests.
 
-This PR does not break anything else in the system because our regression tests workflow (now split into a frontend and backend job) passed before merge.
+This PR does not break anything else in the system because our regression tests workflow (now split into a frontend and backend job) passed before merge.  
 ![Week 7 PR 147 Regression Tests](pics/week-7-pr-147-regression-tests.png)
 
 ---
@@ -244,23 +251,36 @@ This PR does not break anything else in the system because our regression tests 
 ## For PR [#158 Scripts for DB seeding](https://github.com/COSC-499-W2026/capstone-project-team-9/pull/158)
 
 ### What I did
-As part of our requirement to store user and game data, the user needs to do [enumerate sequence of actions in the system]. 
 
-> Therefore, I implemented/generated code so that [list functions supported for which intended user group].
+As part of several requirements, we need to store user and game data, and to develop many of our features it is helpful to have seed data in our development database so we can locally work with and test our functionality.
+
+Therefore, I implemented/generated code for the following scripts:
+- `seed_reference.py`
+- `seed_dev.py`
+- `reset_db.py`
 
 
 ### Verification and Problem-solving
-> When I reviewed the [reference specific part(s) of generated code] for this functionality, I did not find any problems with it because [explain verification approach taken]. 
-OR
- When I reviewed the [reference specific part(s) of generated code] for this functionality, I noticed [identify problem details and why it is problematic]. Therefore, I did [explain solution taken]. 
- (Repeat for additional problems found.)
+
+When I reviewed the `seed_reference.py` and `seed_dev.py` scripts for this functionality, I noticed that they threw ugly errors if they were run before `init_db.py`. Therefore, I added an internal helper in `seed_helpers.py` to check if the table being added exists yet, which exits the calling program with a reminder to use `init_db.py` first.
+
+When I reviewed each of the scripts for this functionality further, I did not find any problems with them because I verified that each one worked by running them on a fresh docker container and then inspecting the database.
 
 ### Engineering Practices
-> The PR does not contain any temporary workaround because [explain adherence to long term solution or how the PR does not contain code logic]. 
 
-> The PR only contains small functions that are [number of lines] long.
+The PR does not contain any temporary workaround because these are robust, easy-to-use scripts built to be reused week-to-week. This makes for much smoother development long-term than the previous option, which was to write your own one-off script or insert data using SQL in an interactive pgsql session. I documented the commands to run the scripts: in the scripts themselves and in the README.
 
-> I did [specific steps taken] to ensure that my feature contribution does not contain any of the following:
+The PR only contains small functions that are 1-15 lines long (including docstrings and empty lines).
+
+I did the following...
+- added environment variable `ENV` to prevent destructive database actions from happening outside the dev environment
+- put logic re-used by both seeding scripts into functions in `seed_helpers.py`
+- built `reset_db.py` script by reusing functions from the other scripts
+- added a new function `drop_db()` to mirror `init_db()`
+- Put seed data into list[dictionary] variables rather than putting each row in its own `session.add()` statement
+
+...to ensure that my feature contribution does not contain any of the following:
+```
  - hardcoded values
  - duplicate code
  - dead code
@@ -269,35 +289,28 @@ OR
  - deep nesting
  - high cyclomatic complexity
  - classes/modules/functions with many unrelated responsibilities
-OR
- By doing [explain specific steps], I found that my feature contribution contained [identify which problem from the list below]. Therefore, I did [explain solution]. 
- (Repeat for additional problems found.) 
- Now, I can confirm that my feature contribution does not contain any of the following:
- - hardcoded values
- - duplicate code
- - dead code
- - unnecessary function calls
- - excessive conditional logic
- - deep nesting
- - high cyclomatic complexity
- - classes/modules/functions with many unrelated responsibilities
+ ```
 
 ### Reviews
-> The reviews by Joe and Eric did not identify any problems.
+
+The reviews by Joe and Eric did not identify any problems.
 
 ### Architecture Impacts
-> This work is written in [existing/new file name] because [architectural design reason].
+
+This work is written mostly in the `app/backend/scripts/` directory because these are development tools rather than code that makes the app run. However these scripts are very important to our ability to continuing feature development in the coming weeks.
+
+`drop_db()` is written in `app/backend/src/core/db.py`, because core database operation functions that depend on model registration live there.
 
 This work does not belong in a DFD.
-
-### Testing Receipts
 
 ---
 
 ## Other non-PR things I did this week
+
 - Project management 
   - See: [issues I'm the author of](https://github.com/COSC-499-W2026/capstone-project-team-9/issues?q=is%3Aissue+state%3Aopen+author%3Aiansteyn), [project board table view](https://github.com/orgs/COSC-499-W2026/projects/2/views/3)
 - Updated meeting minutes 
   - see [docs/minutes/meeting-minutes.md](https://github.com/COSC-499-W2026/capstone-project-team-9/blob/main/docs/minutes/meeting-minutes.md)
 - Thoroughly reviewed PRs
-  - see 
+  - [#133](https://github.com/COSC-499-W2026/capstone-project-team-9/pull/133), [#140](https://github.com/COSC-499-W2026/capstone-project-team-9/pull/140), [#150](https://github.com/COSC-499-W2026/capstone-project-team-9/pull/150), [#151](https://github.com/COSC-499-W2026/capstone-project-team-9/pull/151), [#152](https://github.com/COSC-499-W2026/capstone-project-team-9/pull/152)
+- Fixed issues with Eric's commit history in PR [#150](https://github.com/COSC-499-W2026/capstone-project-team-9/pull/150)
