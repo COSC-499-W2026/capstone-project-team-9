@@ -1,6 +1,5 @@
 from sqlmodel import Session
-import hashlib
-import secrets
+import bcrypt
 
 from models.user_model import User
 from repositories import user_repo
@@ -9,17 +8,21 @@ from schemas.user_schema import UserCreate
 
 
 def hash_password(password: str) -> str:
-    """Hash a password without requiring an external library."""
-    salt = secrets.token_bytes(16)
+    password_bytes = password.encode("utf-8")
 
-    password_hash = hashlib.pbkdf2_hmac(
-        "sha256",
-        password.encode("utf-8"),
-        salt,
-        600_000,
+    hashed_password = bcrypt.hashpw(
+        password_bytes,
+        bcrypt.gensalt(rounds=12),
     )
 
-    return f"{salt.hex()}:{password_hash.hex()}"
+    return hashed_password.decode("utf-8")
+
+
+def verify_password(password: str, hashed_password: str) -> bool:
+    return bcrypt.checkpw(
+        password.encode("utf-8"),
+        hashed_password.encode("utf-8"),
+    )
 
 
 def register_user(session: Session, user_data: UserCreate) -> User:

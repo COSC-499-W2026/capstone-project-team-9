@@ -1,13 +1,13 @@
 """
 Script for initializing the database.
+
 Use:
 ```
 docker compose exec backend python scripts/init_db.py
 ```
 """
-
-import core.db as db
+from core.db import init_db
 
 if __name__ == "__main__":
-    db.init_db()
+    init_db()
     print("Tables created.")
