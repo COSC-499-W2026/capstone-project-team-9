@@ -11,6 +11,7 @@ from repositories.location_repo import get_campus_location
 EARTH_RADIUS_M = 6_371_000
 BLOCKED_MESSAGE = "You need to be on the UBCO campus to play. Head to campus and try again!"
 ALLOWED_MESSAGE = "Location verified."
+WRONG_PLACE_MESSAGE = "You are not in the right location. Head there and try again."
 
 
 @dataclass(frozen=True)
@@ -18,6 +19,11 @@ class LocationResult:
     allowed: bool
     message: str
 
+@dataclass(frozen=True)
+class TargetLocation:
+    latitude: float
+    longitude: float
+    radius_m: float
 
 def is_within_radius(lat1: float, lon1: float, lat2: float, lon2: float, radius_m: float) -> bool:
     """True if point 1 is within radius_m metres of point 2 (haversine distance)."""
@@ -34,3 +40,9 @@ def verify_location(lat: float, lon: float) -> LocationResult:
     if is_within_radius(lat, lon, campus.latitude, campus.longitude, campus.radius_m):
         return LocationResult(True, ALLOWED_MESSAGE)
     return LocationResult(False, BLOCKED_MESSAGE)
+
+def verify_location_with_target(lat: float, lon: float, target: TargetLocation) -> LocationResult:
+    """Return allowed/blocked for the player's coordinates against a target location."""
+    if is_within_radius(lat, lon, target.latitude, target.longitude, target.radius_m):
+        return LocationResult(True, ALLOWED_MESSAGE)
+    return LocationResult(False, WRONG_PLACE_MESSAGE)
