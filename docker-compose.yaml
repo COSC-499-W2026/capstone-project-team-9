@@ -8,6 +8,7 @@ services:
       - ./app/backend:/app
       - ./tests/backend:/app/tests/backend
     environment:
+      ENV: ${ENV}
       RUNNING_IN_DOCKER: true
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       FRONTEND_URL: https://frontend:5173
