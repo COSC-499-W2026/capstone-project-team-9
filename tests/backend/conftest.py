@@ -1,9 +1,12 @@
+from uuid import uuid4
+
 import pytest
 from sqlmodel import Session, SQLModel, create_engine
 from sqlmodel.pool import StaticPool
 
 from core.docker_guard import ensure_tests_running_in_docker
 import models # registers the table models so create_all builds them
+from models import Clue, Target
 
 ensure_tests_running_in_docker()
 
@@ -18,6 +21,27 @@ def session():
         yield session
 
 
+@pytest.fixture
+def add_clues(session):
+    """Factory: add_clues(count, language_id=1, difficulty_id=1) saves clues and returns their ids."""
+    def _add(count: int, language_id: int = 1, difficulty_id: int = 1) -> list[int]:
+        clue_ids = []
+        for _ in range(count):
+            target = Target(name=f"target-{uuid4()}", image=b"img")
+            session.add(target)
+            session.flush()
+            clue = Clue(
+                audio=b"audio",
+                language_id=language_id,
+                difficulty_id=difficulty_id,
+                target_id=target.id,
+            )
+            session.add(clue)
+            session.flush()
+            clue_ids.append(clue.id)
+        session.commit()
+        return clue_ids
+    return _add
 
 @pytest.fixture
 def sample_data():
