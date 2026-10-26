@@ -24,7 +24,7 @@ This repo contains the source code for Team 9's Capstone Software Engineering pr
 - [Run unit tests](#run-unit-tests)
 - [Poke around in the container](#poke-around-in-the-container)
 - [Make your IDE happy with a Venv](#make-your-ide-happy-with-a-venv)
-- [Initialize the database](#initialize-the-database)
+- [Initialize, seed and reset the database](#initialize-seed-and-reset-the-database)
 - [Inspect the database](#inspect-the-database)
 
 > [!IMPORTANT]
@@ -124,16 +124,32 @@ python -m pip install -e "./app/backend[test]"
 
 ---
 
-### Initialize the Database
+### Initialize, seed and reset the database
 
-The database will _**initialize automatically**_ when you run `docker compose up`. Once the database container is initialized for the first time, the data inside will be persistent every time you spin it up.
+Initialize the database:
+```
+docker compose exec backend python scripts/init_db.py
+```
 
-If you need to reset it, run:
+Seed it with reference data like languages, difficulties etc
+```
+docker compose exec backend python scripts/seed_reference.py
+```
+
+Seed it with development-only data like fake users:
+```
+docker compose exec backend python scripts/seed_dev.py
+```
+
+⭐ Reset the database - drop all tables, re-initialize, and re-seed all in one step (DEVELOPMENT ONLY):
+```
+docker compose exec backend python scripts/reset_db.py
+```
+
+If you just want to stop all containers and delete the data volume, run:
 ```
 docker compose down -v 
 ```
-- This stops all containers and DELETES the data volume - meaning all data in the database is wiped
-- then just run `docker compose up` again to re-initialize it!
 
 ---
 
