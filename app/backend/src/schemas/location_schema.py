@@ -1,9 +1,11 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+from models.location_model import LocationPoint
 
-
-class LocationCheckRequest(BaseModel):
-    latitude: float = Field(ge=-90, le=90)
-    longitude: float = Field(ge=-180, le=180)
+class LocationCheckRequest(LocationPoint):
+    """
+    Expected data shape for incoming location check requests
+    """
+    pass
 
 
 class LocationCheckResponse(BaseModel):

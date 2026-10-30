@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from math import asin, cos, radians, sin, sqrt
 
 from repositories.location_repo import get_campus_location
+from models.location_model import LocationArea
 
 EARTH_RADIUS_M = 6_371_000
 BLOCKED_MESSAGE = "You need to be on the UBCO campus to play. Head to campus and try again!"
@@ -18,12 +19,6 @@ WRONG_PLACE_MESSAGE = "You are not in the right location. Head there and try aga
 class LocationResult:
     allowed: bool
     message: str
-
-@dataclass(frozen=True)
-class TargetLocation:
-    latitude: float
-    longitude: float
-    radius_m: float
 
 def is_within_radius(lat1: float, lon1: float, lat2: float, lon2: float, radius_m: float) -> bool:
     """True if point 1 is within radius_m metres of point 2 (haversine distance)."""
@@ -41,7 +36,7 @@ def verify_location(lat: float, lon: float) -> LocationResult:
         return LocationResult(True, ALLOWED_MESSAGE)
     return LocationResult(False, BLOCKED_MESSAGE)
 
-def verify_location_with_target(lat: float, lon: float, target: TargetLocation) -> LocationResult:
+def verify_location_with_target(lat: float, lon: float, target: LocationArea) -> LocationResult:
     """Return allowed/blocked for the player's coordinates against a target location."""
     if is_within_radius(lat, lon, target.latitude, target.longitude, target.radius_m):
         return LocationResult(True, ALLOWED_MESSAGE)
