@@ -1,10 +1,7 @@
 from datetime import datetime
-
-from sqlalchemy import DateTime
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, DateTime
 
 from core.clock import utc_now
-
 
 class Target(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
