@@ -1,12 +1,9 @@
 import pytest
 
-from services.location_service import (
-    ALLOWED_MESSAGE,
-    WRONG_PLACE_MESSAGE,
-    TargetLocation, 
-    verify_location_with_target)
+from services.location_service import ALLOWED_MESSAGE, WRONG_PLACE_MESSAGE, verify_location_with_target
+from models.location_model import LocationArea
 
-TARGET = TargetLocation(latitude=49.256, longitude=-123.250, radius_m=100)
+TARGET = LocationArea(latitude=49.256, longitude=-123.250, radius=100)
 
 def test_target_at_target_location():
     """Player is at the target location."""
@@ -36,7 +33,7 @@ def test_target_outside_target_radius(lat, lon):
 
 def test_target_larger_radius():
     """Player is outside the target radius, but the target has a larger radius."""
-    large_target = TargetLocation(latitude=49.256, longitude=-123.250, radius_m=1000)
+    large_target = LocationArea(latitude=49.256, longitude=-123.250, radius=1000)
     result = verify_location_with_target(49.257, -123.251, TARGET)
     result_wide = verify_location_with_target(49.257, -123.251, large_target)
     assert result.allowed is False
