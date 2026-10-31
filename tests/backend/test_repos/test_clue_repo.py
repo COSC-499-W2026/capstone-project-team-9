@@ -1,4 +1,4 @@
-from repositories.clue_repo import get_random_clue_ids
+from repositories.clue_repo import get_random_clue_ids, count_clues
 
 
 def test_returns_the_requested_number_of_distinct_ids(session, add_clues):
@@ -22,3 +22,13 @@ def test_returns_everything_available_when_fewer_than_count(session, add_clues):
 
 def test_returns_empty_list_when_no_clues_match(session):
     assert get_random_clue_ids(session, 1, 1, 5) == []
+
+def test_count_clues_matches_language_and_difficulty_only(session, add_clues):
+    add_clues(3, language_id=1, difficulty_id=1)
+    add_clues(2, language_id=2, difficulty_id=1)
+    add_clues(4, language_id=1, difficulty_id=2)
+    assert count_clues(session, 1, 1) == 3
+
+
+def test_count_clues_is_zero_when_none_match(session):
+    assert count_clues(session, 1, 1) == 0
