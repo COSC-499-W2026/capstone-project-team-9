@@ -38,6 +38,6 @@ def verify_location(lat: float, lon: float) -> LocationResult:
 
 def verify_location_with_target(lat: float, lon: float, target: LocationArea) -> LocationResult:
     """Return allowed/blocked for the player's coordinates against a target location."""
-    if is_within_radius(lat, lon, target.latitude, target.longitude, target.radius_m):
+    if is_within_radius(lat, lon, target.latitude, target.longitude, target.radius):
         return LocationResult(True, ALLOWED_MESSAGE)
     return LocationResult(False, WRONG_PLACE_MESSAGE)
