@@ -39,7 +39,25 @@ def test_empty_tables_return_empty_list(client, path):
     assert r.json() == []
 
 
-def test_get_game_length_range(client):
-    r = client.get("/game-lengths")
+def test_get_game_length_range_reflects_available_clues(client, add_clues):
+    add_clues(6)
+    r = client.get("/game-lengths", params={"language_id": 1, "difficulty_id": 1})
     assert r.status_code == 200
-    assert r.json() == {"min": MIN_GAME_LENGTH, "max": MAX_GAME_LENGTH}
+    assert r.json() == {"min": MIN_GAME_LENGTH, "max": 6}
+
+
+def test_get_game_length_range_is_capped_at_max(client, add_clues):
+    add_clues(MAX_GAME_LENGTH + 2)
+    r = client.get("/game-lengths", params={"language_id": 1, "difficulty_id": 1})
+    assert r.json()["max"] == MAX_GAME_LENGTH
+
+
+def test_get_game_length_range_zero_when_no_clues(client):
+    r = client.get("/game-lengths", params={"language_id": 1, "difficulty_id": 1})
+    assert r.status_code == 200
+    assert r.json() == {"min": 0, "max": 0}
+
+
+@pytest.mark.parametrize("params", [{}, {"language_id": 1}, {"difficulty_id": 1}, {"language_id": "x", "difficulty_id": 1}])
+def test_get_game_length_range_rejects_missing_or_invalid_params(client, params):
+    assert client.get("/game-lengths", params=params).status_code == 422
