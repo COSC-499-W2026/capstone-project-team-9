@@ -4,17 +4,13 @@ from dataclasses import dataclass
 from sqlmodel import Session
 
 from models import Game
-from repositories.clue_repo import get_random_clue_ids
+from repositories.clue_repo import count_clues
 from repositories.game_options_repo import get_difficulty, get_language
 from repositories.game_repo import add_game
 from schemas.game_schema import GameCreate
 from services.game_options_service import MAX_GAME_LENGTH, MIN_GAME_LENGTH
 
 
-@dataclass(frozen=True)
-class StartedGame:
-    game: Game
-    clue_ids: list[int]
 
 
 def _validate_settings(session: Session, settings: GameCreate) -> None:
@@ -29,24 +25,21 @@ def _validate_settings(session: Session, settings: GameCreate) -> None:
         raise ValueError("Difficulty does not exist")
 
 
-def start_game(
+def create_game(
     session: Session, settings: GameCreate, creator_id: int | None = None
-) -> StartedGame:
+) -> Game:
     """
-    Create a custom game and pick its clues.
-    The game is only saved if enough clues exist, so a failed start leaves no orphan game.
+    Validate the settings and save a new game (the ruleset only; clues are picked per play).
+    Rejects games that could never be played because too few clues exist.
     creator_id stays None until login exists.
     """
     _validate_settings(session, settings)
-    clue_ids = get_random_clue_ids(
-        session, settings.language_id, settings.difficulty_id, settings.num_clues
-    )
-    if len(clue_ids) < settings.num_clues:
+    available = count_clues(session, settings.language_id, settings.difficulty_id)
+    if available < settings.num_clues:
         raise ValueError("Not enough clues available for these settings")
-    game = add_game(session, Game(
+    return add_game(session, Game(
         num_clues=settings.num_clues,
         language_id=settings.language_id,
         difficulty_id=settings.difficulty_id,
         creator_id=creator_id,
     ))
-    return StartedGame(game, clue_ids)
