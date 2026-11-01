@@ -21,6 +21,10 @@ def get_difficulties(session: Session = Depends(get_session)):
 
 
 @router.get("/game-lengths", response_model=GameLengthResponse)
-def get_game_lengths():
-    """Smallest and largest number of clues a game can have (for the length slider)."""
-    return get_game_length_range()
+def get_game_lengths(
+    language_id: int,
+    difficulty_id: int,
+    session: Session = Depends(get_session),
+):
+    """Smallest and largest number of clues a game can have for this language and difficulty."""
+    return get_game_length_range(session, language_id, difficulty_id)
