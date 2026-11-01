@@ -19,10 +19,3 @@ class GameResponse(BaseModel):
     created_at: datetime
 
 
-class ClueResponse(BaseModel):
-    id: int
-
-
-class GameStartResponse(BaseModel):
-    game: GameResponse
-    clues: list[ClueResponse]
