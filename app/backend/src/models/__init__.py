@@ -9,3 +9,5 @@ from .user_model import User
 from .clue_model import Clue
 from .target_model import Target
 from .game_model import Game
+from .play_model import Play
+from .play_clue_model import PlayClue
