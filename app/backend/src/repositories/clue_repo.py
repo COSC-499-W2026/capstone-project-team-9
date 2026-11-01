@@ -1,11 +1,11 @@
-"""Read access to the Clue table."""
-from sqlmodel import Session, func, select
-
+from sqlmodel import  func, select
 from models import Clue
+from repositories import BaseRepository
 
-class ClueRepository:
-    def __init__(self, session: Session):
-        self.session = session
+class ClueRepository(BaseRepository):
+    """
+    Clue repository class that provides methods for accessing Clue data.
+    """
 
     def get_random_clue_ids(self, language_id: int, difficulty_id: int, count: int) -> list[int]:
         """
