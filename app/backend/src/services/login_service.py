@@ -10,12 +10,6 @@ def authenticate_user(
     email: str,
     password: str,
 ) -> User | None:
-    """
-    Authenticate a user using their email and password.
-
-    Returns the User if authentication succeeds.
-    Returns None if the email does not exist or the password is incorrect.
-    """
     normalized_email = email.lower()
 
     user = get_user_by_email(session, normalized_email)
