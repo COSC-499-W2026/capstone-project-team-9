@@ -1,4 +1,3 @@
-"""Process "Get game options": what a player can pick when creating a game."""
 from dataclasses import dataclass
 
 from sqlmodel import Session
@@ -17,6 +16,13 @@ class GameLengthRange:
     min: int
     max: int
 
+class GameOptionsService:
+    """
+    Service for processing "Get game options": what a player can pick when creating a game.
+    """
+    def __init__(self, session: Session, clue_repo: ClueRepository):
+        self.session = session
+        self.clue_repo = clue_repo
 
 def list_languages(session: Session) -> list[Language]:
     return get_all_languages(session)
