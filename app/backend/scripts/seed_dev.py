@@ -56,7 +56,7 @@ def _seed_fake_clues(session: Session) -> None:
                 "You may have to run scripts/seed_reference.py first."
             )
         for n in range(1, count + 1):
-            target = Target(name=f"{language} {difficulty} placeholder {n}", image=b"")
+            target = Target(name=f"{language} {difficulty} placeholder {n}", latitude=49, longitude=-119, radius=50)
             session.add(target)
             session.flush()  # assigns target.id
             session.add(Clue(
