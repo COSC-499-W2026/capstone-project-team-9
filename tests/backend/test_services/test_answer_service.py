@@ -1,9 +1,10 @@
 import pytest
 
 from services.answer_service import verify_answer, CORRECT_MESSAGE, WRONG_MESSAGE
-from services.location_service import TargetLocation, WRONG_PLACE_MESSAGE
+from services.location_service import WRONG_PLACE_MESSAGE
+from models.location_model import LocationArea
 
-TARGET = TargetLocation(latitude=49.256, longitude=-123.250, radius_m=100)
+TARGET = LocationArea(latitude=49.256, longitude=-123.250, radius=100)
 AT_TARGET = (49.256, -123.250)
 FAR_FROM_TARGET = (49.300, -123.300)
 
