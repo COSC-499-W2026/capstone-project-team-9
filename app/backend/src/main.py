@@ -5,7 +5,7 @@ import os
 
 from core.docker_guard import ensure_app_running_in_docker
 
-from routers import health, location_router, play_router, user_router, game_options_router, game_router
+from routers import health, location_router, play_router, user_router, game_options_router, game_router, login_router
 
 
 @asynccontextmanager
@@ -35,8 +35,8 @@ app.include_router(location_router.router)
 app.include_router(user_router.router)
 app.include_router(game_options_router.router)
 app.include_router(game_router.router)
-app.include_router(game_router.router)
 app.include_router(play_router.router)
+app.include_router(login_router.router)
 
 @app.get("/")
 def root():
