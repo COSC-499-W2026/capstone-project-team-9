@@ -296,8 +296,8 @@
     {
       "id": "cb5WlyUhYgCOZX6Ei9Yy4",
       "name": "Target",
-      "x": -585.1846860235443,
-      "y": -456.3952745617223,
+      "x": -635.2190610235442,
+      "y": -293.92277456172235,
       "locked": false,
       "fields": [
         {
@@ -738,9 +738,9 @@
     },
     {
       "id": "Le_EfhAufmm3MdRidnWQY",
-      "name": "SolvedClue",
-      "x": -531.0278079218459,
-      "y": -635.820411460776,
+      "name": "PlayClue",
+      "x": -584.1278079218459,
+      "y": -631.0166614607758,
       "locked": false,
       "fields": [
         {
@@ -770,13 +770,56 @@
           "comment": "",
           "size": "",
           "values": []
+        },
+        {
+          "id": "xNJyHUoIgtHN76b6bu9jl",
+          "name": "position",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "3FqKfEE-o83tcAJ9mUr9E",
+          "name": "solved_at",
+          "type": "TIMESTAMPTZ",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "eL691zrEhe7yFGMLRqL5L",
+          "name": "attempts",
+          "type": "INTEGER",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
         }
       ],
       "comment": "",
       "indices": [],
       "uniqueConstraints": [],
       "color": "#edb7c8",
-      "collapsed": false
+      "collapsed": false,
+      "width": 247
     }
   ],
   "relationships": [
