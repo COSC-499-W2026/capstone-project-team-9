@@ -27,7 +27,7 @@ def add_clues(session):
     def _add(count: int, language_id: int = 1, difficulty_id: int = 1) -> list[int]:
         clue_ids = []
         for _ in range(count):
-            target = Target(name=f"target-{uuid4()}", image=b"img")
+            target = Target(name=f"target-{uuid4()}", latitude=49, longitude=-119, radius=50)
             session.add(target)
             session.flush()
             clue = Clue(
