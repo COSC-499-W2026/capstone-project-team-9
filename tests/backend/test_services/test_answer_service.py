@@ -15,7 +15,7 @@ FAR_FROM_TARGET = (49.300, -123.300)
 def fake_clue(monkeypatch):
     """Fake the clue repo's target lookup."""
     def install(target):
-        monkeypatch.setattr("services.answer_service.get_clue_target", lambda session, clue_id: target)
+        monkeypatch.setattr("services.answer_service.get_target_by_id", lambda session, clue_id: target)
     return install
 
 
