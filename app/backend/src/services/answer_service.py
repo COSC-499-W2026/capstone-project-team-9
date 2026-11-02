@@ -18,6 +18,9 @@ class AnswerResult:
     correct: bool
     message: str
 
+def _room_code(target_name: str) -> str:
+    """'COM 201' -> 'COM201', the format the OCR produces."""
+    return target_name.replace(" ", "").upper()
 
 def verify_answer(
     session: Session, clue_id: int, image_bytes: bytes, lat: float, lon: float
