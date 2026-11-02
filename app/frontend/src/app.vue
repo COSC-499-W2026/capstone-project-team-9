@@ -7,6 +7,8 @@ import BackendStatus from './components/BackendStatus.vue'
     <h1>Language Game</h1>
     <nav>
       <RouterLink to="/">Play</RouterLink>
+      |
+      <RouterLink to="/login">Login</RouterLink>
       <!-- add links as screens are added -->
     </nav>
   </header>
