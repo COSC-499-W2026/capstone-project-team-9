@@ -5,12 +5,22 @@ from core.db import get_session
 from repositories import ClueRepository
 from services import GameOptionsService
 
-def get_clue_repository(session: Session = Depends(get_session)) -> ClueRepository:
+# SESSION DEPENDENCIES -----------------------------------------------------------
+
+SessionDep = Annotated[Session, Depends(get_session)]
+
+# REPOSITORY DEPENDENCIES --------------------------------------------------------
+
+def get_clue_repository(session: SessionDep) -> ClueRepository:
     return ClueRepository(session)
 
+ClueRepositoryDep = Annotated[ClueRepository, Depends(get_clue_repository)]
+
+# SERVICE DEPENDENCIES --------------------------------------------------------
+
 def get_game_options_service(
-    session: Session = Depends(get_session),
-    clue_repo: ClueRepository = Depends(get_clue_repository)
+    session: SessionDep,
+    clue_repo: ClueRepositoryDep
 ) -> GameOptionsService:
     return GameOptionsService(session, clue_repo)
 
