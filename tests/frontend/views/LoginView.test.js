@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
-import LoginView from '../../../src/views/LoginView.vue'
-import { post } from '../../../src/api/client.js'
+import LoginView from '@/src/views/LoginView.vue'
+import { post } from '@/src/api/client.js'
 
 vi.mock('../../../src/api/client.js', () => ({
   post: vi.fn(),
