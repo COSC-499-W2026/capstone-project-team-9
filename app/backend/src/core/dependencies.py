@@ -3,7 +3,7 @@ from fastapi import Depends
 from sqlmodel import Session
 from core.db import get_session
 from repositories import ClueRepository
-from services import GameOptionsService
+from services import GameOptionsService, GameService
 
 # SESSION DEPENDENCIES -----------------------------------------------------------
 
@@ -24,4 +24,11 @@ def get_game_options_service(
 ) -> GameOptionsService:
     return GameOptionsService(session, clue_repo)
 
+def get_game_service(
+    session: Session = Depends(get_session),
+    clue_repo: ClueRepository = Depends(get_clue_repository)
+) -> GameService:
+    return GameService(session, clue_repo)
+
 GameOptionsServiceDep = Annotated[GameOptionsService, Depends(get_game_options_service)]
+GameServiceDep = Annotated[GameService, Depends(get_game_service)]
