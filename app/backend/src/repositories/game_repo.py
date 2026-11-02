@@ -10,3 +10,6 @@ def add_game(session: Session, game: Game) -> Game:
     session.commit()
     session.refresh(game)
     return game
+
+def get_game(session: Session, game_id: int) -> Game | None:
+    return session.get(Game, game_id)
