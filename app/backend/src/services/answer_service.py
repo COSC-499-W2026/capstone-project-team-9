@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from requests import Session
 
-from repositories.clue_repo import get_target_by_id
+from repositories.target_repo import get_target_by_id
 from services.location_service import verify_location_with_target
 from services.ocr_service import matches_room
 from models.location_model import LocationArea

@@ -1,7 +1,7 @@
 """Read access to the Clue table."""
 from sqlmodel import Session, func, select
 
-from models import Clue, Target
+from models import Clue
 
 
 def get_random_clue_ids(
@@ -22,8 +22,3 @@ def count_clues(session: Session, language_id: int, difficulty_id: int) -> int:
         Clue.language_id == language_id, Clue.difficulty_id == difficulty_id
     )
     return session.exec(statement).one()
-
-def get_target_by_id(session: Session, clue_id: int) -> Target | None:
-    """Get a target by clue id (never loads audio)."""
-    statement = select(Target).join(Clue, Clue.target_id == Target.id).where(Clue.id == clue_id)
-    return session.exec(statement).first()
