@@ -8,7 +8,7 @@ from repositories.clue_repo import get_random_clue_ids
 from repositories.game_repo import get_game
 from repositories.play_repo import add_play_with_clues
 
-
+ 
 class GameNotFoundError(Exception):
     """Raised when a play is started for a game that does not exist."""
 
