@@ -4,14 +4,17 @@ from dataclasses import dataclass
 from sqlmodel import Session
 
 from models import Game
-from repositories.clue_repo import count_clues
+from repositories import ClueRepository
 from repositories.game_options_repo import get_difficulty, get_language
 from repositories.game_repo import add_game
 from schemas.game_schema import GameCreate
 from services.game_options_service import MAX_GAME_LENGTH, MIN_GAME_LENGTH
 
 
-
+class GameService:
+    def __init__(self, session: Session, clue_repo: ClueRepository):
+        self.session = session       # TODO: remove session from GameService completely, make it only depend on repos
+        self.clue_repo = clue_repo
 
 def _validate_settings(session: Session, settings: GameCreate) -> None:
     """Raise ValueError if any chosen setting is not an available option."""
