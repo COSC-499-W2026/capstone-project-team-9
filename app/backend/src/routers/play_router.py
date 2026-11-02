@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter,  HTTPException, status
 from sqlmodel import Session
 
-from core.db import get_session
 from schemas.play_schema import ClueResponse, PlayResponse, PlayStartResponse
-from services.play_service import GameNotFoundError, start_play
+from services.play_service import GameNotFoundError
+from core.dependencies import PlayServiceDep
 
 router = APIRouter(tags=["plays"])
 
@@ -13,10 +13,10 @@ router = APIRouter(tags=["plays"])
     response_model=PlayStartResponse,
     status_code=status.HTTP_201_CREATED,
 )
-def start_game_play(game_id: int, session: Session = Depends(get_session)):
+def start_game_play(game_id: int, play_service: PlayServiceDep):
     """Start a play of a game and return the play plus its ordered list of clue ids."""
     try:
-        started = start_play(session, game_id)
+        started = play_service.start_play(game_id)
     except GameNotFoundError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
     except ValueError as exc:
