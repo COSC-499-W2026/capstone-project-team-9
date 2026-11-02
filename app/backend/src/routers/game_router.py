@@ -1,18 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlmodel import Session
+from fastapi import APIRouter, HTTPException, status
 
-from core.db import get_session
 from schemas.game_schema import GameCreate, GameResponse
-from services.game_service import create_game
+from core.dependencies import GameServiceDep
 
 router = APIRouter(prefix="/games", tags=["games"])
 
 
 @router.post("", response_model=GameResponse, status_code=status.HTTP_201_CREATED)
-def create_custom_game(body: GameCreate, session: Session = Depends(get_session)):
+def create_custom_game(body: GameCreate, game_service: GameServiceDep):
     """Create a custom game and return its ruleset."""
     try:
-        game = create_game(session, body)
+        game = game_service.create_game(body)
     except ValueError as exc:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
