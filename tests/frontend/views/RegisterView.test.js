@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
-import RegisterView from '../../../src/views/RegisterView.vue'
-import { post } from '../../../src/api/client.js'
+import RegisterView from '@/src/views/RegisterView.vue'
+import { post } from '@/src/api/client.js'
 
-vi.mock('../../../src/api/client.js', () => ({
+vi.mock('@/src/api/client.js', () => ({
   post: vi.fn(),
 }))
 
