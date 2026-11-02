@@ -9,6 +9,8 @@ import BackendStatus from './components/BackendStatus.vue'
       <RouterLink to="/">Play</RouterLink>
       |
       <RouterLink to="/login">Login</RouterLink>
+      |
+      <RouterLink to="/register">Register</RouterLink>
       <!-- add links as screens are added -->
     </nav>
   </header>
