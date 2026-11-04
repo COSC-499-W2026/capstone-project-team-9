@@ -3,8 +3,8 @@
     {
       "id": "PUnoI8pDnFhQs3z_VlBtU",
       "name": "User",
-      "x": -428.6735925236436,
-      "y": -1206.709474643245,
+      "x": -438.1033425236436,
+      "y": -1292.265724643245,
       "locked": false,
       "fields": [
         {
@@ -157,8 +157,8 @@
     {
       "id": "MHO_l7yZORdf_I5awcrFv",
       "name": "Enrollment",
-      "x": -45.83871667739419,
-      "y": -1343.0558343702298,
+      "x": -44.684466677393914,
+      "y": -1362.1718343702298,
       "locked": false,
       "fields": [
         {
@@ -213,8 +213,8 @@
     {
       "id": "4ii2MQrRpq7PnDAAdzxI8",
       "name": "Language",
-      "x": 475.4394914316126,
-      "y": -961.2492549019842,
+      "x": 665.9582414316128,
+      "y": -1030.5920049019842,
       "locked": false,
       "fields": [
         {
@@ -255,9 +255,9 @@
     {
       "id": "dNNEX1MevCLUiG_IzvWWU",
       "name": "Difficulty",
-      "x": 437.9622992124358,
-      "y": -524.386214947441,
-      "locked": true,
+      "x": 488.69529921243577,
+      "y": -569.651714947441,
+      "locked": false,
       "fields": [
         {
           "name": "id",
@@ -296,8 +296,8 @@
     {
       "id": "cb5WlyUhYgCOZX6Ei9Yy4",
       "name": "Target",
-      "x": -635.2190610235442,
-      "y": -293.92277456172235,
+      "x": -639.687561023544,
+      "y": -236.16977456172265,
       "locked": false,
       "fields": [
         {
@@ -393,8 +393,8 @@
     {
       "id": "JH5MGyYNqNfvkfRPMXk4u",
       "name": "Clue",
-      "x": -45.67757447195686,
-      "y": -599.6515867563216,
+      "x": -62.31632447195648,
+      "y": -447.0340867563217,
       "locked": false,
       "fields": [
         {
@@ -518,8 +518,8 @@
     {
       "id": "xtGue2Ao_HGnCNBpaoKHC",
       "name": "Game",
-      "x": -45.464992381398474,
-      "y": -1035.127694170841,
+      "x": -12.261742381398449,
+      "y": -1038.313694170841,
       "locked": false,
       "fields": [
         {
@@ -657,8 +657,8 @@
     {
       "id": "PndV4W_dwECf8YvrSmmWT",
       "name": "Play",
-      "x": -488.00310147485135,
-      "y": -903.0588175215437,
+      "x": -535.6471014748513,
+      "y": -859.1905675215437,
       "locked": false,
       "fields": [
         {
@@ -689,6 +689,20 @@
         {
           "id": "AyOZ11SacyL5X8v0fR7yf",
           "name": "started_at",
+          "type": "TIMESTAMPTZ",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "size": "",
+          "values": []
+        },
+        {
+          "id": "jhXGPEr9Y4osvQDBGeqGT",
+          "name": "completed_at",
           "type": "TIMESTAMPTZ",
           "default": "",
           "check": "",
@@ -734,13 +748,13 @@
       "uniqueConstraints": [],
       "color": "#db698d",
       "collapsed": false,
-      "width": 234
+      "width": 304
     },
     {
       "id": "Le_EfhAufmm3MdRidnWQY",
       "name": "PlayClue",
-      "x": -584.1278079218459,
-      "y": -631.0166614607758,
+      "x": -595.1910579218456,
+      "y": -506.56016146077616,
       "locked": false,
       "fields": [
         {
