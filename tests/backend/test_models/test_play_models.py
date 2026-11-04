@@ -11,6 +11,7 @@ def test_play_gets_defaults(session):
     assert play.id is not None
     assert play.started_at is not None
     assert play.score is None
+    assert play.completed_at is None
 
 
 def test_play_clue_starts_unsolved_with_zero_attempts(session):
