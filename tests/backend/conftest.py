@@ -5,8 +5,9 @@ from sqlmodel import Session, SQLModel, create_engine
 from sqlmodel.pool import StaticPool
 
 from core.docker_guard import ensure_tests_running_in_docker
+from core.clock import utc_now
 import models # registers the table models so create_all builds them
-from models import Clue, Target
+from models import Clue, Target, PlayClue
 
 ensure_tests_running_in_docker()
 
@@ -62,3 +63,13 @@ def mock_api_client(mocker, sample_data):
     client.get_users.return_value = sample_data["users"]
     client.get_status.return_value = sample_data["status"]
     return client
+
+@pytest.fixture
+def solve_clue(session):
+    """Factory: solve_clue(play_id, clue_id) marks that clue in that play as solved."""
+    def _solve(play_id: int, clue_id: int) -> None:
+        play_clue = session.get(PlayClue, (play_id, clue_id))
+        play_clue.solved_at = utc_now()
+        session.add(play_clue)
+        session.commit()
+    return _solve
