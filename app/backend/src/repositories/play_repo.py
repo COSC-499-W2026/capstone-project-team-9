@@ -1,5 +1,6 @@
 """Persistence for the Play and PlayClue tables."""
-from sqlmodel import Session
+
+from sqlmodel import Session, select
 
 from models import Play, PlayClue
 
@@ -18,3 +19,12 @@ def add_play_with_clues(session: Session, play: Play, clue_ids: list[int]) -> Pl
     session.commit()
     session.refresh(play)
     return play
+
+def get_play(session: Session, play_id: int) -> Play | None:
+    return session.get(Play, play_id)
+
+
+def get_play_clues(session: Session, play_id: int) -> list[PlayClue]:
+    """All clues in a play, ordered by position."""
+    statement = select(PlayClue).where(PlayClue.play_id == play_id).order_by(PlayClue.position)
+    return list(session.exec(statement).all())
