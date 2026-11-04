@@ -35,6 +35,18 @@ TARGETS = [
         "latitude": 49.939584452649505,
         "longitude": -119.39687951886633,
         "radius": 50
+    },
+    {
+        "name": "COM 311",
+        "latitude": 49.940448265795,
+        "longitude": -119.39514546010396,
+        "radius": 50,
+    },
+    {
+        "name": "COM 312",
+        "latitude": 49.940448265795,
+        "longitude": -119.39514546010396,
+        "radius": 50,
     }
 ]
 
