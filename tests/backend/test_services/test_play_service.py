@@ -2,7 +2,7 @@ import pytest
 from sqlmodel import select
 
 from models import Game, Play, PlayClue
-from services.play_service import GameNotFoundError, PlayService
+from services.play_service import GameNotFoundError, PlayService, PlayNotFoundError
 from repositories import ClueRepository
 
 NUM_CLUES = 3
@@ -83,3 +83,52 @@ def test_start_play_raises_when_not_enough_clues_and_saves_nothing(play_service,
         play_service.start_play(game.id)
     assert _saved_plays(session) == []
     assert session.exec(select(PlayClue)).all() == []
+
+def test_get_play_state_current_clue_is_first_when_nothing_solved(play_service, game, add_clues):
+    add_clues(5)
+    started = play_service.start_play(game.id)
+    state = play_service.get_play_state(started.play.id)
+    assert state.current_clue_id == started.clue_ids[0]
+    assert [c.clue_id for c in state.clues] == started.clue_ids
+
+
+def test_get_play_state_current_clue_skips_solved_ones(play_service, game, add_clues, solve_clue):
+    add_clues(5)
+    started = play_service.start_play(game.id)
+    solve_clue(started.play.id, started.clue_ids[0])
+    assert play_service.get_play_state(started.play.id).current_clue_id == started.clue_ids[1]
+
+
+def test_get_play_state_current_clue_is_lowest_unsolved_when_solved_out_of_order(
+    play_service, game, add_clues, solve_clue
+):
+    add_clues(5)
+    started = play_service.start_play(game.id)
+    solve_clue(started.play.id, started.clue_ids[1])  # solve the 2nd clue first
+    assert play_service.get_play_state(started.play.id).current_clue_id == started.clue_ids[0]
+    solve_clue(started.play.id, started.clue_ids[0])
+    assert play_service.get_play_state(started.play.id).current_clue_id == started.clue_ids[2]
+
+
+def test_get_play_state_current_clue_is_none_when_all_solved(play_service, game, add_clues, solve_clue):
+    add_clues(NUM_CLUES)
+    started = play_service.start_play(game.id)
+    for clue_id in started.clue_ids:
+        solve_clue(started.play.id, clue_id)
+    assert play_service.get_play_state(started.play.id).current_clue_id is None
+
+
+def test_get_play_state_raises_for_unknown_play(play_service):
+    with pytest.raises(PlayNotFoundError):
+        play_service.get_play_state(999)
+
+def test_get_play_state_counts_total_and_solved(play_service, game, add_clues, solve_clue):
+    add_clues(5)
+    started = play_service.start_play(game.id)
+    state = play_service.get_play_state(started.play.id)
+    assert (state.total_clues, state.solved_clues) == (NUM_CLUES, 0)
+
+    solve_clue(started.play.id, started.clue_ids[0])
+    solve_clue(started.play.id, started.clue_ids[2])  # out of order on purpose
+    state = play_service.get_play_state(started.play.id)
+    assert (state.total_clues, state.solved_clues) == (NUM_CLUES, 2)
