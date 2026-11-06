@@ -1,7 +1,7 @@
 import pytest
 
 from repositories.location_repo import CampusLocation
-from services.location_service import BLOCKED_MESSAGE, is_within_radius, verify_location
+from services.location_service import BLOCKED_MESSAGE, _is_within_radius, verify_location
 
 # A fake campus so these tests don't depend on the real hardcoded values.
 TEST_CAMPUS = CampusLocation(latitude=49.935, longitude=-119.395, radius_m=500)
@@ -34,12 +34,12 @@ def test_just_inside_and_outside_radius():
 
 # 0.001 degrees of latitude is about 111 m.
 def test_is_within_radius_true_when_closer_than_radius():
-    assert is_within_radius(49.001, -119.0, 49.0, -119.0, 150) is True
+    assert _is_within_radius(49.001, -119.0, 49.0, -119.0, 150) is True
 
 
 def test_is_within_radius_false_when_farther_than_radius():
-    assert is_within_radius(49.001, -119.0, 49.0, -119.0, 100) is False
+    assert _is_within_radius(49.001, -119.0, 49.0, -119.0, 100) is False
 
 
 def test_is_within_radius_same_point():
-    assert is_within_radius(49.0, -119.0, 49.0, -119.0, 0) is True
+    assert _is_within_radius(49.0, -119.0, 49.0, -119.0, 0) is True
