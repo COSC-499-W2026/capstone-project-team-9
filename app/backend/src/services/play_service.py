@@ -6,11 +6,21 @@ from sqlmodel import Session
 from models import Play
 from repositories import ClueRepository
 from repositories.game_repo import get_game
-from repositories.play_repo import add_play_with_clues
+from repositories.play_repo import add_play_with_clues, get_play, count_play_clues, count_solved_play_clues, get_current_clue_id
 
  
 class GameNotFoundError(Exception):
     """Raised when a play is started for a game that does not exist."""
+
+class PlayNotFoundError(Exception):
+    """Raised when a play id does not exist."""
+
+@dataclass(frozen=True)
+class PlayState:
+    play: Play
+    current_clue_id: int | None  # lowest-position unsolved clue, None when all are solved
+    total_clues: int
+    solved_clues: int
 
 
 @dataclass(frozen=True)
@@ -39,3 +49,16 @@ class PlayService:
             raise ValueError("Not enough clues available for this game")
         play = add_play_with_clues(self.session, Play(game_id=game.id, user_id=user_id), clue_ids)
         return StartedPlay(play, clue_ids)
+
+    def get_play_state(self, play_id: int) -> PlayState:
+        """A play's progress. Raises PlayNotFoundError if the play is missing."""
+        play = get_play(self.session, play_id)
+        if play is None:
+            raise PlayNotFoundError("Play does not exist")
+        return PlayState(
+            play=play,
+            current_clue_id=get_current_clue_id(self.session, play_id),
+            total_clues=count_play_clues(self.session, play_id),
+            solved_clues=count_solved_play_clues(self.session, play_id),
+        )
+    
