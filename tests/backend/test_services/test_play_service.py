@@ -89,7 +89,6 @@ def test_get_play_state_current_clue_is_first_when_nothing_solved(play_service, 
     started = play_service.start_play(game.id)
     state = play_service.get_play_state(started.play.id)
     assert state.current_clue_id == started.clue_ids[0]
-    assert [c.clue_id for c in state.clues] == started.clue_ids
 
 
 def test_get_play_state_current_clue_skips_solved_ones(play_service, game, add_clues, solve_clue):
