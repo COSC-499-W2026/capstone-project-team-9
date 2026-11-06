@@ -1,6 +1,6 @@
 """Persistence for the Play and PlayClue tables."""
 
-from sqlmodel import Session, select
+from sqlmodel import Session, select, func
 
 from models import Play, PlayClue
 
@@ -24,7 +24,26 @@ def get_play(session: Session, play_id: int) -> Play | None:
     return session.get(Play, play_id)
 
 
-def get_play_clues(session: Session, play_id: int) -> list[PlayClue]:
-    """All clues in a play, ordered by position."""
-    statement = select(PlayClue).where(PlayClue.play_id == play_id).order_by(PlayClue.position)
-    return list(session.exec(statement).all())
+def count_play_clues(session: Session, play_id: int) -> int:
+    """How many clues the play has in total."""
+    statement = select(func.count()).select_from(PlayClue).where(PlayClue.play_id == play_id)
+    return session.exec(statement).one()
+
+
+def count_solved_play_clues(session: Session, play_id: int) -> int:
+    """How many of the play's clues are solved."""
+    statement = select(func.count()).select_from(PlayClue).where(
+        PlayClue.play_id == play_id, PlayClue.solved_at.is_not(None)
+    )
+    return session.exec(statement).one()
+
+
+def get_current_clue_id(session: Session, play_id: int) -> int | None:
+    """The lowest-position clue in the play that isn't solved yet, or None if all are solved."""
+    statement = (
+        select(PlayClue.clue_id)
+        .where(PlayClue.play_id == play_id, PlayClue.solved_at.is_(None))
+        .order_by(PlayClue.position)
+        .limit(1)
+    )
+    return session.exec(statement).first()

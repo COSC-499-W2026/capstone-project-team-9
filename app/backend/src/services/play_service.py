@@ -3,10 +3,10 @@ from dataclasses import dataclass
 
 from sqlmodel import Session
 
-from models import Play, PlayClue
+from models import Play
 from repositories import ClueRepository
 from repositories.game_repo import get_game
-from repositories.play_repo import add_play_with_clues, get_play, get_play_clues
+from repositories.play_repo import add_play_with_clues, get_play, count_play_clues, count_solved_play_clues, get_current_clue_id
 
  
 class GameNotFoundError(Exception):
@@ -18,19 +18,9 @@ class PlayNotFoundError(Exception):
 @dataclass(frozen=True)
 class PlayState:
     play: Play
-    clues: list[PlayClue]  # ordered by position
-
-    @property
-    def current_clue_id(self) -> int | None:
-        """The lowest-position clue that isn't solved yet, or None if all are solved."""
-        return next((c.clue_id for c in self.clues if c.solved_at is None), None)
-    @property
-    def total_clues(self) -> int:
-        return len(self.clues)
-
-    @property
-    def solved_clues(self) -> int:
-        return sum(1 for c in self.clues if c.solved_at is not None)
+    current_clue_id: int | None  # lowest-position unsolved clue, None when all are solved
+    total_clues: int
+    solved_clues: int
 
 
 @dataclass(frozen=True)
@@ -61,9 +51,14 @@ class PlayService:
         return StartedPlay(play, clue_ids)
 
     def get_play_state(self, play_id: int) -> PlayState:
-        """A play's clues in order, with progress. Raises PlayNotFoundError if the play is missing."""
+        """A play's progress. Raises PlayNotFoundError if the play is missing."""
         play = get_play(self.session, play_id)
         if play is None:
             raise PlayNotFoundError("Play does not exist")
-        return PlayState(play, get_play_clues(self.session, play_id))
+        return PlayState(
+            play=play,
+            current_clue_id=get_current_clue_id(self.session, play_id),
+            total_clues=count_play_clues(self.session, play_id),
+            solved_clues=count_solved_play_clues(self.session, play_id),
+        )
     
