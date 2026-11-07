@@ -10,3 +10,4 @@ the repository layer to save the results. No HTTP or raw SQL goes here.
 from .game_options_service import GameOptionsService
 from .game_service import GameService
 from .play_service import PlayService
+from .location_service import LocationService
