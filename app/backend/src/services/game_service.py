@@ -19,7 +19,9 @@ class GameService:
         self.clue_repo = clue_repo
 
     def _validate_settings(self, settings: GameCreate) -> None:
-        """Raise ValueError if any chosen setting is not an available option."""
+        """
+        Raise ValueError if any chosen setting is not an available option.
+        """
         if not MIN_GAME_LENGTH <= settings.num_clues <= MAX_GAME_LENGTH:
             raise ValueError(
                 f"Game length must be between {MIN_GAME_LENGTH} and {MAX_GAME_LENGTH}"
