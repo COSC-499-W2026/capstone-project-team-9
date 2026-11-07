@@ -1,7 +1,6 @@
-"""Read-only access to the Language and Difficulty lookup tables."""
 from sqlmodel import select
-from repositories import BaseRepository
 from models import Difficulty, Language
+from repositories import BaseRepository
 
 
 class GameOptionsRepository(BaseRepository):
