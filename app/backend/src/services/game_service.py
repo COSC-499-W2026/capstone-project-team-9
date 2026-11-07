@@ -1,9 +1,5 @@
-from sqlmodel import Session
-
 from models import Game
-from repositories import ClueRepository
-from repositories.game_options_repo import get_difficulty, get_language
-from repositories.game_repo import add_game
+from repositories import ClueRepository, GameOptionsRepository, GameRepository
 from schemas.game_schema import GameCreate
 from services.game_options_service import MAX_GAME_LENGTH, MIN_GAME_LENGTH
 
@@ -12,8 +8,14 @@ class GameService:
     """
     Service for validating and creating a game
     """
-    def __init__(self, session: Session, clue_repo: ClueRepository):
-        self.session = session       # TODO: remove session from GameService completely, make it only depend on repos
+    def __init__(
+        self,
+        game_repo: GameRepository,
+        game_options_repo: GameOptionsRepository,
+        clue_repo: ClueRepository
+    ):
+        self.game_repo = game_repo
+        self.game_options_repo = game_options_repo
         self.clue_repo = clue_repo
 
     def _validate_settings(self, settings: GameCreate) -> None:
@@ -22,9 +24,9 @@ class GameService:
             raise ValueError(
                 f"Game length must be between {MIN_GAME_LENGTH} and {MAX_GAME_LENGTH}"
             )
-        if get_language(self.session, settings.language_id) is None:
+        if self.game_options_repo.get_language(settings.language_id) is None:
             raise ValueError("Language does not exist")
-        if get_difficulty(self.session, settings.difficulty_id) is None:
+        if self.game_options_repo.get_difficulty(settings.difficulty_id) is None:
             raise ValueError("Difficulty does not exist")
 
 
@@ -43,7 +45,7 @@ class GameService:
         if available < settings.num_clues:
             raise ValueError("Not enough clues available for these settings")
 
-        return add_game(self.session, Game(
+        return self.game_repo.add_game(Game(
             num_clues=settings.num_clues,
             language_id=settings.language_id,
             difficulty_id=settings.difficulty_id,
