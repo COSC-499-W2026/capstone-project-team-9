@@ -27,16 +27,17 @@ GameRepositoryDep = Annotated[GameRepository, Depends(get_game_repository)]
 # SERVICE DEPENDENCIES --------------------------------------------------------
 
 def get_game_options_service(
-    session: SessionDep,
+    game_options_repo: GameOptionsRepositoryDep,
     clue_repo: ClueRepositoryDep
 ) -> GameOptionsService:
-    return GameOptionsService(session, clue_repo)
+    return GameOptionsService(game_options_repo, clue_repo)
 
 def get_game_service(
-    session: SessionDep,
+    game_repo: GameRepositoryDep,
+    game_options_repo: GameOptionsRepositoryDep,
     clue_repo: ClueRepositoryDep
 ) -> GameService:
-    return GameService(session, clue_repo)
+    return GameService(game_repo, game_options_repo, clue_repo)
 
 def get_play_service(
     session: SessionDep,
