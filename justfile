@@ -42,15 +42,15 @@ nuke:
 
 # ---------- Tests ----------
 
-# Run backend tests; optionally pass test path (e.g `/test_repos`)
+# Run backend tests; optionally pass a specific path (e.g `test_repos/`)
 [group('Tests')]
-test-backend *args:
-    docker compose exec backend pytest {{args}}
+test-backend path="":
+    docker compose exec backend pytest tests/backend/{{path}}
 
-# Run frontend tests
+# Run frontend tests; optionally pass a specific path (e.g `api/`)
 [group('Tests')]
-test-frontend *args:
-    docker compose exec frontend npm test {{args}}
+test-frontend path="":
+    docker compose exec frontend npm test tests/frontend/{{path}}
 
 # Run backend AND frontend test suites
 [group('Tests')]
