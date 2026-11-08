@@ -1,0 +1,173 @@
+/*
+ * Design tokens and shared styles for the in-game screens.
+ * Everything is scoped under `.game` so the rest of the app keeps its own look.
+ */
+
+.game {
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter', 'Segoe UI',
+    Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  --bg: #f5f5f7;
+  --bg-glow-1: rgba(0, 113, 227, 0.12);
+  --bg-glow-2: rgba(175, 82, 222, 0.1);
+  --surface: rgba(255, 255, 255, 0.72);
+  --surface-sunken: rgba(0, 0, 0, 0.04);
+  --border: rgba(0, 0, 0, 0.08);
+  --text: #1d1d1f;
+  --text-muted: #6e6e73;
+  --text-faint: #a1a1a6;
+
+  --accent: #0071e3;
+  --accent-hover: #0077ed;
+  --accent-soft: rgba(0, 113, 227, 0.1);
+  --on-accent: #ffffff;
+  --success: #28a745;
+
+  --radius-lg: 28px;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 32px rgba(0, 0, 0, 0.06);
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+
+  color-scheme: light;
+
+  /* Covers the whole viewport, above the app shell */
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow-y: auto;
+  font-family: var(--font);
+  color: var(--text);
+  background:
+    radial-gradient(60rem 40rem at 10% -10%, var(--bg-glow-1), transparent 60%),
+    radial-gradient(50rem 40rem at 110% 10%, var(--bg-glow-2), transparent 60%),
+    var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.47;
+  letter-spacing: -0.01em;
+}
+
+@media (prefers-color-scheme: dark) {
+  .game {
+    --bg: #000000;
+    --bg-glow-1: rgba(41, 151, 255, 0.16);
+    --bg-glow-2: rgba(191, 90, 242, 0.12);
+    --surface: rgba(28, 28, 30, 0.72);
+    --surface-sunken: rgba(255, 255, 255, 0.06);
+    --border: rgba(255, 255, 255, 0.1);
+    --text: #f5f5f7;
+    --text-muted: #a1a1a6;
+    --text-faint: #6e6e73;
+
+    --accent: #2997ff;
+    --accent-hover: #47a6ff;
+    --accent-soft: rgba(41, 151, 255, 0.16);
+    --success: #30d158;
+
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 32px rgba(0, 0, 0, 0.4);
+
+    color-scheme: dark;
+  }
+}
+
+.game *,
+.game *::before,
+.game *::after {
+  box-sizing: border-box;
+}
+
+.game h1,
+.game h2,
+.game h3 {
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.game button,
+.game input {
+  font: inherit;
+  color: inherit;
+}
+
+.game button {
+  cursor: pointer;
+}
+
+.game button:disabled {
+  cursor: default;
+}
+
+.game :focus-visible {
+  outline: 3px solid var(--accent-soft);
+  outline-offset: 2px;
+}
+
+/* Pill buttons */
+.game .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3.25rem;
+  padding: 0 1.75rem;
+  border: none;
+  border-radius: 999px;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition:
+    transform 0.2s var(--ease),
+    background-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.game .btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.game .btn:disabled {
+  opacity: 0.4;
+}
+
+.game .btn--primary {
+  background: var(--accent);
+  color: var(--on-accent);
+  box-shadow: 0 6px 20px -6px var(--accent);
+}
+
+.game .btn--primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.game .btn--secondary {
+  background: var(--surface-sunken);
+  color: var(--text);
+}
+
+.game .btn--block {
+  width: 100%;
+}
+
+.game .spinner {
+  width: 1.1em;
+  height: 1.1em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: game-spin 0.7s linear infinite;
+}
+
+@keyframes game-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game *,
+  .game *::before,
+  .game *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
