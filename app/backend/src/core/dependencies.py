@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import Depends
 from sqlmodel import Session
 from core.db import get_session
-from repositories import ClueRepository
+from repositories import ClueRepository, GameRepository, GameOptionsRepository
 from services import GameOptionsService, GameService, PlayService
 
 # SESSION DEPENDENCIES -----------------------------------------------------------
@@ -14,7 +14,15 @@ SessionDep = Annotated[Session, Depends(get_session)]
 def get_clue_repository(session: SessionDep) -> ClueRepository:
     return ClueRepository(session)
 
+def get_game_options_repository(session: SessionDep) -> GameOptionsRepository:
+    return GameOptionsRepository(session)
+
+def get_game_repository(session: SessionDep) -> GameRepository:
+    return GameRepository(session)
+
 ClueRepositoryDep = Annotated[ClueRepository, Depends(get_clue_repository)]
+GameOptionsRepositoryDep = Annotated[GameOptionsRepository, Depends(get_game_options_repository)]
+GameRepositoryDep = Annotated[GameRepository, Depends(get_game_repository)]
 
 # SERVICE DEPENDENCIES --------------------------------------------------------
 
