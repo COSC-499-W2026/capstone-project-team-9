@@ -4,6 +4,8 @@ from sqlmodel import Session, select, func
 
 from models import Play, PlayClue
 
+from core.clock import utc_now
+
 
 def add_play_with_clues(session: Session, play: Play, clue_ids: list[int]) -> Play:
     """
@@ -47,3 +49,25 @@ def get_current_clue_id(session: Session, play_id: int) -> int | None:
         .limit(1)
     )
     return session.exec(statement).first()
+
+def get_play_clue(session: Session, play_id: int, clue_id: int) -> PlayClue | None:
+    return session.get(PlayClue, (play_id, clue_id))
+
+
+def record_attempt(session: Session, play_clue: PlayClue, solved: bool) -> PlayClue:
+    """Count one more attempt on a clue, and mark it solved if the attempt was correct."""
+    play_clue.attempts += 1
+    if solved:
+        play_clue.solved_at = utc_now()
+    session.add(play_clue)
+    session.commit()
+    session.refresh(play_clue)
+    return play_clue
+
+
+def mark_play_complete(session: Session, play: Play) -> Play:
+    play.completed_at = utc_now()
+    session.add(play)
+    session.commit()
+    session.refresh(play)
+    return play
