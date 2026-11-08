@@ -2,7 +2,13 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
+import core.security
 from core.db import get_session
+from core.security import (
+    ACCESS_TOKEN_EXPIRE_SECONDS,
+    _get_token_user_id,
+    create_access_token,
+)
 from models.user_model import User
 from repositories.user_repo import create_user
 from routers.login_router import router
@@ -50,6 +56,92 @@ def test_login_success(client, user):
         "name": "Alice",
         "email": "alice@example.com",
     }
+
+
+def test_oauth2_token_authenticates_user(client, user, monkeypatch):
+    monkeypatch.setenv("AUTH_TOKEN_SECRET", "test-secret-with-at-least-32-characters")
+
+    response = client.post(
+        "/login/token",
+        data={"username": "alice@example.com", "password": "StrongPass123!"},
+    )
+
+    assert response.status_code == 200
+    token = response.json()["access_token"]
+    assert response.json()["token_type"] == "bearer"
+
+    current_user = client.get(
+        "/login/me",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert current_user.status_code == 200
+    assert current_user.json() == {"name": "Alice", "email": "alice@example.com"}
+
+
+@pytest.mark.parametrize(
+    "operation",
+    [
+        lambda: create_access_token(1),
+        lambda: _get_token_user_id("YQ.YQ"),
+    ],
+)
+def test_token_operations_require_authentication_secret(monkeypatch, operation):
+    monkeypatch.delenv("AUTH_TOKEN_SECRET", raising=False)
+
+    with pytest.raises(RuntimeError, match="AUTH_TOKEN_SECRET must be set"):
+        operation()
+
+
+def test_oauth2_token_rejects_invalid_password(client, user, monkeypatch):
+    monkeypatch.setenv("AUTH_TOKEN_SECRET", "test-secret-with-at-least-32-characters")
+
+    response = client.post(
+        "/login/token",
+        data={"username": "alice@example.com", "password": "wrong"},
+    )
+
+    assert response.status_code == 401
+    assert response.headers["www-authenticate"] == "Bearer"
+
+
+def test_me_rejects_tampered_token(client, user, monkeypatch):
+    monkeypatch.setenv("AUTH_TOKEN_SECRET", "test-secret-with-at-least-32-characters")
+    payload, _ = create_access_token(user.id).split(".")
+
+    response = client.get(
+        "/login/me",
+        headers={"Authorization": f"Bearer {payload}.{'A' * 43}"},
+    )
+
+    assert response.status_code == 401
+
+
+def test_me_rejects_expired_token(client, user, monkeypatch):
+    monkeypatch.setenv("AUTH_TOKEN_SECRET", "test-secret-with-at-least-32-characters")
+    monkeypatch.setattr(core.security.time, "time", lambda: 1000)
+    token = create_access_token(user.id)
+    monkeypatch.setattr(
+        core.security.time,
+        "time",
+        lambda: 1000 + ACCESS_TOKEN_EXPIRE_SECONDS,
+    )
+
+    response = client.get(
+        "/login/me",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    assert response.status_code == 401
+
+
+@pytest.mark.parametrize("authorization", [None, "Bearer invalid-token"])
+def test_me_rejects_missing_or_invalid_token(client, monkeypatch, authorization):
+    monkeypatch.setenv("AUTH_TOKEN_SECRET", "test-secret-with-at-least-32-characters")
+    headers = {} if authorization is None else {"Authorization": authorization}
+
+    response = client.get("/login/me", headers=headers)
+
+    assert response.status_code == 401
 
 
 def test_login_wrong_password(client, user):
