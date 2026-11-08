@@ -9,3 +9,5 @@ to keep the rest of the code clean and organized.
 
 from .base_repo import BaseRepository
 from .clue_repo import ClueRepository
+from .game_options_repo import GameOptionsRepository
+from .game_repo import GameRepository

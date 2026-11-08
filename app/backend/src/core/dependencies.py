@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import Depends
 from sqlmodel import Session
 from core.db import get_session
-from repositories import ClueRepository
+from repositories import ClueRepository, GameRepository, GameOptionsRepository
 from services import GameOptionsService, GameService, PlayService, LocationService
 
 # SESSION DEPENDENCIES -----------------------------------------------------------
@@ -14,27 +14,37 @@ SessionDep = Annotated[Session, Depends(get_session)]
 def get_clue_repository(session: SessionDep) -> ClueRepository:
     return ClueRepository(session)
 
+def get_game_options_repository(session: SessionDep) -> GameOptionsRepository:
+    return GameOptionsRepository(session)
+
+def get_game_repository(session: SessionDep) -> GameRepository:
+    return GameRepository(session)
+
 ClueRepositoryDep = Annotated[ClueRepository, Depends(get_clue_repository)]
+GameOptionsRepositoryDep = Annotated[GameOptionsRepository, Depends(get_game_options_repository)]
+GameRepositoryDep = Annotated[GameRepository, Depends(get_game_repository)]
 
 # SERVICE DEPENDENCIES --------------------------------------------------------
 
 def get_game_options_service(
-    session: SessionDep,
+    game_options_repo: GameOptionsRepositoryDep,
     clue_repo: ClueRepositoryDep
 ) -> GameOptionsService:
-    return GameOptionsService(session, clue_repo)
+    return GameOptionsService(game_options_repo, clue_repo)
 
 def get_game_service(
-    session: SessionDep,
+    game_repo: GameRepositoryDep,
+    game_options_repo: GameOptionsRepositoryDep,
     clue_repo: ClueRepositoryDep
 ) -> GameService:
-    return GameService(session, clue_repo)
+    return GameService(game_repo, game_options_repo, clue_repo)
 
 def get_play_service(
     session: SessionDep,
+    game_repo: GameRepositoryDep,
     clue_repo: ClueRepositoryDep
 ) -> PlayService:
-    return PlayService(session, clue_repo)
+    return PlayService(session, game_repo, clue_repo)
 
 def get_location_service() -> LocationService:
     return LocationService()

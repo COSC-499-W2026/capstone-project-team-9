@@ -2,7 +2,7 @@ import pytest
 from sqlmodel import select
 
 from models import Game, Play, PlayClue
-from repositories import ClueRepository
+from repositories import ClueRepository, GameRepository # TODO in future: MOCK these repositories
 from services.answer_service import CORRECT_MESSAGE, WRONG_MESSAGE, AnswerResult
 from services.play_service import (
     ClueAlreadySolvedError,
@@ -24,7 +24,7 @@ def game(session):
 
 @pytest.fixture
 def play_service(session):
-    return PlayService(session, ClueRepository(session))
+    return PlayService(session, GameRepository(session), ClueRepository(session))
 
 @pytest.fixture
 def fake_verify(monkeypatch):

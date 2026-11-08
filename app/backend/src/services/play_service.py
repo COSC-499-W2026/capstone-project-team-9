@@ -4,8 +4,7 @@ from dataclasses import dataclass
 from sqlmodel import Session
 
 from models import Play
-from repositories import ClueRepository
-from repositories.game_repo import get_game
+from repositories import ClueRepository, GameRepository
 from repositories.play_repo import (
     add_play_with_clues, get_play, count_play_clues,
     count_solved_play_clues, get_current_clue_id,
@@ -51,8 +50,9 @@ class PlayAnswerResult:
     play_complete: bool
 
 class PlayService:
-    def __init__(self, session: Session, clue_repo: ClueRepository):
+    def __init__(self, session: Session, game_repo: GameRepository, clue_repo: ClueRepository):
         self.session = session
+        self.game_repo = game_repo
         self.clue_repo = clue_repo
 
     def start_play(self, game_id: int, user_id: int | None = None) -> StartedPlay:
@@ -61,7 +61,7 @@ class PlayService:
         Nothing is saved if the game is missing or too few clues exist.
         user_id stays None until login exists.
         """
-        game = get_game(self.session, game_id)
+        game = self.game_repo.get_game(game_id)
         if game is None:
             raise GameNotFoundError("Game does not exist")
         clue_ids = self.clue_repo.get_random_clue_ids(
