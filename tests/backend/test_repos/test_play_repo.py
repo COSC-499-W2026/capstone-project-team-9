@@ -1,8 +1,11 @@
 from sqlmodel import select
 
 from models import Play, PlayClue
-from repositories.play_repo import add_play_with_clues, get_play, count_play_clues, count_solved_play_clues, get_current_clue_id
-
+from repositories.play_repo import (
+    add_play_with_clues, get_play, count_play_clues,
+    count_solved_play_clues, get_current_clue_id,
+    get_play, get_play_clue, mark_play_complete, record_attempt
+)
 
 def _rows(session, play_id):
     statement = select(PlayClue).where(PlayClue.play_id == play_id).order_by(PlayClue.position)
@@ -101,3 +104,50 @@ def test_get_current_clue_id_ignores_other_plays(session, solve_clue):
     second = add_play_with_clues(session, Play(), [3, 4])
     solve_clue(first.id, 1)
     assert get_current_clue_id(session, second.id) == 3
+
+def test_get_play_clue_found_and_missing(session):
+    play = add_play_with_clues(session, Play(), [1, 2])
+    assert get_play_clue(session, play.id, 2).position == 2
+    assert get_play_clue(session, play.id, 999) is None
+
+
+def test_get_play_clue_is_scoped_to_its_play(session):
+    first = add_play_with_clues(session, Play(), [1])
+    second = add_play_with_clues(session, Play(), [2])
+    assert get_play_clue(session, first.id, 2) is None
+    assert get_play_clue(session, second.id, 2) is not None
+
+
+def test_record_attempt_wrong_counts_but_does_not_solve(session):
+    play = add_play_with_clues(session, Play(), [1])
+    play_clue = record_attempt(session, get_play_clue(session, play.id, 1), solved=False)
+    assert play_clue.attempts == 1
+    assert play_clue.solved_at is None
+
+
+def test_record_attempt_correct_counts_and_solves(session):
+    play = add_play_with_clues(session, Play(), [1])
+    play_clue = record_attempt(session, get_play_clue(session, play.id, 1), solved=True)
+    assert play_clue.attempts == 1
+    assert play_clue.solved_at is not None
+
+
+def test_record_attempt_accumulates_attempts(session):
+    play = add_play_with_clues(session, Play(), [1])
+    play_clue = get_play_clue(session, play.id, 1)
+    record_attempt(session, play_clue, solved=False)
+    record_attempt(session, play_clue, solved=False)
+    assert record_attempt(session, play_clue, solved=True).attempts == 3
+
+
+def test_record_attempt_only_touches_that_clue(session):
+    play = add_play_with_clues(session, Play(), [1, 2])
+    record_attempt(session, get_play_clue(session, play.id, 1), solved=True)
+    other = get_play_clue(session, play.id, 2)
+    assert (other.attempts, other.solved_at) == (0, None)
+
+
+def test_mark_play_complete_sets_completed_at(session):
+    play = add_play_with_clues(session, Play(), [1])
+    assert play.completed_at is None
+    assert mark_play_complete(session, play).completed_at is not None
