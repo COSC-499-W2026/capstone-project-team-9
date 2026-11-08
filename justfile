@@ -11,71 +11,85 @@ db_user := env("POSTGRES_USER", "postgres")
 db_name := "language_game_db"
 
 # List all recipes
+[private]
 default:
     @just --list
 
 # ---------- App ----------
 
-# Build (or rebuild) the containers and run the app
+# Build/rebuild all containers and run the app
+[group('App')]
 build:
     docker compose up --build
 
 # Run the app
+[group('App')]
 up:
     docker compose up
 
 # Stop all containers
+[group('App')]
 down:
     docker compose down
 
 # Stop all containers AND delete the data volume
+[group('App')]
 nuke:
     docker compose down -v
 
 # ---------- Tests ----------
 
-# Run backend tests; optionally pass a path relative to tests/, e.g. `just test-backend test_users.py`
+# Run backend tests; optionally pass test path (e.g `/test_repos`)
+[group('Test')]
 test-backend *args:
     docker compose exec backend pytest {{args}}
 
 # Run frontend tests
+[group('Test')]
 test-frontend *args:
     docker compose exec frontend npm test {{args}}
 
-# Run the backend and frontend test suites
+# Run backend AND frontend test suites
+[group('Test')]
 test: test-backend test-frontend
 
 # ---------- Database ----------
 
 # Initialize the database
+[group('DB')]
 db-init:
     docker compose exec backend python scripts/init_db.py
 
 # Seed reference data (languages, difficulties, etc.)
+[group('DB')]
 db-seed:
     docker compose exec backend python scripts/seed_reference.py
 
 # Seed development-only data (e.g. fake users)
+[group('DB')]
 db-seed-dev:
     docker compose exec backend python scripts/seed_dev.py
 
 # DEV ONLY: drop all tables, re-initialize, and re-seed
+[group('DB')]
 db-reset:
     docker compose exec backend python scripts/reset_db.py
 
-# Open an interactive psql session (see README for psql tips)
+# Open an interactive psql session (See README for psql tips)
+[group('DB')]
 psql:
     docker compose exec db psql -U {{db_user}} -d {{db_name}}
 
 # ---------- Local venv (for your IDE only, not for running the app) ----------
 
-# Create a venv and install dependencies (then activate it yourself; see README)
-[unix]
+# Create/recreate a venv and install dependencies
+[unix, group('IDE')]
 venv:
     python -m venv .venv
     .venv/bin/python -m pip install -e "./app/backend[test]"
 
-[windows]
+# Create a venv and install dependencies
+[windows, group('IDE')]
 venv:
     python -m venv .venv
     .venv\Scripts\python.exe -m pip install -e "./app/backend[test]"
