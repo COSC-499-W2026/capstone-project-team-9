@@ -1,9 +1,11 @@
-import base64
+import hashlib
 import json
 
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+from jwcrypto import jwe, jwk
+from jwcrypto.common import base64url_decode, base64url_encode
 
 import core.security
 from core.db import get_session
@@ -81,15 +83,23 @@ def test_oauth2_token_authenticates_user(client, user, monkeypatch):
     assert current_user.json() == {"name": "Alice", "email": "alice@example.com"}
 
 
-def test_access_token_is_hs256_jwt(user, monkeypatch):
-    monkeypatch.setenv("AUTH_TOKEN_SECRET", "test-secret-with-at-least-32-characters")
+def test_access_token_is_encrypted_jwt(user, monkeypatch):
+    secret = "test-secret-with-at-least-32-characters"
+    monkeypatch.setenv("AUTH_TOKEN_SECRET", secret)
 
     token = create_access_token(user.id)
-    encoded_header, encoded_payload, _ = token.split(".")
-    header = json.loads(base64.urlsafe_b64decode(encoded_header + "=="))
-    payload = json.loads(base64.urlsafe_b64decode(encoded_payload + "=="))
+    parts = token.split(".")
+    assert len(parts) == 5
+    header = json.loads(base64url_decode(parts[0]))
+    assert header == {"alg": "dir", "enc": "A256GCM", "typ": "JWT"}
 
-    assert header == {"alg": "HS256", "typ": "JWT"}
+    key = hashlib.sha256(secret.encode()).digest()
+    encrypted_token = jwe.JWE()
+    encrypted_token.deserialize(
+        token,
+        key=jwk.JWK(kty="oct", k=base64url_encode(key)),
+    )
+    payload = json.loads(encrypted_token.payload)
     assert payload["sub"] == str(user.id)
     assert payload["exp"] > core.security.time.time()
     assert _get_token_user_id(token) == user.id
@@ -126,11 +136,12 @@ def test_oauth2_token_rejects_invalid_password(client, user, monkeypatch):
 
 def test_me_rejects_tampered_token(client, user, monkeypatch):
     monkeypatch.setenv("AUTH_TOKEN_SECRET", "test-secret-with-at-least-32-characters")
-    header, payload, _ = create_access_token(user.id).split(".")
+    parts = create_access_token(user.id).split(".")
+    parts[3] = ("A" if parts[3][0] != "A" else "B") + parts[3][1:]
 
     response = client.get(
         "/login/me",
-        headers={"Authorization": f"Bearer {header}.{payload}.{'A' * 43}"},
+        headers={"Authorization": f"Bearer {'.'.join(parts)}"},
     )
 
     assert response.status_code == 401
