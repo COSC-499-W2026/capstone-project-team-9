@@ -85,11 +85,11 @@ psql:
 # Create/recreate a venv and install dependencies
 [unix, group('IDE')]
 venv:
-    python -m venv .venv
+    [ -d .venv ] || python -m venv .venv
     .venv/bin/python -m pip install -e "./app/backend[test]"
 
-# Create a venv and install dependencies
+# Create/recreate a venv and install dependencies
 [windows, group('IDE')]
 venv:
-    python -m venv .venv
+    if (-not (Test-Path .venv)) { python -m venv .venv }
     .venv\Scripts\python.exe -m pip install -e "./app/backend[test]"
