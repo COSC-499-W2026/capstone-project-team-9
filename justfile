@@ -6,9 +6,9 @@ set dotenv-load := true
 # Windows users run recipes in PowerShell (macOS/Linux use the default shell)
 set windows-shell := ["powershell.exe", "-NoLogo", "-Command"]
 
-# Postgres username comes from .env (POSTGRES_USER is a guess; adjust to match yours)
-db_user := env("POSTGRES_USER", "postgres")
-db_name := "language_game_db"
+# Postgres variables come from .env
+db_user := env("POSTGRES_USER")
+db_name := env("POSTGRES_DB")
 
 # List all recipes
 [private]
