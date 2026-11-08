@@ -20,31 +20,34 @@ This repo contains the source code for Team 9's Capstone Software Engineering pr
 
 ## Instructions for Local Development
 
+- [Prerequisites](#prerequisites)
 - [Run the app](#run-the-app)
 - [Run unit tests](#run-unit-tests)
-- [Poke around in the container](#poke-around-in-the-container)
-- [Make your IDE happy with a Venv](#make-your-ide-happy-with-a-venv)
-- [Initialize, seed and reset the database](#initialize-seed-and-reset-the-database)
-- [Inspect the database](#inspect-the-database)
-
-> [!IMPORTANT]
-> #### Using Docker
-> Our app and tests must be run inside a **Docker container** to ensure that our environments and dependency versions are identical at all times. Our CI runs the test suite in a container built from the same image.
-> 
-> _**You will need Docker Desktop to be installed and running.**_
-
-> [!TIP]
-> #### Terminal Tips: tired of retyping long commands?
-> - use the `↑` up arrow key to cycle through previous commands
-> - use the `tab` key to cycle through files and directories
+- [Initialize, seed and inspect the database](#initialize-seed-and-inspect-the-database)
+- [Make your IDE happy with a venv](#make-your-ide-happy-with-a-venv)
+- [Poke around (Advanced Commands)](#poke-around-advanced-commands)
 
 ---
 
-### Install `just`
+### Prerequisites
 
-This project uses a [justfile](./justfile) to map common terminal commands to simple, short aliases. For example, instead of typing `docker compose exec frontend npm test` every time you want to run frontend tests, you can type `just frontend-test`!  
-  
-You will need to [install just](https://just.systems/man/en/installation.html) on your machine to use these aliases.
+#### 🐋 **Docker**
+
+> [!IMPORTANT]
+> Our app and tests must be run inside a **Docker container** to ensure that our environments and dependency versions are identical at all times. Our CI runs the test suite in a container built from the same image.
+>
+> _**You will need Docker Desktop to be [installed](https://docs.docker.com/get-started/get-docker/) and running.**_
+
+#### 🤖 **Just**
+
+> [!IMPORTANT]
+> 
+> We use [just](https://just.systems) to alias our most terminal common commands, so you don't have to remember long `docker compose` invocations. Run `just` with no arguments at any time to see every available command, grouped by category.
+> 
+> The commands are defined in the [justfile](./justfile), so go there if you want to see exactly what each one runs!
+
+
+To [install just](https://just.systems/man/en/installation.html) on your machine, run:
 ```
 # On Mac 
 brew install just
@@ -54,7 +57,17 @@ brew install just
 winget install Casey.Just
 ```
 
+#### >_ Terminal Tips
 
+`just` helps you waste less time in the terminal, and so do the following tricks!
+
+> [!TIP]
+> 
+> - use the `↑` up arrow key to cycle through previous commands
+> - use the `tab` key to cycle through files and directories
+> - in VS Code, use ``ctrl + ` `` to open and close the built-in terminal
+
+---
 
 ### Run the app
 
@@ -101,7 +114,7 @@ just test-backend test_services/
 
 ---
 
-### Initialize, seed and reset the database
+### Initialize, seed and inspect the database
 
 Reset the development database (drop all tables, re-initialize, and re-seed all in one step).
 ```
@@ -116,7 +129,10 @@ To inspect the database you have two options.
 just psql
 ```
 
-> [!TIP] psql tips
+> [!TIP]
+>
+> #### psql Tips
+> 
 > Some useful postgres commands to run in there:
 > - List all tables: `\dt`
 > - Get details of a table: `\d "TableName"`
@@ -129,36 +145,20 @@ just psql
 
 ---
 
-### Inspect the Database
-
-To enter an interactive Postgres session, run:
-```
-docker compose exec db psql -U <your-user-name> -d language_game_db
-```
-- Replace `<your-user-name>` with the username you set in `.env`
-
-
-
----
-
 ### Make your IDE happy with a venv
 
-> [!WARNING]
->
-> In _this_ project:
-> - you do not need a venv to run the app or tests
-> - you should not use a venv to run the app or tests
->   - If you do so accidentally, the [docker_guard](./src/core/docker_guard.py) should stop you
-> 
-> But you _should_ use a venv...
-> - ...to keep your code editor and linter happy! It's basically a way of telling VS Code what packages and Python version you are using so it can give you helpful tooltips and not freak out about import errors.
-> - ...to stop yourself from accidentally messing with your global Python environment and affecting other Python projects on your laptop
+> [!NOTE]
+> This step needs Python 3.12 or later installed on your machine, with `python` available on your PATH.
 
-1. Create a venv
+In this project, the venv is **only for your editor**. It tells VS Code which packages and Python version we use, so you get tooltips and no false import errors. Don't use it to run the app or tests; those always run in Docker (the [docker_guard](./src/core/docker_guard.py) will stop you if you try).
+
+Create (or re-create) a venv and install dependencies
 ```
-python -m venv .venv
+just venv
 ```
-2. Activate it:  
+- Rerun this every now and then if VS Code gives you weird import errors
+
+Activate your venv by opening a fresh terminal in VS Code, or by running the activation script:
 ```
 # On Mac/Linux
 source .venv/bin/activate
@@ -167,17 +167,12 @@ source .venv/bin/activate
 # On Windows
 .venv\Scripts\Activate.ps1
 ```
-3. Install dependencies:
-```
-python -m pip install -e "./app/backend[test]" 
-```
-- Rerun this every now and then if VS Code gives you weird import errors
 
 ---
 
+### Poke around (Advanced Commands)
 
-
-### Advanced
+These commands are deliberately not aliased in the justfile. Use them if you know what you're doing. Remember, in general, if you ever want to run modified versions of our common commands, the [justfile](./justfile) will tell you exactly what each alias runs under the hood.
 
 Run any command inside the backend container:
 ```
