@@ -40,20 +40,41 @@ This repo contains the source code for Team 9's Capstone Software Engineering pr
 
 ---
 
+### Install `just`
+
+This project uses a [justfile](./justfile) to map common terminal commands to simple, short aliases. For example, instead of typing `docker compose exec frontend npm test` every time you want to run frontend tests, you can type `just frontend-test`!  
+  
+You will need to [install just](https://just.systems/man/en/installation.html) on your machine to use these aliases.
+```
+# On Mac 
+brew install just
+``` 
+```
+# On Windows (Powershell)
+winget install Casey.Just
+```
+
+
+
 ### Run the app
 
 Build (or rebuild) the containers and run the app:
-```bash
-docker compose up --build
+```
+just build
 ```
 - Do this if running for the first time, or any time after changing `pyproject.toml`, `Dockerfile`, or `.dockerignore` (or pulling in changes that touch those files)
 - Good troubleshooting step to run this every now and then if things are unexpectedly breaking, especially if you're working with a new dependency
 
 Run the app:
-```bash
-docker compose up
+```
+just up
 ```
 - Edits to code files will reload automatically because of volume mounting, so no rebuild is needed for most code changes
+
+Stop the app:
+```
+just down
+```
 
 API: http://127.0.0.1:8000  
 Docs: http://127.0.0.1:8000/docs
@@ -62,31 +83,61 @@ Docs: http://127.0.0.1:8000/docs
 
 ### Run unit tests
 
-Run the test suite (while the containers are running):
+Run the test suited (while the containers are running):
 ```
-docker compose exec backend pytest
+just test-backend
 ```
 ```
-docker compose exec frontend npm test
+just test-frontend
 ```
-If you only want to run a specific test file, just add the relative filepath from `tests/` to the end of the command above.
+```
+just test
+```
+
+If you only want to run a specific test file or folder, add its path relative to tests/backend/ or tests/frontend/ to the end of the command, for example:
+```
+just test-backend test_services/
+```
 
 ---
 
-### Poke around in the container
+### Initialize, seed and reset the database
 
-Run any other command inside the container:
+Reset the development database (drop all tables, re-initialize, and re-seed all in one step).
 ```
-docker compose exec backend <command>
+just db-reset
 ```
-- e.g. if you want to run `uvicorn` or `fastapi` commands other than the default startup command
+- Run `just` to see commands for individual steps.
 
-Start an interactive shell:
+To inspect the database you have two options.
+1. Use a GUI tool like [DBeaver](https://dbeaver.io/download/)
+2. Enter an interactive Postgres CLI session:
 ```
-docker compose exec backend bash
+just psql
 ```
-- if you need to run more than one command at a time, or poke around in there for some reason
-- type `exit` to leave
+
+> [!TIP] psql tips
+> Some useful postgres commands to run in there:
+> - List all tables: `\dt`
+> - Get details of a table: `\d "TableName"`
+> 
+> You can also run SQL statements, terminated by semicolons:
+> ```SQL
+> INSERT INTO "Language" (name) VALUES ('Japanese');
+> SELECT * FROM "Language";
+> ```
+
+---
+
+### Inspect the Database
+
+To enter an interactive Postgres session, run:
+```
+docker compose exec db psql -U <your-user-name> -d language_game_db
+```
+- Replace `<your-user-name>` with the username you set in `.env`
+
+
 
 ---
 
@@ -124,52 +175,22 @@ python -m pip install -e "./app/backend[test]"
 
 ---
 
-### Initialize, seed and reset the database
 
-Initialize the database:
-```
-docker compose exec backend python scripts/init_db.py
-```
 
-Seed it with reference data like languages, difficulties etc
-```
-docker compose exec backend python scripts/seed_reference.py
-```
+### Advanced
 
-Seed it with development-only data like fake users:
+Run any command inside the backend container:
 ```
-docker compose exec backend python scripts/seed_dev.py
+docker compose exec backend <command>
 ```
+- e.g. if you want to run `uvicorn` or `fastapi` commands other than the default startup command
 
-⭐ Reset the database - drop all tables, re-initialize, and re-seed all in one step (DEVELOPMENT ONLY):
+Start an interactive shell:
 ```
-docker compose exec backend python scripts/reset_db.py
+docker compose exec backend bash
 ```
-
-If you just want to stop all containers and delete the data volume, run:
-```
-docker compose down -v 
-```
-
----
-
-### Inspect the Database
-
-To enter an interactive Postgres session, run:
-```
-docker compose exec db psql -U <your-user-name> -d language_game_db
-```
-- Replace `<your-user-name>` with the username you set in `.env`
-
-Some postgres commands you can run in there:
-- List all tables: `\dt`
-- Get details of a table: `\d "TableName"`
-
-You can also run SQL commands, like the following (but unless it's for setup/testing purposes, you should probably stick to queries (i.e. `SELECT`) only):
-```SQL
-INSERT INTO "Language" (name) VALUES ('Japanese');
-SELECT * FROM "Language";
-```
+- if you need to run more than one command at a time, or poke around in there for some reason
+- type `exit` to leave
 
 ---
 
