@@ -27,7 +27,7 @@ class LocationService:
     def __init__(self):
         pass
 
-    def verify_location(lat: float, lon: float) -> LocationResult:
+    def verify_location(self, lat: float, lon: float) -> LocationResult:
         """Return allowed/blocked for the player's coordinates."""
         campus = get_campus_location()
         if _is_within_radius(lat, lon, campus.latitude, campus.longitude, campus.radius_m):
@@ -35,7 +35,7 @@ class LocationService:
         return LocationResult(False, BLOCKED_MESSAGE)
 
 
-    def verify_location_with_target(lat: float, lon: float, target: LocationArea) -> LocationResult:
+    def verify_location_with_target(self, lat: float, lon: float, target: LocationArea) -> LocationResult:
         """Return allowed/blocked for the player's coordinates against a target location."""
         if _is_within_radius(lat, lon, target.latitude, target.longitude, target.radius):
             return LocationResult(True, ALLOWED_MESSAGE)
