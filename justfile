@@ -13,7 +13,10 @@ db_name := "language_game_db"
 # List all recipes
 [private]
 default:
-    @just --list
+    @just --list --unsorted
+
+[private]
+help: default
 
 # ---------- App ----------
 
@@ -40,43 +43,43 @@ nuke:
 # ---------- Tests ----------
 
 # Run backend tests; optionally pass test path (e.g `/test_repos`)
-[group('Test')]
+[group('Tests')]
 test-backend *args:
     docker compose exec backend pytest {{args}}
 
 # Run frontend tests
-[group('Test')]
+[group('Tests')]
 test-frontend *args:
     docker compose exec frontend npm test {{args}}
 
 # Run backend AND frontend test suites
-[group('Test')]
+[group('Tests')]
 test: test-backend test-frontend
 
 # ---------- Database ----------
 
 # Initialize the database
-[group('DB')]
+[group('Database')]
 db-init:
     docker compose exec backend python scripts/init_db.py
 
 # Seed reference data (languages, difficulties, etc.)
-[group('DB')]
+[group('Database')]
 db-seed:
     docker compose exec backend python scripts/seed_reference.py
 
 # Seed development-only data (e.g. fake users)
-[group('DB')]
+[group('Database')]
 db-seed-dev:
     docker compose exec backend python scripts/seed_dev.py
 
 # DEV ONLY: drop all tables, re-initialize, and re-seed
-[group('DB')]
+[group('Database')]
 db-reset:
     docker compose exec backend python scripts/reset_db.py
 
 # Open an interactive psql session (See README for psql tips)
-[group('DB')]
+[group('Database')]
 psql:
     docker compose exec db psql -U {{db_user}} -d {{db_name}}
 
