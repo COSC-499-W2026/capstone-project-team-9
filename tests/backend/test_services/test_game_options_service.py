@@ -4,11 +4,11 @@ from services.game_options_service import (
     MIN_GAME_LENGTH,
     GameOptionsService,
 )
-from repositories import ClueRepository # TODO in future: mock ClueRepository instead of importing it
+from repositories import ClueRepository, GameOptionsRepository # TODO in future: MOCK these repositories
 
 @pytest.fixture
 def game_options_service(session):
-    return GameOptionsService(session, ClueRepository(session))
+    return GameOptionsService(GameOptionsRepository(session), ClueRepository(session))
 
 
 def test_max_equals_clue_count_when_fewer_than_cap(game_options_service, add_clues):

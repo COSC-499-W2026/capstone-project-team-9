@@ -3,7 +3,7 @@ from sqlmodel import select
 
 from models import Game, Play, PlayClue
 from services.play_service import GameNotFoundError, PlayService, PlayNotFoundError
-from repositories import ClueRepository
+from repositories import ClueRepository, GameRepository # TODO in future: MOCK these repositories
 
 NUM_CLUES = 3
 
@@ -17,7 +17,7 @@ def game(session):
 
 @pytest.fixture
 def play_service(session):
-    return PlayService(session, ClueRepository(session))
+    return PlayService(session, GameRepository(session), ClueRepository(session))
 
 
 def _saved_plays(session):
