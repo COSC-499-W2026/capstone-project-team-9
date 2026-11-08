@@ -42,7 +42,7 @@ This repo contains the source code for Team 9's Capstone Software Engineering pr
 
 > [!IMPORTANT]
 > 
-> We use [just](https://just.systems) to alias our most terminal common commands, so you don't have to remember long `docker compose` invocations. Run `just` with no arguments at any time to see every available command, grouped by category.
+> We use [just](https://just.systems) to alias our most common terminal commands, so you don't have to remember long `docker compose` invocations. Run `just` with no arguments at any time to see every available command, grouped by category.
 > 
 > The commands are defined in the [justfile](./justfile), so go there if you want to see exactly what each one runs!
 
@@ -66,6 +66,17 @@ winget install Casey.Just
 > - use the `↑` up arrow key to cycle through previous commands
 > - use the `tab` key to cycle through files and directories
 > - in VS Code, use ``ctrl + ` `` to open and close the built-in terminal
+
+---
+
+### Clone the repo and set environment variables
+
+Clone the repository locally:
+```
+git clone https://github.com/COSC-499-W2026/capstone-project-team-9
+```
+
+Then set your environment variables by following the instructions in [.env.example](./.env.example)
 
 ---
 
@@ -96,7 +107,7 @@ Docs: http://127.0.0.1:8000/docs
 
 ### Run unit tests
 
-Run the test suited (while the containers are running):
+Run the test suite (while the containers are running):
 ```
 just test-backend
 ```
