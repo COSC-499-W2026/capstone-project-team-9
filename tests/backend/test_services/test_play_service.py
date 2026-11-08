@@ -2,9 +2,16 @@ import pytest
 from sqlmodel import select
 
 from models import Game, Play, PlayClue
-from services.play_service import GameNotFoundError, PlayService
 from repositories import ClueRepository
-
+from services.answer_service import CORRECT_MESSAGE, WRONG_MESSAGE, AnswerResult
+from services.play_service import (
+    ClueAlreadySolvedError,
+    ClueNotInPlayError,
+    GameNotFoundError,
+    PlayNotFoundError,
+    PlayService,
+    ClueNotCurrentError
+)
 NUM_CLUES = 3
 
 
@@ -19,9 +26,38 @@ def game(session):
 def play_service(session):
     return PlayService(session, ClueRepository(session))
 
+@pytest.fixture
+def fake_verify(monkeypatch):
+    """Fake verify_answer (OCR + location). install(correct) or install(error=...); returns the list of clue ids checked."""
+    calls = []
+
+    def install(correct: bool = True, error: Exception | None = None):
+        def fake(session, clue_id, image_bytes, lat, lon):
+            calls.append(clue_id)
+            if error:
+                raise error
+            return AnswerResult(correct, CORRECT_MESSAGE if correct else WRONG_MESSAGE)
+        monkeypatch.setattr("services.play_service.verify_answer", fake)
+        return calls
+    return install
+
+
+@pytest.fixture
+def started(play_service, game, add_clues):
+    add_clues(NUM_CLUES)
+    return play_service.start_play(game.id)
+
 
 def _saved_plays(session):
     return session.exec(select(Play)).all()
+
+def _submit(play_service, started, clue_index=0):
+    return play_service.submit_answer(started.play.id, started.clue_ids[clue_index], b"img", 49.0, -119.0)
+
+
+def _play_clue(session, started, clue_index=0):
+    return session.get(PlayClue, (started.play.id, started.clue_ids[clue_index]))
+
 
 
 def test_start_play_saves_play_for_the_game(play_service, session, game, add_clues):
@@ -83,3 +119,132 @@ def test_start_play_raises_when_not_enough_clues_and_saves_nothing(play_service,
         play_service.start_play(game.id)
     assert _saved_plays(session) == []
     assert session.exec(select(PlayClue)).all() == []
+
+def test_get_play_state_current_clue_is_first_when_nothing_solved(play_service, game, add_clues):
+    add_clues(5)
+    started = play_service.start_play(game.id)
+    state = play_service.get_play_state(started.play.id)
+    assert state.current_clue_id == started.clue_ids[0]
+
+
+def test_get_play_state_current_clue_skips_solved_ones(play_service, game, add_clues, solve_clue):
+    add_clues(5)
+    started = play_service.start_play(game.id)
+    solve_clue(started.play.id, started.clue_ids[0])
+    assert play_service.get_play_state(started.play.id).current_clue_id == started.clue_ids[1]
+
+
+def test_get_play_state_current_clue_is_lowest_unsolved_when_solved_out_of_order(
+    play_service, game, add_clues, solve_clue
+):
+    add_clues(5)
+    started = play_service.start_play(game.id)
+    solve_clue(started.play.id, started.clue_ids[1])  # solve the 2nd clue first
+    assert play_service.get_play_state(started.play.id).current_clue_id == started.clue_ids[0]
+    solve_clue(started.play.id, started.clue_ids[0])
+    assert play_service.get_play_state(started.play.id).current_clue_id == started.clue_ids[2]
+
+
+def test_get_play_state_current_clue_is_none_when_all_solved(play_service, game, add_clues, solve_clue):
+    add_clues(NUM_CLUES)
+    started = play_service.start_play(game.id)
+    for clue_id in started.clue_ids:
+        solve_clue(started.play.id, clue_id)
+    assert play_service.get_play_state(started.play.id).current_clue_id is None
+
+
+def test_get_play_state_raises_for_unknown_play(play_service):
+    with pytest.raises(PlayNotFoundError):
+        play_service.get_play_state(999)
+
+def test_get_play_state_counts_total_and_solved(play_service, game, add_clues, solve_clue):
+    add_clues(5)
+    started = play_service.start_play(game.id)
+    state = play_service.get_play_state(started.play.id)
+    assert (state.total_clues, state.solved_clues) == (NUM_CLUES, 0)
+
+    solve_clue(started.play.id, started.clue_ids[0])
+    solve_clue(started.play.id, started.clue_ids[2])  # out of order on purpose
+    state = play_service.get_play_state(started.play.id)
+    assert (state.total_clues, state.solved_clues) == (NUM_CLUES, 2)
+
+def test_submit_answer_correct_solves_the_clue(play_service, session, started, fake_verify):
+    fake_verify(True)
+    result = _submit(play_service, started)
+    assert (result.correct, result.message) == (True, CORRECT_MESSAGE)
+    assert (result.attempts, result.play_complete) == (1, False)
+    assert _play_clue(session, started).solved_at is not None
+
+
+def test_submit_answer_wrong_counts_attempt_but_does_not_solve(play_service, session, started, fake_verify):
+    fake_verify(False)
+    result = _submit(play_service, started)
+    assert (result.correct, result.attempts, result.play_complete) == (False, 1, False)
+    assert _play_clue(session, started).solved_at is None
+
+
+def test_submit_answer_attempts_accumulate(play_service, started, fake_verify):
+    fake_verify(False)
+    _submit(play_service, started)
+    assert _submit(play_service, started).attempts == 2
+    fake_verify(True)
+    assert _submit(play_service, started).attempts == 3
+
+
+def test_submit_answer_solving_last_clue_completes_the_play(play_service, session, started, fake_verify):
+    fake_verify(True)
+    results = [_submit(play_service, started, i) for i in range(NUM_CLUES)]
+    assert [r.play_complete for r in results] == [False, False, True]
+    assert session.get(Play, started.play.id).completed_at is not None
+
+
+
+def test_submit_answer_wrong_answer_on_last_clue_does_not_complete(play_service, session, started, fake_verify):
+    fake_verify(True)
+    _submit(play_service, started, 0)
+    _submit(play_service, started, 1)
+    fake_verify(False)
+    assert _submit(play_service, started, 2).play_complete is False
+    assert session.get(Play, started.play.id).completed_at is None
+
+
+def test_submit_answer_unknown_play_raises_without_checking(play_service, fake_verify):
+    calls = fake_verify(True)
+    with pytest.raises(PlayNotFoundError):
+        play_service.submit_answer(999, 1, b"img", 49.0, -119.0)
+    assert calls == []
+
+
+def test_submit_answer_clue_not_in_play_raises_without_checking(play_service, started, fake_verify):
+    calls = fake_verify(True)
+    with pytest.raises(ClueNotInPlayError):
+        play_service.submit_answer(started.play.id, 999, b"img", 49.0, -119.0)
+    assert calls == []
+
+
+def test_submit_answer_already_solved_raises_and_keeps_attempts(play_service, session, started, fake_verify):
+    fake_verify(True)
+    _submit(play_service, started)
+    with pytest.raises(ClueAlreadySolvedError):
+        _submit(play_service, started)
+    assert _play_clue(session, started).attempts == 1
+
+
+def test_submit_answer_unreadable_image_records_nothing(play_service, session, started, fake_verify):
+    fake_verify(error=ValueError("Not a readable image"))
+    with pytest.raises(ValueError):
+        _submit(play_service, started)
+    assert _play_clue(session, started).attempts == 0
+
+def test_submit_answer_for_a_later_clue_raises_and_records_nothing(play_service, session, started, fake_verify):
+    calls = fake_verify(True)
+    with pytest.raises(ClueNotCurrentError):
+        _submit(play_service, started, 1)  # clue 2 while clue 1 is current
+    assert calls == []
+    assert _play_clue(session, started, 1).attempts == 0
+
+
+def test_submit_answer_moves_on_to_the_next_clue_after_solving(play_service, started, fake_verify):
+    fake_verify(True)
+    _submit(play_service, started, 0)
+    assert _submit(play_service, started, 1).correct is True
