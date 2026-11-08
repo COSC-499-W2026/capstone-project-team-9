@@ -37,6 +37,7 @@ down:
 
 # Stop all containers AND delete the data volume
 [group('App')]
+[confirm('⚠️  Are you sure you want to nuke all data volumes? (y/N)')]
 nuke:
     docker compose down -v
 
@@ -75,6 +76,7 @@ db-seed-dev:
 
 # DEV ONLY: drop all tables, re-initialize, and re-seed
 [group('Database')]
+[confirm('⚠️  Are you sure you want to reset your development database? (y/N)')]
 db-reset:
     docker compose exec backend python scripts/reset_db.py
 
