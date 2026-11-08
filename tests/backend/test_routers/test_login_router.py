@@ -1,3 +1,6 @@
+import base64
+import json
+
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
@@ -78,15 +81,32 @@ def test_oauth2_token_authenticates_user(client, user, monkeypatch):
     assert current_user.json() == {"name": "Alice", "email": "alice@example.com"}
 
 
+def test_access_token_is_hs256_jwt(user, monkeypatch):
+    monkeypatch.setenv("AUTH_TOKEN_SECRET", "test-secret-with-at-least-32-characters")
+
+    token = create_access_token(user.id)
+    encoded_header, encoded_payload, _ = token.split(".")
+    header = json.loads(base64.urlsafe_b64decode(encoded_header + "=="))
+    payload = json.loads(base64.urlsafe_b64decode(encoded_payload + "=="))
+
+    assert header == {"alg": "HS256", "typ": "JWT"}
+    assert payload["sub"] == str(user.id)
+    assert payload["exp"] > core.security.time.time()
+    assert _get_token_user_id(token) == user.id
+
+
+@pytest.mark.parametrize("secret", [None, "too-short"])
 @pytest.mark.parametrize(
     "operation",
-    [
-        lambda: create_access_token(1),
-        lambda: _get_token_user_id("YQ.YQ"),
-    ],
+    [lambda: create_access_token(1), lambda: _get_token_user_id("a.b.c")],
 )
-def test_token_operations_require_authentication_secret(monkeypatch, operation):
-    monkeypatch.delenv("AUTH_TOKEN_SECRET", raising=False)
+def test_token_operations_require_long_authentication_secret(
+    monkeypatch, secret, operation
+):
+    if secret is None:
+        monkeypatch.delenv("AUTH_TOKEN_SECRET", raising=False)
+    else:
+        monkeypatch.setenv("AUTH_TOKEN_SECRET", secret)
 
     with pytest.raises(RuntimeError, match="AUTH_TOKEN_SECRET must be set"):
         operation()
@@ -106,11 +126,11 @@ def test_oauth2_token_rejects_invalid_password(client, user, monkeypatch):
 
 def test_me_rejects_tampered_token(client, user, monkeypatch):
     monkeypatch.setenv("AUTH_TOKEN_SECRET", "test-secret-with-at-least-32-characters")
-    payload, _ = create_access_token(user.id).split(".")
+    header, payload, _ = create_access_token(user.id).split(".")
 
     response = client.get(
         "/login/me",
-        headers={"Authorization": f"Bearer {payload}.{'A' * 43}"},
+        headers={"Authorization": f"Bearer {header}.{payload}.{'A' * 43}"},
     )
 
     assert response.status_code == 401
