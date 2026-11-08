@@ -41,9 +41,10 @@ def get_game_service(
 
 def get_play_service(
     session: SessionDep,
+    game_repo: GameRepositoryDep,
     clue_repo: ClueRepositoryDep
 ) -> PlayService:
-    return PlayService(session, clue_repo)
+    return PlayService(session, game_repo, clue_repo)
 
 GameOptionsServiceDep = Annotated[GameOptionsService, Depends(get_game_options_service)]
 GameServiceDep = Annotated[GameService, Depends(get_game_service)]
