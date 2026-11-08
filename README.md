@@ -21,6 +21,7 @@ This repo contains the source code for Team 9's Capstone Software Engineering pr
 ## Instructions for Local Development
 
 - [Prerequisites](#prerequisites)
+- [Clone the repo and set environment variables](#clone-the-repo-and-set-environment-variables)
 - [Run the app](#run-the-app)
 - [Run unit tests](#run-unit-tests)
 - [Initialize, seed and inspect the database](#initialize-seed-and-inspect-the-database)
