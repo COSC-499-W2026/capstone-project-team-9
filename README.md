@@ -46,6 +46,7 @@ This repo contains the source code for Team 9's Capstone Software Engineering pr
 > We use [just](https://just.systems) to alias our most common terminal commands, so you don't have to remember long `docker compose` invocations. Run `just` with no arguments at any time to see every available command, grouped by category.
 > 
 > The commands are defined in the [justfile](./justfile), so go there if you want to see exactly what each one runs!
+> > Tip: install the VS Code extension [vscode-just](https://marketplace.visualstudio.com/items?itemName=nefrob.vscode-just-syntax) for `just` syntax highlighting
 
 
 To [install just](https://just.systems/man/en/installation.html) on your machine, run:
