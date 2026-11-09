@@ -1,7 +1,5 @@
 from dataclasses import dataclass
 
-from sqlmodel import Session
-
 from repositories import TargetRepository
 from services import LocationService
 from services.ocr_service import matches_room
