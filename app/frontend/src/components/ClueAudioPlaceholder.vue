@@ -1,6 +1,23 @@
 <script setup>
 // Static stand-in for the clue audio player until the backend serves clue audio.
-// TODO: replace with the real player in the audio PR.
+// TODO: delete this file in the audio PR (along with routers/dev_router.py and its block in main.py).
+import { onMounted, ref } from 'vue'
+import { get } from '../api/client'
+
+const props = defineProps({
+  clueId: { type: Number, required: true },
+})
+
+// TESTING ONLY: show which room this clue points to, so testers know which sign to photograph.
+// The endpoint only exists when the backend runs with ENV=development; otherwise nothing shows.
+const testRoom = ref('')
+onMounted(async () => {
+  try {
+    testRoom.value = (await get(`/dev/clues/${props.clueId}/room`)).room
+  } catch {
+    // not in development
+  }
+})
 
 const BAR_COUNT = 36
 
@@ -26,6 +43,7 @@ const bars = Array.from({ length: BAR_COUNT }, (_, i) => {
     </div>
 
     <p class="player__caption">Clue audio coming soon</p>
+    <p v-if="testRoom" class="player__test-room">Test mode · Room <strong>{{ testRoom }}</strong></p>
   </div>
 </template>
 
@@ -75,5 +93,14 @@ const bars = Array.from({ length: BAR_COUNT }, (_, i) => {
   margin: -0.75rem 0 0;
   font-size: 0.8125rem;
   color: var(--text-muted);
+}
+
+.player__test-room {
+  margin: -1rem 0 0;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.8125rem;
 }
 </style>

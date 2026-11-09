@@ -31,9 +31,28 @@ def test_register_has_value(client, session):
 
     assert response.status_code == 200
     assert response.json() == [
-        {"name": "Alice", "email": "alice@example.com"},
-        {"name": "Bob", "email": "bob@example.com"},
+        {"name": "Alice", "email": "alice@example.com", "role": "student"},
+        {"name": "Bob", "email": "bob@example.com", "role": "student"},
     ]
+
+
+def test_register_uses_student_role_and_ignores_submitted_role(client):
+    response = client.post(
+        "/users/register",
+        json={
+            "name": "Alice",
+            "email": "alice@example.com",
+            "password": "StrongPass123!",
+            "role": "admin",
+        },
+    )
+
+    assert response.status_code == 201
+    assert response.json() == {
+        "name": "Alice",
+        "email": "alice@example.com",
+        "role": "student",
+    }
 
 
 def test_invalid_email_returns_422(client):

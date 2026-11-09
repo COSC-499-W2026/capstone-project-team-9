@@ -60,6 +60,7 @@ def test_login_success(client, user):
     assert response.json() == {
         "name": "Alice",
         "email": "alice@example.com",
+        "role": "student",
     }
 
 

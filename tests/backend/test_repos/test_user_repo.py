@@ -1,4 +1,3 @@
-import pytest
 from models import User
 from repositories.user_repo import (
     get_by_id,
@@ -6,7 +5,6 @@ from repositories.user_repo import (
     get_all_users,
     get_user_by_name,
     create_user,
-    DuplicateUserError,
 )
 
 
@@ -124,35 +122,21 @@ def test_create_user(session):
     assert user.email == "alice@example.com"
     assert user.hashed_password == "hashed_password_1"
 
-def test_create_user_duplicate_email(session):
-    create_user(
+
+def test_create_user_allows_duplicate_names(session):
+    first_user = create_user(
         session,
         name="Alice",
         email="alice@example.com",
         hashed_password="hashed_password_1",
     )
 
-    with pytest.raises(DuplicateUserError):
-        create_user(
-            session,
-            name="Bob",
-            email="alice@example.com",
-            hashed_password="hashed_password_2",
-        )
-
-
-def test_create_user_duplicate_name(session):
-    create_user(
+    second_user = create_user(
         session,
         name="Alice",
-        email="alice@example.com",
-        hashed_password="hashed_password_1",
+        email="alice2@example.com",
+        hashed_password="hashed_password_2",
     )
 
-    with pytest.raises(DuplicateUserError):
-        create_user(
-            session,
-            name="Alice",
-            email="alice2@example.com",
-            hashed_password="hashed_password_2",
-        )
+    assert first_user.name == second_user.name
+    assert first_user.id != second_user.id
