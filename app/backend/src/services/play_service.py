@@ -1,11 +1,9 @@
 """Process "Start play": pick random clues for a game and save the play."""
 from dataclasses import dataclass
 
-from sqlmodel import Session
-
 from models import Play
 from repositories import ClueRepository, GameRepository, PlayRepository
-from services.answer_service import verify_answer
+from services import AnswerService
 
  
 class GameNotFoundError(Exception):
@@ -48,12 +46,12 @@ class PlayAnswerResult:
 class PlayService:
     def __init__(
         self,
-        session: Session,
+        answer_service: AnswerService,
         play_repo: PlayRepository,
         game_repo: GameRepository,
         clue_repo: ClueRepository
     ):
-        self.session = session
+        self.answer_service = answer_service
         self.play_repo = play_repo
         self.game_repo = game_repo
         self.clue_repo = clue_repo
@@ -106,7 +104,7 @@ class PlayService:
         if self.play_repo.get_current_clue_id(play_id) != clue_id:
             raise ClueNotCurrentError("Clue is not the current clue")
 
-        answer = verify_answer(self.session, clue_id, image_bytes, lat, lon)
+        answer = self.answer_service.verify_answer(clue_id, image_bytes, lat, lon)
         self.play_repo.record_attempt(play_clue, answer.correct)
 
         play_complete = answer.correct and self.play_repo.get_current_clue_id(play_id) is None
