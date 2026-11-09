@@ -98,3 +98,22 @@ venv:
 venv:
     if (-not (Test-Path .venv)) { python -m venv .venv }
     .venv\Scripts\python.exe -m pip install -e "./app/backend[test]"
+
+
+# Delete __pycache__, node_modules and *.egg-info folders; keeps .git and .venv
+[unix, group('IDE')]
+clean:
+    find . \( -name .git -o -name .venv \) -prune -o \
+        \( -name __pycache__ -o -name node_modules -o -name '*.egg-info' \) \
+        -type d -prune -exec rm -rf {} +
+
+# Delete __pycache__, node_modules and *.egg-info folders; keeps .git and .venv
+[windows, group('IDE')]
+clean:
+    #!powershell.exe
+    $names = '__pycache__', 'node_modules', '*.egg-info'
+    $skip  = '[\\/](\.git|\.venv)[\\/]'
+
+    Get-ChildItem -Recurse -Force -Directory -Include $names |
+        Where-Object { $_.FullName -notmatch $skip } |
+        Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
