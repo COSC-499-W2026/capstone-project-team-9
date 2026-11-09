@@ -6,7 +6,7 @@ from sqlmodel import Session
 from core.db import get_session
 from core.security import decode_access_token
 from models import User
-from repositories import ClueRepository, GameRepository, GameOptionsRepository
+from repositories import ClueRepository, GameRepository, GameOptionsRepository, PlayRepository
 from repositories.user_repo import get_by_id
 from services import GameOptionsService, GameService, PlayService, LocationService
 
@@ -37,9 +37,13 @@ def get_game_options_repository(session: SessionDep) -> GameOptionsRepository:
 def get_game_repository(session: SessionDep) -> GameRepository:
     return GameRepository(session)
 
+def get_play_repository(session: SessionDep) -> PlayRepository:
+    return PlayRepository(session)
+
 ClueRepositoryDep = Annotated[ClueRepository, Depends(get_clue_repository)]
 GameOptionsRepositoryDep = Annotated[GameOptionsRepository, Depends(get_game_options_repository)]
 GameRepositoryDep = Annotated[GameRepository, Depends(get_game_repository)]
+PlayRepositoryDep = Annotated[PlayRepository, Depends(get_play_repository)]
 
 # SERVICE DEPENDENCIES --------------------------------------------------------
 
@@ -58,10 +62,11 @@ def get_game_service(
 
 def get_play_service(
     session: SessionDep,
+    play_repo: PlayRepositoryDep,
     game_repo: GameRepositoryDep,
-    clue_repo: ClueRepositoryDep
+    clue_repo: ClueRepositoryDep,
 ) -> PlayService:
-    return PlayService(session, game_repo, clue_repo)
+    return PlayService(session, play_repo, game_repo, clue_repo)
 
 def get_location_service() -> LocationService:
     return LocationService()
