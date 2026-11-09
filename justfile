@@ -85,30 +85,30 @@ db-reset:
 psql:
     docker compose exec db psql -U {{db_user}} -d {{db_name}}
 
-# ---------- Local venv (for your IDE only, not for running the app) ----------
+# ---------- Local Stuff (for your explorer and IDE only, not for running the app) ----------
 
 # Create/recreate a venv and install dependencies
-[unix, group('IDE')]
+[unix, group('Local')]
 venv:
     [ -d .venv ] || python -m venv .venv
     .venv/bin/python -m pip install -e "./app/backend[test]"
 
 # Create/recreate a venv and install dependencies
-[windows, group('IDE')]
+[windows, group('Local')]
 venv:
     if (-not (Test-Path .venv)) { python -m venv .venv }
     .venv\Scripts\python.exe -m pip install -e "./app/backend[test]"
 
 
 # Delete __pycache__, node_modules and *.egg-info folders; keeps .git and .venv
-[unix, group('IDE')]
+[unix, group('Local')]
 clean:
     find . \( -name .git -o -name .venv \) -prune -o \
         \( -name __pycache__ -o -name node_modules -o -name '*.egg-info' \) \
         -type d -prune -exec rm -rf {} +
 
 # Delete __pycache__, node_modules and *.egg-info folders; keeps .git and .venv
-[windows, group('IDE')]
+[windows, group('Local')]
 clean:
     #!powershell.exe
     $names = '__pycache__', 'node_modules', '*.egg-info'
