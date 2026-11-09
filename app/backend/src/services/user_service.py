@@ -1,28 +1,10 @@
 from sqlmodel import Session
-import bcrypt
 
+from core.security import hash_password
 from models.user_model import User, UserRole
 from repositories import user_repo
 from repositories.user_repo import DuplicateUserError
 from schemas.user_schema import UserCreate
-
-
-def hash_password(password: str) -> str:
-    password_bytes = password.encode("utf-8")
-
-    hashed_password = bcrypt.hashpw(
-        password_bytes,
-        bcrypt.gensalt(rounds=12),
-    )
-
-    return hashed_password.decode("utf-8")
-
-
-def verify_password(password: str, hashed_password: str) -> bool:
-    return bcrypt.checkpw(
-        password.encode("utf-8"),
-        hashed_password.encode("utf-8"),
-    )
 
 
 def register_user(session: Session, user_data: UserCreate) -> User:

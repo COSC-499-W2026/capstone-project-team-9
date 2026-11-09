@@ -1,42 +1,9 @@
 import pytest
-import bcrypt
 from unittest.mock import MagicMock
 
-from services.user_service import hash_password, register_user
+from services.user_service import register_user
 from repositories.user_repo import User, DuplicateUserError
 from schemas.user_schema import UserCreate
-
-def test_hash_password():
-    password = "hashed_password_1"
-
-    hashed = hash_password(password)
-
-    assert hashed != password
-    assert hashed.startswith("$2b$12$")
-
-    assert bcrypt.checkpw(
-        password.encode("utf-8"),
-        hashed.encode("utf-8"),
-    )
-
-
-def test_hash_password_uses_different_salts():
-    password = "hashed_password_1"
-
-    hash1 = hash_password(password)
-    hash2 = hash_password(password)
-
-    assert hash1 != hash2
-
-    assert bcrypt.checkpw(
-        password.encode("utf-8"),
-        hash1.encode("utf-8"),
-    )
-    assert bcrypt.checkpw(
-        password.encode("utf-8"),
-        hash2.encode("utf-8"),
-    )
-
 
 def test_register_user_success(monkeypatch):
     session = MagicMock()
