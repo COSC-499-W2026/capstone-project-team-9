@@ -78,7 +78,7 @@ LocationServiceDep = Annotated[LocationService, Depends(get_location_service)]
 
 def get_answer_service(
     location_service: LocationServiceDep,
-    target_repo: TargetRepository
+    target_repo: TargetRepositoryDep
 ) -> AnswerService:
     return AnswerService(location_service, target_repo)
 
