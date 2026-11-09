@@ -21,6 +21,7 @@ def register(user_data: UserCreate, session: Session = Depends(get_session)) -> 
     return UserResponse(
         name=user.name,
         email=user.email,
+        role=user.role,
     )
 
 @router.get("", response_model=list[UserResponse])
@@ -33,6 +34,7 @@ def list_users(
         UserResponse(
             name=user.name,
             email=user.email,
+            role=user.role,
         )
         for user in users
     ]

@@ -1,7 +1,7 @@
 from sqlmodel import Session
 import bcrypt
 
-from models.user_model import User
+from models.user_model import User, UserRole
 from repositories import user_repo
 from repositories.user_repo import DuplicateUserError
 from schemas.user_schema import UserCreate
@@ -28,9 +28,6 @@ def verify_password(password: str, hashed_password: str) -> bool:
 def register_user(session: Session, user_data: UserCreate) -> User:
     email = str(user_data.email).lower()
 
-    if user_repo.get_user_by_name(session, user_data.name):
-        raise DuplicateUserError("Username already exists.")
-
     if user_repo.get_user_by_email(session, email):
         raise DuplicateUserError("Email is already registered.")
 
@@ -41,4 +38,5 @@ def register_user(session: Session, user_data: UserCreate) -> User:
         name=user_data.name,
         email=email,
         hashed_password=hashed_password,
+        role=UserRole.STUDENT,
     )
