@@ -2,20 +2,10 @@ import hashlib
 import json
 import os
 import time
-from typing import Annotated
-
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
 from jwcrypto import jwe, jwk
 from jwcrypto.common import JWException, base64url_encode
-from sqlmodel import Session
-
-from core.db import get_session
-from models import User
-from repositories.user_repo import get_by_id
 
 ACCESS_TOKEN_EXPIRE_SECONDS = 1800
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/token")
 
 
 def _token_secret() -> bytes:
@@ -45,7 +35,7 @@ def create_access_token(user_id: int) -> str:
     return token.serialize(compact=True)
 
 
-def _get_token_user_id(token: str) -> int | None:
+def decode_access_token(token: str) -> int | None:
     secret = _token_secret()
     try:
         encrypted_token = jwe.JWE()
@@ -66,18 +56,3 @@ def _get_token_user_id(token: str) -> int | None:
         return user_id
     except (JWException, KeyError, TypeError, ValueError, UnicodeDecodeError):
         return None
-
-
-def get_current_user(
-    token: Annotated[str, Depends(oauth2_scheme)],
-    session: Session = Depends(get_session),
-) -> User:
-    user_id = _get_token_user_id(token)
-    user = get_by_id(session, user_id) if user_id is not None else None
-    if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired access token.",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    return user

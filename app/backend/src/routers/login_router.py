@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session
 
+from core.dependencies import CurrentUserDep
 from core.db import get_session
-from core.security import create_access_token, get_current_user
-from models.user_model import User
+from core.security import create_access_token
 from schemas.login_schema import LoginRequest, TokenResponse
 from schemas.user_schema import UserResponse
 from services.login_service import authenticate_user
@@ -61,5 +61,5 @@ def issue_access_token(
 
 
 @router.get("/me", response_model=UserResponse)
-def get_logged_in_user(user: User = Depends(get_current_user)) -> UserResponse:
+def get_logged_in_user(user: CurrentUserDep) -> UserResponse:
     return UserResponse(name=user.name, email=user.email)
