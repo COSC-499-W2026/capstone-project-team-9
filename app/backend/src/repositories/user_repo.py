@@ -7,6 +7,11 @@ from models.user_model import UserRole
 class DuplicateUserError(Exception):
     """Raised when an email address already exists."""
 
+
+def get_by_id(session: Session, user_id: int) -> User | None:
+    return session.get(User, user_id)
+
+
 def get_user_by_email(session: Session, email: str) -> User | None:
     statement = select(User).where(User.email == email)
     return session.exec(statement).first()

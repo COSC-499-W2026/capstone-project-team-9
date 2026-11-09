@@ -1,13 +1,30 @@
 from typing import Annotated
 from fastapi import Depends
+from fastapi.security import OAuth2PasswordBearer
 from sqlmodel import Session
+
 from core.db import get_session
+from core.security import decode_access_token
+from models import User
 from repositories import ClueRepository, GameRepository, GameOptionsRepository, PlayRepository
+from repositories.user_repo import get_by_id
 from services import GameOptionsService, GameService, PlayService, LocationService
 
 # SESSION DEPENDENCIES -----------------------------------------------------------
 
 SessionDep = Annotated[Session, Depends(get_session)]
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/token")
+
+
+def get_current_user(
+    token: Annotated[str, Depends(oauth2_scheme)],
+    session: SessionDep,
+) -> User | None:
+    user_id = decode_access_token(token)
+    return get_by_id(session, user_id) if user_id is not None else None
+
+
+CurrentUserDep = Annotated[User | None, Depends(get_current_user)]
 
 # REPOSITORY DEPENDENCIES --------------------------------------------------------
 

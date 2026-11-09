@@ -1,8 +1,8 @@
 from sqlmodel import Session
 
+from core.security import verify_password
 from models.user_model import User
 from repositories.user_repo import get_user_by_email
-from services.user_service import verify_password
 
 
 def authenticate_user(

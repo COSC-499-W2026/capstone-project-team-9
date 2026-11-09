@@ -1,4 +1,4 @@
-# Individual Log - Week 7
+# Individual Log - Week 8
 
 
 ## **For PR #215: Login API Endpoints** https://github.com/COSC-499-W2026/capstone-project-team-9/pull/215
