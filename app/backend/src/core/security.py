@@ -11,7 +11,8 @@ from jwcrypto.common import JWException, base64url_encode
 from sqlmodel import Session
 
 from core.db import get_session
-from models.user_model import User
+from models import User
+from repositories.user_repo import get_by_id
 
 ACCESS_TOKEN_EXPIRE_SECONDS = 1800
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/token")
@@ -72,7 +73,7 @@ def get_current_user(
     session: Session = Depends(get_session),
 ) -> User:
     user_id = _get_token_user_id(token)
-    user = session.get(User, user_id) if user_id is not None else None
+    user = get_by_id(session, user_id) if user_id is not None else None
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

@@ -1,12 +1,29 @@
 import pytest
 from models import User
 from repositories.user_repo import (
+    get_by_id,
     get_user_by_email,
     get_all_users,
     get_user_by_name,
     create_user,
     DuplicateUserError,
 )
+
+
+def test_get_by_id(session):
+    user = User(
+        name="Alice",
+        email="alice@example.com",
+        hashed_password="hashed_password",
+    )
+    session.add(user)
+    session.commit()
+
+    assert get_by_id(session, user.id) == user
+
+
+def test_get_by_id_missing_user(session):
+    assert get_by_id(session, 1) is None
 
 
 def test_get_all_users_by_email(session):

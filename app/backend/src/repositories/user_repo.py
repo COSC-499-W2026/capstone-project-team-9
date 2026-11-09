@@ -6,6 +6,11 @@ from models import User
 class DuplicateUserError(Exception):
     """Raised when a username or email already exists."""
 
+
+def get_by_id(session: Session, user_id: int) -> User | None:
+    return session.get(User, user_id)
+
+
 def get_user_by_email(session: Session, email: str) -> User | None:
     statement = select(User).where(User.email == email)
     return session.exec(statement).first()
