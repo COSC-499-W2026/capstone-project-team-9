@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 
 from core.db import get_session
 from models import Play, PlayClue
-from repositories.play_repo import add_play_with_clues
+from repositories import PlayRepository
 from routers.answer_router import MAX_IMAGE_BYTES, router
 from services.answer_service import AnswerResult
 
@@ -21,7 +21,7 @@ def client(session):
 def started(session, add_clues):
     """A play with two clues; returns (play, clue_ids)."""
     clue_ids = add_clues(2)
-    return add_play_with_clues(session, Play(), clue_ids), clue_ids
+    return PlayRepository(session).add_play_with_clues(Play(), clue_ids), clue_ids
 
 
 @pytest.fixture
