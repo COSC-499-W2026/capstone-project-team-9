@@ -1,8 +1,8 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import ClueAudio from '../components/ClueAudio.vue'
-import { clueAudioUrl, getPlayState } from '../api/game'
+import ClueAudioPlaceholder from '../components/ClueAudioPlaceholder.vue'
+import { getPlayState } from '../api/game'
 import '../styles/game.css'
 
 const props = defineProps({
@@ -77,7 +77,7 @@ const exit = () => router.push({ name: 'play' })
         <section :key="state.current_clue_id" class="clue">
           <div class="card">
             <p class="card__eyebrow">Listen</p>
-            <ClueAudio :src="clueAudioUrl(state.current_clue_id)" />
+            <ClueAudioPlaceholder />
           </div>
 
           <!-- TODO: enable once the backend has a skip endpoint, then call load() to show the next clue -->

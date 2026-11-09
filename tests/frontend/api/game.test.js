@@ -7,7 +7,6 @@ vi.mock('@/api/client', () => ({
 
 import { get, post } from '@/api/client'
 import {
-  clueAudioUrl,
   createGame,
   getGameLengths,
   getPlayState,
@@ -42,10 +41,6 @@ describe('game api', () => {
     expect(get).toHaveBeenCalledWith('/plays/5')
   })
 
-
-  it('clueAudioUrl() builds a proxied URL for the clue', () => {
-    expect(clueAudioUrl(11)).toBe('/api/clues/11/audio')
-  })
 
   it('startGame() creates a game, starts a play and returns its id', async () => {
     post.mockImplementation(async (path) => (path === '/games' ? { id: 7 } : { play: { id: 42 } }))

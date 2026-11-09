@@ -5,7 +5,6 @@ const push = vi.fn()
 vi.mock('vue-router', () => ({ useRouter: () => ({ push }) }))
 vi.mock('@/api/game', () => ({
   getPlayState: vi.fn(),
-  clueAudioUrl: (id) => `/api/clues/${id}/audio`,
 }))
 
 import { getPlayState } from '@/api/game'
@@ -41,10 +40,10 @@ describe('ClueView', () => {
     expect(wrapper.text()).toContain('Clue 3 of 3')
   })
 
-  it('points the audio player at the current clue', async () => {
+  it('shows the audio placeholder', async () => {
     const wrapper = await mountLoaded()
 
-    expect(wrapper.find('audio').attributes('src')).toBe('/api/clues/11/audio')
+    expect(wrapper.text()).toContain('Clue audio coming soon')
   })
 
   it('shows a Skip button that is disabled until the backend supports skipping', async () => {

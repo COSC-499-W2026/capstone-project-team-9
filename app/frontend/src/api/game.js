@@ -27,9 +27,3 @@ export async function startGame(settings) {
   const { play } = await startPlay(game.id)
   return play.id
 }
-
-// ---------- Clue audio ----------
-
-// TODO: the backend doesn't serve clue audio yet. This is the URL the player will load once
-// an endpoint exists; until then the player shows an "audio unavailable" state.
-export const clueAudioUrl = (clueId) => `/api/clues/${clueId}/audio`
