@@ -6,9 +6,9 @@ from sqlmodel import Session
 from core.db import get_session
 from core.security import decode_access_token
 from models import User
-from repositories import ClueRepository
+from repositories import ClueRepository, GameRepository, GameOptionsRepository
 from repositories.user_repo import get_by_id
-from services import GameOptionsService, GameService, PlayService
+from services import GameOptionsService, GameService, PlayService, LocationService
 
 # SESSION DEPENDENCIES -----------------------------------------------------------
 
