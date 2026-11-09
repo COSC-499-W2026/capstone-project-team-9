@@ -1,7 +1,7 @@
 from sqlmodel import Session
 
 from core.security import hash_password
-from models.user_model import User
+from models.user_model import User, UserRole
 from repositories import user_repo
 from repositories.user_repo import DuplicateUserError
 from schemas.user_schema import UserCreate
