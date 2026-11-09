@@ -11,13 +11,13 @@ import core.security
 from core.db import get_session
 from core.security import (
     ACCESS_TOKEN_EXPIRE_SECONDS,
-    decode_access_token,
     create_access_token,
+    decode_access_token,
+    hash_password,
 )
 from models.user_model import User
 from repositories.user_repo import create_user
 from routers.login_router import router
-from services.user_service import hash_password
 
 
 
@@ -145,6 +145,8 @@ def test_me_rejects_tampered_token(client, user, monkeypatch):
     )
 
     assert response.status_code == 401
+    assert response.json() == {"detail": "Invalid or expired access token."}
+    assert response.headers["www-authenticate"] == "Bearer"
 
 
 def test_me_rejects_expired_token(client, user, monkeypatch):

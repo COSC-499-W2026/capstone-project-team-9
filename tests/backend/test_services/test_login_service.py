@@ -1,10 +1,10 @@
 import pytest
 from sqlmodel import SQLModel, Session, create_engine
 
+from core.security import hash_password
 from models.user_model import User
 from repositories.user_repo import create_user
 from services.login_service import authenticate_user
-from services.user_service import hash_password
 
 
 @pytest.fixture

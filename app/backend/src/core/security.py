@@ -2,10 +2,29 @@ import hashlib
 import json
 import os
 import time
+import bcrypt
 from jwcrypto import jwe, jwk
 from jwcrypto.common import JWException, base64url_encode
 
 ACCESS_TOKEN_EXPIRE_SECONDS = 1800
+
+
+def hash_password(password: str) -> str:
+    password_bytes = password.encode("utf-8")
+
+    hashed_password = bcrypt.hashpw(
+        password_bytes,
+        bcrypt.gensalt(rounds=12),
+    )
+
+    return hashed_password.decode("utf-8")
+
+
+def verify_password(password: str, hashed_password: str) -> bool:
+    return bcrypt.checkpw(
+        password.encode("utf-8"),
+        hashed_password.encode("utf-8"),
+    )
 
 
 def _token_secret() -> bytes:

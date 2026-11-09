@@ -62,4 +62,11 @@ def issue_access_token(
 
 @router.get("/me", response_model=UserResponse)
 def get_logged_in_user(user: CurrentUserDep) -> UserResponse:
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired access token.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
     return UserResponse(name=user.name, email=user.email)
