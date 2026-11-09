@@ -4,12 +4,7 @@ from dataclasses import dataclass
 from sqlmodel import Session
 
 from models import Play
-from repositories import ClueRepository, GameRepository
-from repositories.play_repo import (
-    add_play_with_clues, get_play, count_play_clues,
-    count_solved_play_clues, get_current_clue_id,
-    get_play_clue, record_attempt, mark_play_complete
-)
+from repositories import ClueRepository, GameRepository, PlayRepository
 from services.answer_service import verify_answer
 
  
@@ -49,9 +44,17 @@ class PlayAnswerResult:
     attempts: int  # attempts on this clue so far, including this one
     play_complete: bool
 
+
 class PlayService:
-    def __init__(self, session: Session, game_repo: GameRepository, clue_repo: ClueRepository):
+    def __init__(
+        self,
+        session: Session,
+        play_repo: PlayRepository,
+        game_repo: GameRepository,
+        clue_repo: ClueRepository
+    ):
         self.session = session
+        self.play_repo = play_repo
         self.game_repo = game_repo
         self.clue_repo = clue_repo
 
@@ -69,19 +72,19 @@ class PlayService:
         )
         if len(clue_ids) < game.num_clues:
             raise ValueError("Not enough clues available for this game")
-        play = add_play_with_clues(self.session, Play(game_id=game.id, user_id=user_id), clue_ids)
+        play = self.play_repo.add_play_with_clues(Play(game_id=game.id, user_id=user_id), clue_ids)
         return StartedPlay(play, clue_ids)
 
     def get_play_state(self, play_id: int) -> PlayState:
         """A play's progress. Raises PlayNotFoundError if the play is missing."""
-        play = get_play(self.session, play_id)
+        play = self.play_repo.get_play(play_id)
         if play is None:
             raise PlayNotFoundError("Play does not exist")
         return PlayState(
             play=play,
-            current_clue_id=get_current_clue_id(self.session, play_id),
-            total_clues=count_play_clues(self.session, play_id),
-            solved_clues=count_solved_play_clues(self.session, play_id),
+            current_clue_id=self.play_repo.get_current_clue_id(play_id),
+            total_clues=self.play_repo.count_play_clues(play_id),
+            solved_clues=self.play_repo.count_solved_play_clues(play_id),
         )
 
     def submit_answer(
@@ -92,22 +95,21 @@ class PlayService:
         A correct answer solves the clue, and solving the last clue completes the play.
         An unreadable image raises ValueError before anything is recorded.
         """
-        play = get_play(self.session, play_id)
+        play = self.play_repo.get_play(play_id)
         if play is None:
             raise PlayNotFoundError("Play does not exist")
-        play_clue = get_play_clue(self.session, play_id, clue_id)
+        play_clue = self.play_repo.get_play_clue(play_id, clue_id)
         if play_clue is None:
             raise ClueNotInPlayError("Clue is not part of this play")
         if play_clue.solved_at is not None:
             raise ClueAlreadySolvedError("Clue is already solved")
-        if get_current_clue_id(self.session, play_id) != clue_id:
+        if self.play_repo.get_current_clue_id(play_id) != clue_id:
             raise ClueNotCurrentError("Clue is not the current clue")
 
         answer = verify_answer(self.session, clue_id, image_bytes, lat, lon)
-        record_attempt(self.session, play_clue, answer.correct)
+        self.play_repo.record_attempt(play_clue, answer.correct)
 
-        play_complete = answer.correct and get_current_clue_id(self.session, play_id) is None
+        play_complete = answer.correct and self.play_repo.get_current_clue_id(play_id) is None
         if play_complete:
-            mark_play_complete(self.session, play)
+            self.play_repo.mark_play_complete(play)
         return PlayAnswerResult(answer.correct, answer.message, play_clue.attempts, play_complete)
-    
