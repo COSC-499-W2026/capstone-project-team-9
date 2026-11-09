@@ -98,3 +98,59 @@ This new test PR did not break anything else in the system because the full fron
 
 
 
+
+
+For PR #251:
+
+As part of requirement Upload image, the user needs to open a clue, tap Take a photo, point the back camera at the room sign, take the photo (or retake it), and press Submit answer, then see whether they were correct and move on to the next clue or try again. Therefore, I implemented code so that the clue screen has a live in-app camera (no gallery uploads), sends the captured JPEG with the player's GPS coordinates to POST /plays/{play_id}/clues/{clue_id}/answer, and shows the result in a sheet with the backend's message and the attempt count, for players.
+
+The new pieces are the CameraCapture component, submitAnswer in api/game.js, postForm in api/client.js, and the photo answer flow in ClueView. After a correct answer, the screen loads the next clue, or the finish screen if the play is complete. After a wrong answer, the photo is cleared so the player can retake it.
+
+When I reviewed client.js, I noticed that request() sends Content-Type: application/json on every call, which I had flagged in PR #220. A multipart upload sent with that header has no boundary, so FastAPI cannot read the image. Therefore, I added postForm, which passes empty headers so the browser sets the multipart Content-Type with its boundary itself.
+
+When I reviewed CameraCapture.vue, I noticed that the camera would stay on after the photo was taken or the player left the screen, and that each preview created an object URL that was never released. Therefore, I stop every track in the stream when a photo is captured and on unmount, and revoke the preview URL whenever the photo changes and on unmount.
+
+When I reviewed the error handling in ClueView, I noticed that location errors and backend errors both landed in the same catch, so a player who denied location access would see a generic message. Therefore, submitErrorMessage checks the geolocation error code first (permission denied gets its own message), and otherwise shows the backend's detail.
+
+When I reviewed the submit flow, I noticed that if the clue had already been answered (for example in another tab), the backend returns 409 and the player would be stuck on a clue they cannot answer. Therefore, on a 409 the screen clears the photo and reloads the play state so it jumps to the current clue.
+
+When I tested the flow by hand, I noticed that the clue audio is still a placeholder, so a tester has no way to know which room sign to photograph. Therefore, I added a development-only endpoint, GET /dev/clues/{clue_id}/room, and the placeholder shows "Test mode · Room ..." when it responds.
+
+The PR contains one temporary testing helper, the /dev clue room endpoint and its display in ClueAudioPlaceholder. It is only registered when the backend runs with ENV=development, so it never exists in production, and the placeholder shows nothing when the endpoint is missing. It is marked with a TODO to delete ClueAudioPlaceholder.vue, routers/dev_router.py and its block in main.py in the audio PR. The rest of the PR calls the real answer endpoint with no stubbed values.
+
+The PR only contains small functions, none longer than 25 lines.
+
+I read the full diff line by line and searched the changed files for duplicated blocks, unused imports and magic numbers to ensure that my feature contribution does not contain any of the following:
+
+hardcoded values (the only literals are the camera hints, back camera and ideal 1920x1080, and the JPEG quality of 0.9, each used once where it applies)
+duplicate code (the result sheet reuses the existing badge animation and SVG styles from the finish screen)
+dead code
+unnecessary function calls
+excessive conditional logic (the camera uses a single status value, idle, starting, live or captured, instead of separate flags)
+deep nesting
+high cyclomatic complexity
+classes/modules/functions with many unrelated responsibilities (CameraCapture only produces a photo through v-model, the API files only build requests, and ClueView only connects them)
+
+This work is written in the new components/CameraCapture.vue and in the existing views/ClueView.vue, api/game.js and api/client.js because the camera is a reusable component that only knows about taking a photo, the API calls stay in the api layer with the other game requests, and the view coordinates the clue screen as it already did. The testing helper is in the new routers/dev_router.py so it can be registered or left out as a whole.
+
+This work belongs in process 4, "Evaluate photo", in the game loop level 1 DFD because it is where the player's photo enters the system and where the correct or retry result comes back to the player.
+
+Testing receipts for PR #251
+
+The functionality works correctly because the happy path tests "sends the photo and location for the current clue to the checker", "moves on to the next clue after a correct answer", "shows the finish screen after the last correct answer", "takes a JPEG photo, shows it and turns the camera off", "submitAnswer() sends the photo and coordinates as form data", "postForm() sends FormData and lets the browser set the content type" and test_get_clue_room_returns_the_clue_target_name passed.
+
+I wrote tests to cover abnormal situations involving a wrong answer that lets the player try again, a clue that was already answered (409 reloads the play), the shutter staying disabled until the camera is live, Submit staying disabled until a photo is taken, the Checking state while the answer is checked, retaking a photo, the camera turning off when the component goes away, and the test room only showing in development, and they passed.
+
+I checked that these negative cases involving blocked camera access, a browser with no camera access over http, denied location access, a photo rejected by the backend, a missing clue on the dev endpoint (test_get_clue_room_404s_for_missing_clue) and the dev endpoint being absent outside development failed as expected, showing the matching error message or a 404 and no test room.
+
+When I reviewed the ClueView tests, I noticed that mounting the real CameraCapture would need a camera and a playing video in jsdom. Therefore, I stubbed it with a button that emits a photo, since the camera itself is covered by its own tests.
+
+When I reviewed the ClueView tests, I noticed that ClueAudioPlaceholder now calls the dev endpoint on mount, so every ClueView test made an extra unmocked request. Therefore, I mocked api/client to reject that call, which matches running outside development.
+
+When I reviewed the CameraCapture tests, I added "has no way to upload a file" to check that the component has no file input, since the design requires in-app capture only.
+
+Among these tests, the CameraCapture, ClueAudioPlaceholder, ClueView, client and game tests are unit tests, and test_get_clue_room_returns_the_clue_target_name and test_get_clue_room_404s_for_missing_clue are integration tests because they call the router through TestClient against the in-memory database and the real target repository.
+
+These tests are included in the directories tests/frontend/components/CameraCapture.test.js, tests/frontend/components/ClueAudioPlaceholder.test.js, tests/frontend/views/ClueView.test.js, tests/frontend/api/client.test.js, tests/frontend/api/game.test.js and tests/backend/test_routers/test_dev_router.py.
+
+This new test PR did not break anything else in the system because, after main (including the role changes from PR #250) was merged into the branch, I ran the full frontend suite with npm test and the full backend suite with pytest, and all tests passed.
