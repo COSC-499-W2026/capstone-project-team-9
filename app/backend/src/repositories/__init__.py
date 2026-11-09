@@ -12,3 +12,4 @@ from .clue_repo import ClueRepository
 from .game_options_repo import GameOptionsRepository
 from .game_repo import GameRepository
 from .target_repo import TargetRepository
+from .play_repo import PlayRepository

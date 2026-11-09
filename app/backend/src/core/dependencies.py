@@ -6,7 +6,7 @@ from sqlmodel import Session
 from core.db import get_session
 from core.security import decode_access_token
 from models import User
-from repositories import ClueRepository, GameRepository, GameOptionsRepository, TargetRepository
+from repositories import ClueRepository, GameRepository, GameOptionsRepository, PlayRepository, TargetRepository
 from repositories.user_repo import get_by_id
 from services import GameOptionsService, GameService, PlayService, LocationService, AnswerService
 
@@ -40,10 +40,14 @@ def get_game_repository(session: SessionDep) -> GameRepository:
 def get_target_repository(session: SessionDep) -> TargetRepository:
     return TargetRepository(session)
 
+def get_play_repository(session: SessionDep) -> PlayRepository:
+    return PlayRepository(session)
+
 ClueRepositoryDep = Annotated[ClueRepository, Depends(get_clue_repository)]
 GameOptionsRepositoryDep = Annotated[GameOptionsRepository, Depends(get_game_options_repository)]
 GameRepositoryDep = Annotated[GameRepository, Depends(get_game_repository)]
 TargetRepositoryDep = Annotated[TargetRepository, Depends(get_target_repository)]
+PlayRepositoryDep = Annotated[PlayRepository, Depends(get_play_repository)]
 
 # SERVICE DEPENDENCIES --------------------------------------------------------
 
@@ -71,10 +75,11 @@ def get_answer_service(
 
 def get_play_service(
     answer_service: AnswerServiceDep,
+    play_repo: PlayRepositoryDep,
     game_repo: GameRepositoryDep,
     clue_repo: ClueRepositoryDep
 ) -> PlayService:
-    return PlayService(answer_service, game_repo, clue_repo)
+    return PlayService(answer_service, play_repo, game_repo, clue_repo)
 
 
 GameOptionsServiceDep = Annotated[GameOptionsService, Depends(get_game_options_service)]
