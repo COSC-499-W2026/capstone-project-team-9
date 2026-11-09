@@ -70,4 +70,4 @@ def get_logged_in_user(user: CurrentUserDep) -> UserResponse:
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    return UserResponse(name=user.name, email=user.email)
+    return UserResponse(name=user.name, email=user.email, role=user.role)

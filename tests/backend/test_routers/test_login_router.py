@@ -81,7 +81,11 @@ def test_oauth2_token_authenticates_user(client, user, monkeypatch):
         headers={"Authorization": f"Bearer {token}"},
     )
     assert current_user.status_code == 200
-    assert current_user.json() == {"name": "Alice", "email": "alice@example.com"}
+    assert current_user.json() == {
+        "name": "Alice",
+        "email": "alice@example.com",
+        "role": "student",
+    }
 
 
 def test_access_token_is_encrypted_jwt(user, monkeypatch):
