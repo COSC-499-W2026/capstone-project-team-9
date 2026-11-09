@@ -1,8 +1,10 @@
 import pytest
 
 from models import Target
+from services import AnswerService, LocationService
+from repositories import TargetRepository
 from services.answer_service import (
-    CORRECT_MESSAGE, WRONG_MESSAGE, ClueNotFoundError, verify_answer,
+    CORRECT_MESSAGE, WRONG_MESSAGE, ClueNotFoundError, AnswerService
 )
 from services.location_service import WRONG_PLACE_MESSAGE
 
@@ -33,35 +35,40 @@ def fake_ocr(monkeypatch):
     return install
 
 
-def test_correct_answer_checks_room_code_from_target_name(session, fake_clue, fake_ocr):
+@pytest.fixture
+def answer_service(session):
+    return AnswerService(LocationService(), TargetRepository(session))
+
+
+def test_correct_answer_checks_room_code_from_target_name(answer_service, fake_clue, fake_ocr):
     fake_clue(TARGET)
     calls = fake_ocr(True)
-    result = verify_answer(session, 1, b"image", *AT_TARGET)
+    result = answer_service.verify_answer(1, b"image", *AT_TARGET)
     assert result.correct is True
     assert result.message == CORRECT_MESSAGE
     assert calls == ["COM201"]  # space stripped
 
 
-def test_wrong_photo_at_right_place(session, fake_clue, fake_ocr):
+def test_wrong_photo_at_right_place(answer_service, fake_clue, fake_ocr):
     fake_clue(TARGET)
     fake_ocr(False)
-    result = verify_answer(session, 1, b"image", *AT_TARGET)
+    result = answer_service.verify_answer(1, b"image", *AT_TARGET)
     assert result.correct is False
     assert result.message == WRONG_MESSAGE
 
 
-def test_wrong_location_skips_ocr(session, fake_clue, fake_ocr):
+def test_wrong_location_skips_ocr(answer_service, fake_clue, fake_ocr):
     fake_clue(TARGET)
     calls = fake_ocr(True)
-    result = verify_answer(session, 1, b"image", *FAR_FROM_TARGET)
+    result = answer_service.verify_answer(1, b"image", *FAR_FROM_TARGET)
     assert result.correct is False
     assert result.message == WRONG_PLACE_MESSAGE
     assert calls == []
 
 
-def test_unknown_clue_raises(session, fake_clue, fake_ocr):
+def test_unknown_clue_raises(answer_service, fake_clue, fake_ocr):
     fake_clue(None)
     calls = fake_ocr(True)
     with pytest.raises(ClueNotFoundError):
-        verify_answer(session, 999, b"image", *AT_TARGET)
+        answer_service.verify_answer(999, b"image", *AT_TARGET)
     assert calls == []
