@@ -37,7 +37,7 @@ class AnswerService:
         Return correct/wrong for the player's photo and location against the clue's target.
         """
 
-        target = self.target_repo.get_target_for_clue(session, clue_id)
+        target = self.target_repo.get_target_for_clue(clue_id)
 
         if target is None:
             raise ClueNotFoundError("Clue does not exist")
