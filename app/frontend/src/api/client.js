@@ -24,3 +24,7 @@ export const get = (path) => request(path)
 
 export const post = (path, body) =>
   request(path, { method: 'POST', body: JSON.stringify(body) })
+
+// Empty headers so the browser sets the multipart Content-Type (with its boundary) itself
+export const postForm = (path, formData) =>
+  request(path, { method: 'POST', headers: {}, body: formData })
