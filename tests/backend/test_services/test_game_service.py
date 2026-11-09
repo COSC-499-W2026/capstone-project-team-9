@@ -5,7 +5,7 @@ from models import Difficulty, Game, Language
 from schemas.game_schema import GameCreate
 from services.game_options_service import MAX_GAME_LENGTH, MIN_GAME_LENGTH
 from services.game_service import GameService
-from repositories import ClueRepository   # TODO: mock ClueRepository instead of importing it
+from repositories import GameRepository, GameOptionsRepository, ClueRepository   # TODO in future: MOCK these repositories
 
 NUM_CLUES = 3
 
@@ -17,7 +17,7 @@ def seeded(session):
 
 @pytest.fixture
 def game_service(session):
-    return GameService(session, ClueRepository(session))
+    return GameService(GameRepository(session), GameOptionsRepository(session), ClueRepository(session))
 
 
 def _settings(**overrides):

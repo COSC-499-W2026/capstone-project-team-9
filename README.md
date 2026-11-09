@@ -20,40 +20,87 @@ This repo contains the source code for Team 9's Capstone Software Engineering pr
 
 ## Instructions for Local Development
 
+- [Prerequisites](#prerequisites)
+- [Clone the repo and set environment variables](#clone-the-repo-and-set-environment-variables)
 - [Run the app](#run-the-app)
 - [Run unit tests](#run-unit-tests)
-- [Poke around in the container](#poke-around-in-the-container)
-- [Make your IDE happy with a Venv](#make-your-ide-happy-with-a-venv)
-- [Initialize, seed and reset the database](#initialize-seed-and-reset-the-database)
-- [Inspect the database](#inspect-the-database)
+- [Initialize, seed and inspect the database](#initialize-seed-and-inspect-the-database)
+- [Make your IDE happy with a venv](#make-your-ide-happy-with-a-venv)
+- [Poke around (Advanced Commands)](#poke-around-advanced-commands)
+
+---
+
+### Prerequisites
+
+#### 🐋 **Docker**
 
 > [!IMPORTANT]
-> #### Using Docker
 > Our app and tests must be run inside a **Docker container** to ensure that our environments and dependency versions are identical at all times. Our CI runs the test suite in a container built from the same image.
+>
+> _**You will need Docker Desktop to be [installed](https://docs.docker.com/get-started/get-docker/) and running.**_
+
+#### 🤖 **Just**
+
+> [!IMPORTANT]
 > 
-> _**You will need Docker Desktop to be installed and running.**_
+> We use [just](https://just.systems) to alias our most common terminal commands, so you don't have to remember long `docker compose` invocations. Run `just` with no arguments at any time to see every available command, grouped by category.
+> 
+> The commands are defined in the [justfile](./justfile), so go there if you want to see exactly what each one runs!
+> > Tip: install the VS Code extension [vscode-just](https://marketplace.visualstudio.com/items?itemName=nefrob.vscode-just-syntax) for `just` syntax highlighting
+
+
+To [install just](https://just.systems/man/en/installation.html) on your machine, run:
+```
+# On Mac 
+brew install just
+``` 
+```
+# On Windows (Powershell)
+winget install Casey.Just
+```
+
+#### >_ Terminal Tips
+
+`just` helps you waste less time in the terminal, and so do the following tricks!
 
 > [!TIP]
-> #### Terminal Tips: tired of retyping long commands?
+> 
 > - use the `↑` up arrow key to cycle through previous commands
 > - use the `tab` key to cycle through files and directories
+> - in VS Code, use ``ctrl + ` `` to open and close the built-in terminal
+
+---
+
+### Clone the repo and set environment variables
+
+Clone the repository locally:
+```
+git clone https://github.com/COSC-499-W2026/capstone-project-team-9
+```
+
+Then set your environment variables by following the instructions in [.env.example](./.env.example)
 
 ---
 
 ### Run the app
 
 Build (or rebuild) the containers and run the app:
-```bash
-docker compose up --build
+```
+just build
 ```
 - Do this if running for the first time, or any time after changing `pyproject.toml`, `Dockerfile`, or `.dockerignore` (or pulling in changes that touch those files)
 - Good troubleshooting step to run this every now and then if things are unexpectedly breaking, especially if you're working with a new dependency
 
 Run the app:
-```bash
-docker compose up
+```
+just up
 ```
 - Edits to code files will reload automatically because of volume mounting, so no rebuild is needed for most code changes
+
+Stop the app:
+```
+just down
+```
 
 API: http://127.0.0.1:8000  
 Docs: http://127.0.0.1:8000/docs
@@ -64,18 +111,83 @@ Docs: http://127.0.0.1:8000/docs
 
 Run the test suite (while the containers are running):
 ```
-docker compose exec backend pytest
+just test-backend
 ```
 ```
-docker compose exec frontend npm test
+just test-frontend
 ```
-If you only want to run a specific test file, just add the relative filepath from `tests/` to the end of the command above.
+```
+just test
+```
+
+If you only want to run a specific test file or folder, add its path relative to tests/backend/ or tests/frontend/ to the end of the command, for example:
+```
+just test-backend test_services/
+```
 
 ---
 
-### Poke around in the container
+### Initialize, seed and inspect the database
 
-Run any other command inside the container:
+Reset the development database (drop all tables, re-initialize, and re-seed all in one step).
+```
+just db-reset
+```
+- Run `just` to see commands for individual steps.
+
+To inspect the database you have two options.
+1. Use a GUI tool like [DBeaver](https://dbeaver.io/download/)
+2. Enter an interactive Postgres CLI session:
+```
+just psql
+```
+
+> [!TIP]
+>
+> #### psql Tips
+> 
+> Some useful postgres commands to run in there:
+> - List all tables: `\dt`
+> - Get details of a table: `\d "TableName"`
+> 
+> You can also run SQL statements, terminated by semicolons:
+> ```SQL
+> INSERT INTO "Language" (name) VALUES ('Japanese');
+> SELECT * FROM "Language";
+> ```
+
+---
+
+### Make your IDE happy with a venv
+
+> [!NOTE]
+> This step needs Python 3.12 or later installed on your machine, with `python` available on your PATH.
+
+In this project, the venv is **only for your editor**. It tells VS Code which packages and Python version we use, so you get tooltips and no false import errors. Don't use it to run the app or tests; those always run in Docker (the [docker_guard](./src/core/docker_guard.py) will stop you if you try).
+
+Create (or re-create) a venv and install dependencies
+```
+just venv
+```
+- Rerun this every now and then if VS Code gives you weird import errors
+
+Activate your venv by opening a fresh terminal in VS Code, or by running the activation script:
+```
+# On Mac/Linux
+source .venv/bin/activate
+```
+```
+# On Windows
+.venv\Scripts\Activate.ps1
+```
+
+---
+
+### Poke around (Advanced Commands)
+
+These commands are deliberately not aliased in the justfile. Use them if you know what you're doing. Remember, in general, if you ever want to run modified versions of our common commands, the [justfile](./justfile) will tell you exactly what each alias runs under the hood.
+
+Run any command inside the backend container:
 ```
 docker compose exec backend <command>
 ```
@@ -89,108 +201,4 @@ docker compose exec backend bash
 - type `exit` to leave
 
 ---
-
-### Make your IDE happy with a venv
-
-> [!WARNING]
->
-> In _this_ project:
-> - you do not need a venv to run the app or tests
-> - you should not use a venv to run the app or tests
->   - If you do so accidentally, the [docker_guard](./src/core/docker_guard.py) should stop you
-> 
-> But you _should_ use a venv...
-> - ...to keep your code editor and linter happy! It's basically a way of telling VS Code what packages and Python version you are using so it can give you helpful tooltips and not freak out about import errors.
-> - ...to stop yourself from accidentally messing with your global Python environment and affecting other Python projects on your laptop
-
-1. Create a venv
-```
-python -m venv .venv
-```
-2. Activate it:  
-```
-# On Mac/Linux
-source .venv/bin/activate
-```
-```
-# On Windows
-.venv\Scripts\Activate.ps1
-```
-3. Install dependencies:
-```
-python -m pip install -e "./app/backend[test]" 
-```
-- Rerun this every now and then if VS Code gives you weird import errors
-
----
-
-### Initialize, seed and reset the database
-
-Initialize the database:
-```
-docker compose exec backend python scripts/init_db.py
-```
-
-Seed it with reference data like languages, difficulties etc
-```
-docker compose exec backend python scripts/seed_reference.py
-```
-
-Seed it with development-only data like fake users:
-```
-docker compose exec backend python scripts/seed_dev.py
-```
-
-⭐ Reset the database - drop all tables, re-initialize, and re-seed all in one step (DEVELOPMENT ONLY):
-```
-docker compose exec backend python scripts/reset_db.py
-```
-
-If you just want to stop all containers and delete the data volume, run:
-```
-docker compose down -v 
-```
-
----
-
-### Inspect the Database
-
-To enter an interactive Postgres session, run:
-```
-docker compose exec db psql -U <your-user-name> -d language_game_db
-```
-- Replace `<your-user-name>` with the username you set in `.env`
-
-Some postgres commands you can run in there:
-- List all tables: `\dt`
-- Get details of a table: `\d "TableName"`
-
-You can also run SQL commands, like the following (but unless it's for setup/testing purposes, you should probably stick to queries (i.e. `SELECT`) only):
-```SQL
-INSERT INTO "Language" (name) VALUES ('Japanese');
-SELECT * FROM "Language";
-```
-
----
-
-## Project-Starter
-
-> Please use the provided folder structure for your project. You are free to organize any additional internal folder structure as required by the project. 
-> 
-> ```
-> .
-> ├── docs                    # Documentation files
-> │   ├── contract            # Team contract
-> │   ├── proposal            # Project proposal 
-> │   ├── design              # UI mocks
-> │   ├── minutes             # Minutes from team meetings
-> │   ├── logs                # Team and individual Logs
-> │   └── ...          
-> ├── src                     # Source files (alternatively `app`)
-> ├── tests                   # Automated tests 
-> ├── utils                   # Utility files
-> └── README.md
-> ```
-> 
-> Please use a branching workflow, and once an item is ready, do remember to issue a PR, review, and merge it into the master branch.
-> Be sure to keep your docs and README.md up-to-date.
+ 

@@ -33,4 +33,10 @@ describe('api client', () => {
 
     await expect(get('/anything')).rejects.toThrow('422')
   })
+
+  it('attaches the status and backend detail to the error', async () => {
+    mockFetch({ ok: false, status: 422, json: async () => ({ detail: 'Not enough clues' }) })
+
+    await expect(get('/anything')).rejects.toMatchObject({ status: 422, detail: 'Not enough clues' })
+  })
 })

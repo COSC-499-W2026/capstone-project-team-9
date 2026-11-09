@@ -1,15 +1,19 @@
-"""Persistence for the Game table."""
-from sqlmodel import Session
-
 from models import Game
+from repositories import BaseRepository
+
+class GameRepository(BaseRepository):
+    """
+    Repository class that provides methods for managing Game data.
+    """
 
 
-def add_game(session: Session, game: Game) -> Game:
-    """Save a new game and return it with its generated id."""
-    session.add(game)
-    session.commit()
-    session.refresh(game)
-    return game
+    def add_game(self, game: Game) -> Game:
+        """Save a new game and return it with its generated id."""
+        self.session.add(game)
+        self.session.commit()
+        self.session.refresh(game)
+        return game
 
-def get_game(session: Session, game_id: int) -> Game | None:
-    return session.get(Game, game_id)
+
+    def get_game(self, game_id: int) -> Game | None:
+        return self.session.get(Game, game_id)
