@@ -1,0 +1,100 @@
+# For PR #249:
+
+As part of requirement #170 (basic frontend for the play screen), the student needs to open the Play screen, choose a language, difficulty and number of questions, pass the campus location check, press Play, and then see the first clue with their progress through the game.
+
+Therefore, I implemented code so that students can:
+
+- pick a language and difficulty loaded from the backend
+- pick a question count limited to what is actually available for that language and difficulty ("None available" when there are none)
+- start a game after the location check passes. This creates a game, starts a play and opens `/play/:playId`.
+- see a full-screen clue view with an exit button, a "Clue N of M" progress bar, a Listen card with a placeholder audio player, and a disabled Skip button
+- see clear states for loading, a game that doesn't exist, a game that failed to load, and a finished game
+- see the backend's actual error message when something fails, instead of a generic error
+
+This PR does not change the database or validate user data. The backend owns question availability and game creation, and the frontend only displays what it returns. No Data Modeling receipts are required.
+
+When I reviewed the generated `ClueAudio.vue` audio player component, I noticed it had grown past what issue #170 asks for. It also depended on clue audio that doesn't exist on the backend yet, so it couldn't be tested properly in this PR. Therefore, I moved the real audio player into its own upcoming PR and replaced it with `ClueAudioPlaceholder.vue`, a disabled player labelled "Clue audio coming soon". That kept this PR focused on game setup and the clue screen.
+
+When I reviewed the generated `client.js` error handling, I noticed failed requests only returned a generic error. The Play screen couldn't tell the student why a game didn't start, for example when no questions exist for a language yet. Therefore, I made `request()` attach the HTTP status and, when the response is JSON with a string `detail`, the backend's message. The Play screen now shows that message directly.
+
+The PR does not contain any temporary workaround. The unfinished parts (clue audio and Skip) are shown as clearly disabled controls with TODO comments that point to the PRs that will replace them. No fake logic stands in for missing backend behaviour. Skip stays disabled until the backend has a skip endpoint, rather than being faked on the frontend.
+
+The PR only contains small functions that are 1–22 lines long. The API wrappers in `game.js` are 1–5 lines each, `load()` in `ClueView.vue` is about 9 lines, and the longest is `play()` in `PlayView.vue` at about 22 lines.
+
+I did the following to ensure that my feature contribution does not contain any of the following:
+
+- **Hardcoded values:** languages, difficulties and the allowed question range all come from the backend (`getLanguages`, `getDifficulties`, `getGameLengths`). The default question count is the named constant `DEFAULT_NUM_CLUES = 3`, clamped to the backend's `{min, max}` range. The bar count is the named constant `BAR_COUNT = 36`. Colours, radii and spacing are CSS variables in `game.css`.
+- **Duplicate code:** shared button, spinner and colour styles live once in `game.css`, scoped under `.game`, instead of being repeated in each view. The create-game then start-play sequence is wrapped once in `startGame()`. Error-detail extraction happens once in `client.js` instead of in every view.
+- **Dead code:** the original audio player component was removed from this PR entirely rather than left unused.
+- **Unnecessary function calls:** game lengths are only re-fetched when language or difficulty changes, through a single `watch`.
+- **Excessive conditional logic, deep nesting and high cyclomatic complexity:** views branch only on simple states (loading, error, complete), and the clue number is a single `Math.min(solved_clues + 1, total_clues)`.
+- **Mixed responsibilities:** API calls live in `api/game.js`, display lives in the views, and the audio placeholder is its own component.
+
+Now, I can confirm that my feature contribution does not contain any of the following:
+
+- hardcoded values
+- duplicate code
+- dead code
+- unnecessary function calls
+- excessive conditional logic
+- deep nesting
+- high cyclomatic complexity
+- classes/modules/functions with many unrelated responsibilities
+
+The reviews by Jmondelli and MaddoxJTG identified no problems. Both approved after running the frontend and backend test suites locally, so no changes were needed.
+
+This work is written in the new files `api/game.js`, `views/ClueView.vue`, `components/ClueAudioPlaceholder.vue` and `styles/game.css`, and in the existing files `views/PlayView.vue`, `api/client.js` and `router/index.js`. The existing frontend separates backend calls (`api/`), routed screens (`views/`) and reusable pieces (`components/`). Game endpoints get their own API module next to the shared client, and the clue screen is a new route because it is a separate step after setup.
+
+This work belongs in process 1, Game loop, in the level 0 DFD, and in the Game loop level 1 DFD (`docs/system-design/data-flow-diagrams/DFD-1-game-loop.md`), because it is the player-facing side of a single game session from the Play click onward:
+
+- **1 Verify location:** pressing Play sends the player's GPS position, and out-of-boundary players are blocked before a game starts.
+- **2 Set up game:** the player's language, difficulty and length settings are sent to the backend, which selects the targets from the game items.
+- **3 Play audio clue:** the Listen card is the entry point for the clue audio, shown as a placeholder until the audio PR.
+- **5 Score and track:** the clue screen reads the play state to show progress ("Clue N of M") and completion, with Skip reserved here for when the backend supports it.
+
+---
+
+# For PR #249 (tests):
+
+The functionality works correctly because the happy path tests involving the following passed:
+
+- `starts a game and opens the first clue when on campus`
+- `lists the languages and the available question counts`
+- `lists the difficulties`
+- `starts the game with the picked language and question count`
+- `starts the game with the picked difficulty`
+- `loads the play and shows progress for the first clue`
+- `numbers the clue by how many are solved`
+- `shows the audio placeholder`
+- `shows the finish screen when the play is complete`
+- `goes back to the start screen from the exit button`
+- the five `game api` tests: `getGameLengths() passes the combo as query params`, `createGame() posts the settings in the backend field names`, `startPlay() posts to the game plays route`, `getPlayState() gets the play`, and `startGame() creates a game, starts a play and returns its id`
+
+I wrote tests to cover abnormal situations involving the following and they passed:
+
+- `defaults to fewer questions when fewer are available`
+- `shows the reason when the game cannot be started`
+- `shows an error when the options fail to load`
+- `shows a message when the play does not exist`
+- `shows a message when the play fails to load`
+- `attaches the status and backend detail to the error`
+
+I checked that these negative cases involving the following failed as expected:
+
+- `does not start a game off campus`
+- `does not start a game when the language has no questions`
+- `shows a Skip button that is disabled until the backend supports skipping`
+
+When I reviewed the existing `PlayView.test.js` tests, I noticed they no longer matched the component, because `PlayView` now loads languages and difficulties when it mounts. Without a mock, those calls would hit the real API and the tests would fail or depend on a running backend. Therefore, I mocked the new `api/game.js` module in that test file so the original location tests still run in isolation.
+
+Among these tests, all of them are unit tests, and integration tests are not required because the views only talk to the backend through `api/game.js`, which is unit-tested against the exact routes and field names the backend expects. The backend endpoints themselves are covered by the backend's own test suite.
+
+These tests are included in these directories:
+
+- `tests/frontend/api/` (`client.test.js`, `game.test.js`)
+- `tests/frontend/views/` (`ClueView.test.js`, `PlayView.test.js`)
+
+This new test PR did not break anything else in the system because the full frontend suite (47 tests) passes with `just test-frontend`, and both reviewers (Jmondelli and MaddoxJTG) ran the frontend and backend suites on their own machines and confirmed they all pass.
+
+
+
