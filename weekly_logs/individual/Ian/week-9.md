@@ -68,7 +68,12 @@ I updated existing tests in the following files, so that all existing tests woul
 - `test_game_service.py`
 - `test_play_service.py`
 
-- note remaining test todos
+The repo methods are still covered by the existing happy-path tests (e.g. `test_add_game_saves_and_assigns_id`, `test_get_all_languages_returns_them_sorted_by_name`) and edge-case tests (e.g. `test_get_game_found_and_missing`, `test_get_all_languages_empty_table`).
+
+The one testing workaround: the service test fixtures build `GameOptionsService`, `GameService` and `PlayService` with real repositories instead of mocks. Each has a `TODO in future: MOCK these repositories` comment in `test_game_options_service.py`, `test_game_service.py` and `test_play_service.py`. Proper mocking depends on a wider review of how our tests use the database, so it's left for a later PR.
+
+Although our CI workflow is currently down, I can confirm this new test PR did not break anything else in the system because I ran all tests in a fresh Docker container on my machine. My reviewers did the same.  
+![Week 9 PR 241 Regression Tests](./pics/week-9-pr-241-tests.png)
 
 ---
 
@@ -160,7 +165,9 @@ It also updates our README.md with `just` installation instructions and general 
 
 ---
 
-## Next
+## For PR [#254 PlayRepository class](https://github.com/COSC-499-W2026/capstone-project-team-9/pull/254)
+
+
 
 ---
 
