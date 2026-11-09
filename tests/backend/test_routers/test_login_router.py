@@ -11,7 +11,7 @@ import core.security
 from core.db import get_session
 from core.security import (
     ACCESS_TOKEN_EXPIRE_SECONDS,
-    _get_token_user_id,
+    decode_access_token,
     create_access_token,
 )
 from models.user_model import User
@@ -102,13 +102,13 @@ def test_access_token_is_encrypted_jwt(user, monkeypatch):
     payload = json.loads(encrypted_token.payload)
     assert payload["sub"] == str(user.id)
     assert payload["exp"] > core.security.time.time()
-    assert _get_token_user_id(token) == user.id
+    assert decode_access_token(token) == user.id
 
 
 @pytest.mark.parametrize("secret", [None, "too-short"])
 @pytest.mark.parametrize(
     "operation",
-    [lambda: create_access_token(1), lambda: _get_token_user_id("a.b.c")],
+    [lambda: create_access_token(1), lambda: decode_access_token("a.b.c")],
 )
 def test_token_operations_require_long_authentication_secret(
     monkeypatch, secret, operation
