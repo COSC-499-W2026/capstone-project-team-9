@@ -6,7 +6,16 @@ async function request(path, options = {}) {
     ...options,
   })
   if (!res.ok) {
-    throw new Error(`Request failed (${res.status})`)
+    const err = new Error(`Request failed (${res.status})`)
+    err.status = res.status
+    // FastAPI puts a human readable reason in `detail`; keep it for the UI if there is one
+    try {
+      const { detail } = await res.json()
+      if (typeof detail === 'string') err.detail = detail
+    } catch {
+      // body wasn't JSON, the status is all we have
+    }
+    throw err
   }
   return res.json()
 }
