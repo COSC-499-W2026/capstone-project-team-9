@@ -2,9 +2,10 @@ from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session, select
 
 from models import User
+from models.user_model import UserRole
 
 class DuplicateUserError(Exception):
-    """Raised when a username or email already exists."""
+    """Raised when an email address already exists."""
 
 def get_user_by_email(session: Session, email: str) -> User | None:
     statement = select(User).where(User.email == email)
@@ -25,11 +26,14 @@ def create_user(
     name: str,
     email: str,
     hashed_password: str,
+    role: UserRole = UserRole.STUDENT,
 ) -> User:
+    role = UserRole(role)
     user = User(
         name=name,
         email=email,
         hashed_password=hashed_password,
+        role=role,
     )
 
     session.add(user)
@@ -40,7 +44,7 @@ def create_user(
     except IntegrityError as exc:
         session.rollback()
         raise DuplicateUserError(
-            "Username or email already exists."
+            "Email already exists."
         ) from exc
 
     return user

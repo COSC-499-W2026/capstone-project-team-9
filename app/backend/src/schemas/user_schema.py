@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
+from models.user_model import UserRole
 
 class UserCreate(BaseModel):
     name: str = Field(min_length=1, max_length=100)
@@ -8,3 +9,4 @@ class UserCreate(BaseModel):
 class UserResponse(BaseModel):
     name: str
     email: EmailStr
+    role: UserRole
