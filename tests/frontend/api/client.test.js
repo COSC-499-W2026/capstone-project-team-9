@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { get, post } from '@/api/client'
+import { get, post, postForm } from '@/api/client'
 
 function mockFetch(response) {
   const fn = vi.fn().mockResolvedValue(response)
@@ -38,5 +38,18 @@ describe('api client', () => {
     mockFetch({ ok: false, status: 422, json: async () => ({ detail: 'Not enough clues' }) })
 
     await expect(get('/anything')).rejects.toMatchObject({ status: 422, detail: 'Not enough clues' })
+  })
+
+  it('postForm() sends FormData and lets the browser set the content type', async () => {
+    const fetchMock = mockFetch({ ok: true, json: async () => ({ correct: true }) })
+    const form = new FormData()
+
+    expect(await postForm('/plays/1/clues/2/answer', form)).toEqual({ correct: true })
+
+    const [url, options] = fetchMock.mock.calls[0]
+    expect(url).toBe('/api/plays/1/clues/2/answer')
+    expect(options.method).toBe('POST')
+    expect(options.body).toBe(form)
+    expect(options.headers).toEqual({})
   })
 })

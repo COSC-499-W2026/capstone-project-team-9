@@ -39,6 +39,11 @@ app.include_router(play_router.router)
 app.include_router(answer_router.router)
 app.include_router(login_router.router)
 
+# Testing helpers (e.g. which room a clue points to). Never registered outside development.
+if os.getenv("ENV") == "development":
+    from routers import dev_router
+    app.include_router(dev_router.router)
+
 @app.get("/")
 def root():
     return {"message": "Language Game API is running"}

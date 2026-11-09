@@ -1,8 +1,10 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import CameraCapture from '../components/CameraCapture.vue'
 import ClueAudioPlaceholder from '../components/ClueAudioPlaceholder.vue'
-import { getPlayState } from '../api/game'
+import { getPlayState, submitAnswer } from '../api/game'
+import { getCurrentCoords } from '../utils/geolocation'
 import '../styles/game.css'
 
 const props = defineProps({
@@ -13,6 +15,11 @@ const router = useRouter()
 
 const state = ref(null) // play state from GET /plays/{id}
 const loadError = ref('')
+
+const photo = ref(null) // JPEG Blob from the camera
+const submitting = ref(false)
+const submitError = ref('')
+const result = ref(null) // last answer response, shown in the result sheet
 
 // Positions can have gaps, so number clues by how many are already solved
 const clueNumber = computed(() => Math.min(state.value.solved_clues + 1, state.value.total_clues))
@@ -30,6 +37,42 @@ async function load() {
 }
 
 onMounted(load)
+
+function submitErrorMessage(err) {
+  if (err?.code === 1) return 'Location access is needed to check your answer.' // geolocation PERMISSION_DENIED
+  if (err?.code) return "Couldn't get your location. Try again."
+  return err?.detail ?? err?.message ?? 'Something went wrong.'
+}
+
+async function submit() {
+  submitError.value = ''
+  submitting.value = true
+  try {
+    const { latitude, longitude } = await getCurrentCoords()
+    result.value = await submitAnswer(props.playId, state.value.current_clue_id, {
+      photo: photo.value,
+      latitude,
+      longitude,
+    })
+  } catch (err) {
+    if (err?.status === 409) {
+      // Clue was already answered (e.g. in another tab): jump to wherever the play is now
+      photo.value = null
+      await load()
+    } else {
+      submitError.value = submitErrorMessage(err)
+    }
+  } finally {
+    submitting.value = false
+  }
+}
+
+async function dismissResult() {
+  const { correct } = result.value
+  result.value = null
+  photo.value = null
+  if (correct) await load() // next clue, or the finish screen
+}
 
 const exit = () => router.push({ name: 'play' })
 </script>
@@ -77,8 +120,25 @@ const exit = () => router.push({ name: 'play' })
         <section :key="state.current_clue_id" class="clue">
           <div class="card">
             <p class="card__eyebrow">Listen</p>
-            <ClueAudioPlaceholder />
+            <ClueAudioPlaceholder :clue-id="state.current_clue_id" />
           </div>
+
+          <div class="card">
+            <p class="card__eyebrow">Capture</p>
+            <CameraCapture v-model="photo" />
+          </div>
+
+          <p v-if="submitError" class="error" role="alert">{{ submitError }}</p>
+
+          <button
+            type="button"
+            class="btn btn--primary btn--block"
+            :disabled="!photo || submitting"
+            @click="submit"
+          >
+            <span v-if="submitting" class="spinner" aria-hidden="true" />
+            {{ submitting ? 'Checking…' : 'Submit answer' }}
+          </button>
 
           <!-- TODO: enable once the backend has a skip endpoint, then call load() to show the next clue -->
           <button type="button" class="btn btn--secondary btn--block" disabled title="Skipping isn't available yet">
@@ -89,6 +149,26 @@ const exit = () => router.push({ name: 'play' })
             </svg>
           </button>
         </section>
+      </Transition>
+
+      <!-- Answer result -->
+      <Transition name="sheet">
+        <div v-if="result" class="scrim" @click.self="dismissResult">
+          <div class="sheet" role="dialog" aria-modal="true" :class="result.correct ? 'sheet--good' : 'sheet--bad'">
+            <div class="sheet__icon" aria-hidden="true">
+              <svg v-if="result.correct" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+              <svg v-else viewBox="0 0 24 24"><path d="M7 7l10 10M17 7 7 17" /></svg>
+            </div>
+            <h2 class="sheet__title">{{ result.correct ? 'Correct!' : 'Not quite' }}</h2>
+            <p class="sheet__text">{{ result.message }}</p>
+            <p class="sheet__meta">
+              {{ result.attempts }} {{ result.attempts === 1 ? 'attempt' : 'attempts' }} on this clue
+            </p>
+            <button type="button" class="btn btn--primary btn--block" @click="dismissResult">
+              {{ result.play_complete ? 'See results' : result.correct ? 'Next clue' : 'Try again' }}
+            </button>
+          </div>
+        </div>
       </Transition>
     </div>
   </div>
@@ -199,6 +279,15 @@ const exit = () => router.push({ name: 'play' })
   color: var(--accent);
 }
 
+.error {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-size: 0.9375rem;
+}
+
 .skip-icon {
   width: 1rem;
   height: 1rem;
@@ -253,7 +342,8 @@ const exit = () => router.push({ name: 'play' })
   animation: badge 0.7s 0.15s var(--ease) both;
 }
 
-.done__badge svg {
+.done__badge svg,
+.sheet__icon svg {
   width: 55%;
   height: 55%;
   fill: none;
@@ -274,6 +364,76 @@ const exit = () => router.push({ name: 'play' })
   min-width: 12rem;
 }
 
+/* ---------- Answer result sheet ---------- */
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.sheet {
+  width: 100%;
+  max-width: 34rem;
+  padding: 2rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom));
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--surface-solid);
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+
+@media (min-width: 600px) {
+  .scrim {
+    align-items: center;
+  }
+
+  .sheet {
+    max-width: 24rem;
+    border-radius: var(--radius-lg);
+  }
+}
+
+.sheet__icon {
+  display: grid;
+  place-items: center;
+  width: 4rem;
+  height: 4rem;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  animation: badge 0.6s 0.1s var(--ease) both;
+}
+
+.sheet--good .sheet__icon {
+  background: var(--success);
+}
+
+.sheet--bad .sheet__icon {
+  background: var(--danger);
+  animation:
+    badge 0.6s 0.1s var(--ease) both,
+    shake 0.45s 0.6s ease;
+}
+
+.sheet__title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.sheet__text {
+  margin: 0.5rem 0 0.25rem;
+  color: var(--text-muted);
+}
+
+.sheet__meta {
+  margin: 0 0 1.5rem;
+  font-size: 0.8125rem;
+  color: var(--text-faint);
+}
+
 /* ---------- Transitions ---------- */
 .slide-enter-active,
 .slide-leave-active {
@@ -292,6 +452,26 @@ const exit = () => router.push({ name: 'play' })
   transform: translateX(-32px);
 }
 
+.sheet-enter-active,
+.sheet-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.sheet-enter-active .sheet,
+.sheet-leave-active .sheet {
+  transition: transform 0.45s var(--ease);
+}
+
+.sheet-enter-from,
+.sheet-leave-to {
+  opacity: 0;
+}
+
+.sheet-enter-from .sheet,
+.sheet-leave-to .sheet {
+  transform: translateY(100%);
+}
+
 @keyframes rise {
   from {
     opacity: 0;
@@ -306,4 +486,14 @@ const exit = () => router.push({ name: 'play' })
   }
 }
 
+@keyframes shake {
+  20%,
+  60% {
+    transform: translateX(-6px);
+  }
+  40%,
+  80% {
+    transform: translateX(6px);
+  }
+}
 </style>

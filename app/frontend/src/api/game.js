@@ -1,4 +1,4 @@
-import { get, post } from './client'
+import { get, post, postForm } from './client'
 
 // ---------- Game options ----------
 
@@ -26,4 +26,16 @@ export async function startGame(settings) {
   const game = await createGame(settings)
   const { play } = await startPlay(game.id)
   return play.id
+}
+
+/**
+ * Send a photo and the player's location as the answer to a clue.
+ * Resolves with {correct, message, attempts, play_complete}.
+ */
+export function submitAnswer(playId, clueId, { photo, latitude, longitude }) {
+  const form = new FormData()
+  form.append('image', photo, 'photo.jpg')
+  form.append('latitude', latitude)
+  form.append('longitude', longitude)
+  return postForm(`/plays/${playId}/clues/${clueId}/answer`, form)
 }
