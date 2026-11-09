@@ -57,6 +57,9 @@ def get_game_options_service(
 ) -> GameOptionsService:
     return GameOptionsService(game_options_repo, clue_repo)
 
+GameOptionsServiceDep = Annotated[GameOptionsService, Depends(get_game_options_service)]
+
+
 def get_game_service(
     game_repo: GameRepositoryDep,
     game_options_repo: GameOptionsRepositoryDep,
@@ -64,14 +67,23 @@ def get_game_service(
 ) -> GameService:
     return GameService(game_repo, game_options_repo, clue_repo)
 
+GameServiceDep = Annotated[GameService, Depends(get_game_service)]
+
+
 def get_location_service() -> LocationService:
     return LocationService()
+
+LocationServiceDep = Annotated[LocationService, Depends(get_location_service)]
+
 
 def get_answer_service(
     location_service: LocationServiceDep,
     target_repo: TargetRepository
 ) -> AnswerService:
     return AnswerService(location_service, target_repo)
+
+AnswerServiceDep = Annotated[AnswerService, Depends(get_answer_service)]
+
 
 def get_play_service(
     answer_service: AnswerServiceDep,
@@ -81,9 +93,4 @@ def get_play_service(
 ) -> PlayService:
     return PlayService(answer_service, play_repo, game_repo, clue_repo)
 
-
-GameOptionsServiceDep = Annotated[GameOptionsService, Depends(get_game_options_service)]
-GameServiceDep = Annotated[GameService, Depends(get_game_service)]
-LocationServiceDep = Annotated[LocationService, Depends(get_location_service)]
-AnswerServiceDep = Annotated[AnswerService, Depends(get_answer_service)]
 PlayServiceDep = Annotated[PlayService, Depends(get_play_service)]
