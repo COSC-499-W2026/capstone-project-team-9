@@ -239,12 +239,14 @@ The repository methods are still covered by the existing happy-path tests (e.g. 
 The one testing workaround: the `play_service` fixture builds `PlayService` with real repositories instead of mocks. It has a `TODO in future: MOCK these repositories` comment in `test_play_service.py`. Proper mocking depends on a wider review of how our tests use the database, so it's left for a later PR.
 
 Although our CI workflow is currently down, I can confirm this PR did not break anything else in the system because I ran all tests in a fresh Docker container on my machine. My reviewers did the same.
-![Week 9 PR 237 Tests](./pics/week-9-pr-237-tests.png)
+![Week 9 PR 254 Tests](./pics/week-9-pr-254-tests.png)
 
 
 ---
 
-## Non-PR things
-- reviews
-- project management
-- team log
+## Other things I did this week
+- Thoroughly reviewed PRs: [#233](https://github.com/COSC-499-W2026/capstone-project-team-9/pull/233), [#242](https://github.com/COSC-499-W2026/capstone-project-team-9/pull/242), [#251](https://github.com/COSC-499-W2026/capstone-project-team-9/pull/251)
+  - did an especially in-depth review of PR [#242 - authentication setup](https://github.com/COSC-499-W2026/capstone-project-team-9/pull/242), working closely with Nash to ensure that the new auth and security features fit well into our existing architecture and would be maintainable/useable in future
+- Project management (updating and tracking issues and milestones for the team)
+- Research and investigation into our blocked CI workflow; still working on this
+- An incomplete PR that I didn't quite finish in time, see branch `answer-service-class`
