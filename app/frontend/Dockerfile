@@ -9,5 +9,6 @@ RUN --mount=type=cache,target=/root/.npm npm ci
 # Copy config files and source code
 COPY . .
 
-# Run the frontend
+# Expose pot 5173 and start the Vite dev server
+EXPOSE 5173
 CMD ["npm", "run", "dev"]
