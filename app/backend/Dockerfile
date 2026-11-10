@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1
-
 # Build order: layers go from least to most frequently changed, so a code
 # change only rebuilds the last step or two and everything heavy stays cached.
 #   1. torch (rarely changes)
