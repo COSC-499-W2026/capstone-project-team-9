@@ -15,6 +15,7 @@ services:
       FRONTEND_URL: https://frontend:5173
       AUTH_TOKEN_SECRET: "${AUTH_TOKEN_SECRET:?Set AUTH_TOKEN_SECRET in .env to a random value of at least 32 characters}"
       PYTHONPATH: /app/src
+      PYTHONDONTWRITEBYTECODE: true  # prevents __pycache__ being written to bind-mounted folders
 
   frontend:
     build:

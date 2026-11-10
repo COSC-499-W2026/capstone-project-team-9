@@ -7,8 +7,6 @@
 
 FROM python:3.12-slim
 
-ENV PYTHONDONTWRITEBYTECODE=1
-
 WORKDIR /app
 
 # Install CPU-only torch first so easyocr doesn't pull the huge CUDA build
