@@ -5,7 +5,8 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./app/backend:/app
+      - ./app/backend/src:/app/src
+      - ./app/backend/scripts:/app/scripts
       - ./tests/backend:/app/tests/backend
     environment:
       ENV: ${ENV}
