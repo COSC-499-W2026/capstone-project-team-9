@@ -110,7 +110,7 @@ clean:
     echo '🧹 cleaning...'
 
     skip=( \( -name .git -o -name .venv \) )
-    build_dirs=( \( -name __pycache__ -o -name node_modules -o -name '*.egg-info' -o -name .pytest_cache \) )
+    build_dirs=( \( -name build -o -name __pycache__ -o -name node_modules -o -name '*.egg-info' -o -name .pytest_cache \) )
     coverage_files=( \( -name .coverage -o -name pytest.xml \) )
     empty_dirs="{{empty_dirs}}"
 
@@ -125,7 +125,7 @@ clean:
     Write-Host '🧹 cleaning...'
 
     $skip  = '[\\/](\.git|\.venv)[\\/]'
-    $buildDirs  = '__pycache__', 'node_modules', '*.egg-info', '.pytest_cache'
+    $buildDirs  = 'build', '__pycache__', 'node_modules', '*.egg-info', '.pytest_cache'
     $coverageFiles = '.coverage', 'pytest.xml'
     $emptyDirs = '{{empty_dirs}}' -split ' '
 
