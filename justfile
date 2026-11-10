@@ -100,20 +100,39 @@ venv:
     .venv\Scripts\python.exe -m pip install -e "./app/backend[test]"
 
 
-# Delete __pycache__, node_modules and *.egg-info folders; keeps .git and .venv
+# Delete caches, coverage output and empty test mount points; keeps .git and .venv
 [unix, group('Local')]
 clean:
+    @echo '🧹 cleaning...'
     find . \( -name .git -o -name .venv \) -prune -o \
-        \( -name __pycache__ -o -name node_modules -o -name '*.egg-info' \) \
+        \( -name __pycache__ -o -name node_modules -o -name '*.egg-info' -o -name .pytest_cache \) \
         -type d -prune -exec rm -rf {} +
+    find . \( -name .git -o -name .venv \) -prune -o \
+        \( -name .coverage -o -name pytest.xml \) \
+        -type f -delete
+    -rmdir app/backend/tests/backend app/backend/tests 2>/dev/null
 
-# Delete __pycache__, node_modules and *.egg-info folders; keeps .git and .venv
+# Delete caches, coverage output and empty test mount points; keeps .git and .venv
 [windows, group('Local')]
 clean:
     #!powershell.exe
-    $names = '__pycache__', 'node_modules', '*.egg-info'
+    Write-Host '🧹 cleaning...'
+
+    $dirs  = '__pycache__', 'node_modules', '*.egg-info', '.pytest_cache'
+    $files = '.coverage', 'pytest.xml'
     $skip  = '[\\/](\.git|\.venv)[\\/]'
 
-    Get-ChildItem -Recurse -Force -Directory -Include $names |
+    Get-ChildItem -Recurse -Force -Directory -Include $dirs |
         Where-Object { $_.FullName -notmatch $skip } |
         Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+
+    Get-ChildItem -Recurse -Force -File -Include $files |
+        Where-Object { $_.FullName -notmatch $skip } |
+        Remove-Item -Force
+
+    # Remove the mount-point folders only if they are empty
+    foreach ($dir in 'app\backend\tests\backend', 'app\backend\tests') {
+        if ((Test-Path $dir) -and -not (Get-ChildItem $dir -Force)) {
+            Remove-Item $dir -Force
+        }
+    }
