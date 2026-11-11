@@ -9,7 +9,12 @@ from core.clock import utc_now
 import models # registers the table models so create_all builds them
 from models import Clue, Target, PlayClue
 
+# RUN ON TEST COLLECTION -----------------------------------------------------
+
 ensure_tests_running_in_docker()
+
+
+# DEFINE FIXTURES THAT ANY TEST CAN USE ---------------------------------------
 
 @pytest.fixture
 def session():
@@ -73,3 +78,42 @@ def solve_clue(session):
         session.add(play_clue)
         session.commit()
     return _solve
+
+
+# PYTEST SETTINGS FUNCTIONS  ---------------------------------------
+
+def pytest_collection_modifyitems(items):
+    """
+    Mark tests that use the DB `session` fixture as integration, the rest as unit.
+    """
+    for item in items:
+        kind = "integration" if "session" in item.fixturenames else "unit"
+        item.add_marker(getattr(pytest.mark, kind))
+
+
+def pytest_report_collectionfinish(items):
+    """
+    Print the unit/integration split of the collected tests.
+    """
+    if not items:
+        return None
+    total = len(items)
+    intg = sum(1 for item in items if item.get_closest_marker("integration"))
+    unit = total - intg
+    return f"test types: {unit} unit tests ({unit / total:.0%}), {intg} integration tests ({intg / total:.0%})"
+
+
+def pytest_report_teststatus(report, config):
+    """
+    Show "[unit]" or "[integ]" before PASSED/FAILED in verbose output.
+    """
+    if report.when != "call" or hasattr(report, "wasxfail"):
+        return None  # keep pytest's default output
+    if report.outcome not in ("passed", "failed"):
+        return None
+
+    label = "intg" if "integration" in report.keywords else "unit"
+    letter = "." if report.passed else "F"
+    word = f"[{label}] {report.outcome.upper()}"
+
+    return report.outcome, letter, (word, {"green": report.passed, "red": report.failed})
