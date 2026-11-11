@@ -91,6 +91,18 @@ def pytest_collection_modifyitems(items):
         item.add_marker(getattr(pytest.mark, kind))
 
 
+def pytest_report_collectionfinish(items):
+    """
+    Print the unit/integration split of the collected tests.
+    """
+    if not items:
+        return None
+    total = len(items)
+    intg = sum(1 for item in items if item.get_closest_marker("integration"))
+    unit = total - intg
+    return f"test types: {unit} unit tests ({unit / total:.0%}), {intg} integration tests ({intg / total:.0%})"
+
+
 def pytest_report_teststatus(report, config):
     """
     Show "[unit]" or "[integ]" before PASSED/FAILED in verbose output.
