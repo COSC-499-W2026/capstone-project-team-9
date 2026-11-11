@@ -30,4 +30,5 @@ pythonpath = ["src"]
 addopts = "-v --cov=src --cov-report=term-missing:skip-covered"
 markers = [
     "integration: tests that use a real database session",
+    "unit: tests that only test a single unit of code on one layer"
 ]

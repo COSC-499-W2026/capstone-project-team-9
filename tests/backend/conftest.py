@@ -83,7 +83,11 @@ def solve_clue(session):
 # PYTEST SETTINGS FUNCTIONS  ---------------------------------------
 
 def pytest_collection_modifyitems(items):
-    """Mark any test that uses a real DB session as an integration test."""
+    """
+    Mark tests that use the DB `session` fixture as integration, the rest as unit.
+    """
     for item in items:
-        if "session" in item.fixturenames:
-            item.add_marker(pytest.mark.integration)
+        kind = "integration" if "session" in item.fixturenames else "unit"
+        item.add_marker(getattr(pytest.mark, kind))
+
+
