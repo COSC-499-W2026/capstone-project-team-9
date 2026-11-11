@@ -27,7 +27,7 @@ test = [
 [tool.pytest.ini_options]
 testpaths = ["tests/backend"] # this path may look incorrect, but it is correct inside the Docker container!
 pythonpath = ["src"]
-addopts = "-v --cov=src --cov-report=term-missing:skip-covered"
+addopts = "-v --cov=/app/src --cov-report=term-missing:skip-covered"
 markers = [
     "integration: tests that use a real database session",
     "unit: tests that only test a single unit of code on one layer"
