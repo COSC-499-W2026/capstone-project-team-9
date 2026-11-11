@@ -48,17 +48,17 @@ backend_pytest := "docker compose exec -w /app/tests/backend backend pytest"
 # Run backend tests; optionally pass a specific path (e.g `test_repos/`)
 [group('Tests')]
 test-backend path="":
-    {{backend_pytest}} {{path}}
+    {{backend_pytest}} {{ if path != "" {"--no-cov"} else {""} }} {{path}}
 
 # --Run only backend unit tests
 [group('Tests')]
 test-backend-unit:
-    {{backend_pytest}} -m unit
+    {{backend_pytest}} --no-cov -m unit
 
 # --Run only backend integration tests
 [group('Tests')]
 test-backend-intg:
-    {{backend_pytest}} -m integration
+    {{backend_pytest}} --no-cov -m integration
 
 # Run frontend tests; optionally pass a specific path (e.g `api/`)
 [group('Tests')]
