@@ -9,7 +9,12 @@ from core.clock import utc_now
 import models # registers the table models so create_all builds them
 from models import Clue, Target, PlayClue
 
+# RUN ON TEST COLLECTION -----------------------------------------------------
+
 ensure_tests_running_in_docker()
+
+
+# DEFINE FIXTURES THAT ANY TEST CAN USE ---------------------------------------
 
 @pytest.fixture
 def session():
@@ -73,3 +78,7 @@ def solve_clue(session):
         session.add(play_clue)
         session.commit()
     return _solve
+
+
+# PYTEST SETTINGS FUNCTIONS  ---------------------------------------
+
