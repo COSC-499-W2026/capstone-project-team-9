@@ -46,7 +46,7 @@ nuke:
 # Run backend tests; optionally pass a specific path (e.g `test_repos/`)
 [group('Tests')]
 test-backend path="":
-    docker compose exec backend pytest tests/backend/{{path}}
+    docker compose exec -w /app/tests/backend backend pytest {{path}}
 
 # Run frontend tests; optionally pass a specific path (e.g `api/`)
 [group('Tests')]
