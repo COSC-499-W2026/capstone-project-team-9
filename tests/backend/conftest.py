@@ -91,3 +91,17 @@ def pytest_collection_modifyitems(items):
         item.add_marker(getattr(pytest.mark, kind))
 
 
+def pytest_report_teststatus(report, config):
+    """
+    Show "[unit]" or "[integ]" before PASSED/FAILED in verbose output.
+    """
+    if report.when != "call" or hasattr(report, "wasxfail"):
+        return None  # keep pytest's default output
+    if report.outcome not in ("passed", "failed"):
+        return None
+
+    label = "intg" if "integration" in report.keywords else "unit"
+    letter = "." if report.passed else "F"
+    word = f"[{label}] {report.outcome.upper()}"
+
+    return report.outcome, letter, (word, {"green": report.passed, "red": report.failed})
