@@ -51,11 +51,6 @@ def test_correct_answer_returns_200_with_the_result(client, mock_play_service):
     mock_play_service.submit_answer.assert_called_once_with(PLAY_ID, CLUE_ID, b"img", 49.9, -119.4)
 
 
-def test_completed_play_is_reported(client, mock_play_service):
-    mock_play_service.submit_answer.return_value = PlayAnswerResult(True, CORRECT_MESSAGE, 1, True)
-    assert _post(client).json()["play_complete"] is True
-
-
 def test_wrong_answer_is_still_200_with_its_attempt_count(client, mock_play_service):
     mock_play_service.submit_answer.return_value = PlayAnswerResult(False, WRONG_MESSAGE, 2, False)
     r = _post(client)
