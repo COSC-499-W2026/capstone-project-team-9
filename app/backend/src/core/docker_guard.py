@@ -10,12 +10,12 @@ import textwrap
 
 def ensure_tests_running_in_docker() -> None:
     """Stops the program if tests are being run outside of Docker."""
-    _docker_guard("tests", "docker compose exec backend pytest")
+    _docker_guard("tests", "just test-backend")
 
 
 def ensure_app_running_in_docker() -> None:
     """Stops the program if the app is being run outside of Docker."""
-    _docker_guard("the app", "docker compose up")
+    _docker_guard("the app", "just up")
 
 
 def _docker_guard(program : str, alt_command : str) -> None:
