@@ -3,7 +3,7 @@ from sqlmodel import select
 
 from models import Game, Play, PlayClue
 from repositories import PlayRepository, ClueRepository, GameRepository # TODO in future: MOCK these repositories
-from services.answer_service import CORRECT_MESSAGE, WRONG_MESSAGE, AnswerResult
+from services.answer_service import CORRECT_MESSAGE, WRONG_MESSAGE, AnswerResult, AnswerService
 from services.play_service import (
     ClueAlreadySolvedError,
     ClueNotInPlayError,
@@ -13,6 +13,8 @@ from services.play_service import (
     ClueNotCurrentError
 )
 NUM_CLUES = 3
+CORRECT = AnswerResult(True, CORRECT_MESSAGE)
+WRONG = AnswerResult(False, WRONG_MESSAGE)
 
 
 @pytest.fixture
@@ -23,23 +25,17 @@ def game(session):
     return game
 
 @pytest.fixture
-def play_service(session):
-    return PlayService(session, PlayRepository(session), GameRepository(session), ClueRepository(session))
+def mock_answer_service(mocker):
+    """Mock AnswerService (OCR + location); every answer is correct by default."""
+    service = mocker.create_autospec(AnswerService, instance=True)
+    service.verify_answer.return_value = CORRECT
+    return service
 
 @pytest.fixture
-def fake_verify(monkeypatch):
-    """Fake verify_answer (OCR + location). install(correct) or install(error=...); returns the list of clue ids checked."""
-    calls = []
-
-    def install(correct: bool = True, error: Exception | None = None):
-        def fake(session, clue_id, image_bytes, lat, lon):
-            calls.append(clue_id)
-            if error:
-                raise error
-            return AnswerResult(correct, CORRECT_MESSAGE if correct else WRONG_MESSAGE)
-        monkeypatch.setattr("services.play_service.verify_answer", fake)
-        return calls
-    return install
+def play_service(session, mock_answer_service):
+    return PlayService(
+        mock_answer_service, PlayRepository(session), GameRepository(session), ClueRepository(session)
+    )
 
 
 @pytest.fixture
@@ -168,83 +164,76 @@ def test_get_play_state_counts_total_and_solved(play_service, game, add_clues, s
     state = play_service.get_play_state(started.play.id)
     assert (state.total_clues, state.solved_clues) == (NUM_CLUES, 2)
 
-def test_submit_answer_correct_solves_the_clue(play_service, session, started, fake_verify):
-    fake_verify(True)
+def test_submit_answer_correct_solves_the_clue(play_service, session, started, mock_answer_service):
     result = _submit(play_service, started)
     assert (result.correct, result.message) == (True, CORRECT_MESSAGE)
     assert (result.attempts, result.play_complete) == (1, False)
     assert _play_clue(session, started).solved_at is not None
+    mock_answer_service.verify_answer.assert_called_once_with(started.clue_ids[0], b"img", 49.0, -119.0)
 
 
-def test_submit_answer_wrong_counts_attempt_but_does_not_solve(play_service, session, started, fake_verify):
-    fake_verify(False)
+def test_submit_answer_wrong_counts_attempt_but_does_not_solve(play_service, session, started, mock_answer_service):
+    mock_answer_service.verify_answer.return_value = WRONG
     result = _submit(play_service, started)
     assert (result.correct, result.attempts, result.play_complete) == (False, 1, False)
     assert _play_clue(session, started).solved_at is None
 
 
-def test_submit_answer_attempts_accumulate(play_service, started, fake_verify):
-    fake_verify(False)
+def test_submit_answer_attempts_accumulate(play_service, started, mock_answer_service):
+    mock_answer_service.verify_answer.return_value = WRONG
     _submit(play_service, started)
     assert _submit(play_service, started).attempts == 2
-    fake_verify(True)
+    mock_answer_service.verify_answer.return_value = CORRECT
     assert _submit(play_service, started).attempts == 3
 
 
-def test_submit_answer_solving_last_clue_completes_the_play(play_service, session, started, fake_verify):
-    fake_verify(True)
+def test_submit_answer_solving_last_clue_completes_the_play(play_service, session, started):
     results = [_submit(play_service, started, i) for i in range(NUM_CLUES)]
     assert [r.play_complete for r in results] == [False, False, True]
     assert session.get(Play, started.play.id).completed_at is not None
 
 
 
-def test_submit_answer_wrong_answer_on_last_clue_does_not_complete(play_service, session, started, fake_verify):
-    fake_verify(True)
+def test_submit_answer_wrong_answer_on_last_clue_does_not_complete(play_service, session, started, mock_answer_service):
     _submit(play_service, started, 0)
     _submit(play_service, started, 1)
-    fake_verify(False)
+    mock_answer_service.verify_answer.return_value = WRONG
     assert _submit(play_service, started, 2).play_complete is False
     assert session.get(Play, started.play.id).completed_at is None
 
 
-def test_submit_answer_unknown_play_raises_without_checking(play_service, fake_verify):
-    calls = fake_verify(True)
+def test_submit_answer_unknown_play_raises_without_checking(play_service, mock_answer_service):
     with pytest.raises(PlayNotFoundError):
         play_service.submit_answer(999, 1, b"img", 49.0, -119.0)
-    assert calls == []
+    mock_answer_service.verify_answer.assert_not_called()
 
 
-def test_submit_answer_clue_not_in_play_raises_without_checking(play_service, started, fake_verify):
-    calls = fake_verify(True)
+def test_submit_answer_clue_not_in_play_raises_without_checking(play_service, started, mock_answer_service):
     with pytest.raises(ClueNotInPlayError):
         play_service.submit_answer(started.play.id, 999, b"img", 49.0, -119.0)
-    assert calls == []
+    mock_answer_service.verify_answer.assert_not_called()
 
 
-def test_submit_answer_already_solved_raises_and_keeps_attempts(play_service, session, started, fake_verify):
-    fake_verify(True)
+def test_submit_answer_already_solved_raises_and_keeps_attempts(play_service, session, started):
     _submit(play_service, started)
     with pytest.raises(ClueAlreadySolvedError):
         _submit(play_service, started)
     assert _play_clue(session, started).attempts == 1
 
 
-def test_submit_answer_unreadable_image_records_nothing(play_service, session, started, fake_verify):
-    fake_verify(error=ValueError("Not a readable image"))
+def test_submit_answer_unreadable_image_records_nothing(play_service, session, started, mock_answer_service):
+    mock_answer_service.verify_answer.side_effect = ValueError("Not a readable image")
     with pytest.raises(ValueError):
         _submit(play_service, started)
     assert _play_clue(session, started).attempts == 0
 
-def test_submit_answer_for_a_later_clue_raises_and_records_nothing(play_service, session, started, fake_verify):
-    calls = fake_verify(True)
+def test_submit_answer_for_a_later_clue_raises_and_records_nothing(play_service, session, started, mock_answer_service):
     with pytest.raises(ClueNotCurrentError):
         _submit(play_service, started, 1)  # clue 2 while clue 1 is current
-    assert calls == []
+    mock_answer_service.verify_answer.assert_not_called()
     assert _play_clue(session, started, 1).attempts == 0
 
 
-def test_submit_answer_moves_on_to_the_next_clue_after_solving(play_service, started, fake_verify):
-    fake_verify(True)
+def test_submit_answer_moves_on_to_the_next_clue_after_solving(play_service, started):
     _submit(play_service, started, 0)
     assert _submit(play_service, started, 1).correct is True
