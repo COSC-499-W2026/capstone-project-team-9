@@ -2,7 +2,7 @@ import pytest
 from sqlmodel import select
 
 from models import Game, Play, PlayClue
-from repositories import PlayRepository, ClueRepository, GameRepository # TODO in future: MOCK PlayRepository and ClueRepository
+from repositories import PlayRepository, ClueRepository, GameRepository # TODO in future: MOCK PlayRepository
 from services.answer_service import CORRECT_MESSAGE, WRONG_MESSAGE, AnswerResult, AnswerService
 from services.play_service import (
     ClueAlreadySolvedError,
@@ -25,6 +25,14 @@ def mock_game_repo(mocker):
     return repo
 
 @pytest.fixture
+def mock_clue_repo(mocker, add_clues):
+    """Mock ClueRepository that picks NUM_CLUES clues. The clues are also saved, because the
+    real PlayRepository still inserts play clues that reference them."""
+    repo = mocker.create_autospec(ClueRepository, instance=True)
+    repo.get_random_clue_ids.return_value = add_clues(NUM_CLUES)
+    return repo
+
+@pytest.fixture
 def game(session, mock_game_repo):
     """A game that mock_game_repo returns. It is also saved, because the real PlayRepository
     still inserts plays that reference it."""
@@ -42,15 +50,14 @@ def mock_answer_service(mocker):
     return service
 
 @pytest.fixture
-def play_service(session, mock_answer_service, mock_game_repo):
+def play_service(session, mock_answer_service, mock_game_repo, mock_clue_repo):
     return PlayService(
-        mock_answer_service, PlayRepository(session), mock_game_repo, ClueRepository(session)
+        mock_answer_service, PlayRepository(session), mock_game_repo, mock_clue_repo
     )
 
 
 @pytest.fixture
-def started(play_service, game, add_clues):
-    add_clues(NUM_CLUES)
+def started(play_service, game):
     return play_service.start_play(game.id)
 
 
@@ -66,8 +73,7 @@ def _play_clue(session, started, clue_index=0):
 
 
 
-def test_start_play_saves_play_for_the_game(play_service, session, game, add_clues, mock_game_repo):
-    add_clues(5)
+def test_start_play_saves_play_for_the_game(play_service, session, game, mock_game_repo):
     started = play_service.start_play(game.id)
     assert started.play.id is not None
     assert started.play.game_id == game.id
@@ -75,78 +81,78 @@ def test_start_play_saves_play_for_the_game(play_service, session, game, add_clu
     mock_game_repo.get_game.assert_called_once_with(game.id)
 
 
-def test_start_play_returns_the_requested_number_of_distinct_clues(play_service, game, add_clues):
-    add_clues(5)
-    clue_ids = play_service.start_play(game.id).clue_ids
-    assert len(clue_ids) == NUM_CLUES
-    assert len(set(clue_ids)) == NUM_CLUES
+def test_start_play_returns_the_clues_picked_by_the_clue_repo(play_service, game, mock_clue_repo):
+    picked = mock_clue_repo.get_random_clue_ids.return_value
+    assert play_service.start_play(game.id).clue_ids == picked
 
 
-def test_start_play_saves_the_clues_in_the_returned_order(play_service, session, game, add_clues):
-    add_clues(5)
+def test_start_play_saves_the_clues_in_the_returned_order(play_service, session, game, mock_clue_repo):
+    reversed_ids = mock_clue_repo.get_random_clue_ids.return_value[::-1]  # not just ascending ids
+    mock_clue_repo.get_random_clue_ids.return_value = reversed_ids
     started = play_service.start_play(game.id)
     rows = session.exec(
         select(PlayClue).where(PlayClue.play_id == started.play.id).order_by(PlayClue.position)
     ).all()
-    assert [r.clue_id for r in rows] == started.clue_ids
+    assert started.clue_ids == reversed_ids
+    assert [r.clue_id for r in rows] == reversed_ids
     assert [r.position for r in rows] == [1, 2, 3]
 
 
-def test_start_play_only_uses_clues_for_the_games_language_and_difficulty(play_service, game, add_clues):
-    matching = add_clues(NUM_CLUES, language_id=1, difficulty_id=1)
-    add_clues(4, language_id=2, difficulty_id=1)
-    add_clues(4, language_id=1, difficulty_id=2)
-    assert set(play_service.start_play(game.id).clue_ids) == set(matching)
+def test_start_play_asks_for_clues_matching_the_games_ruleset(play_service, game, mock_clue_repo):
+    play_service.start_play(game.id)
+    mock_clue_repo.get_random_clue_ids.assert_called_once_with(
+        game.language_id, game.difficulty_id, game.num_clues
+    )
 
 
-def test_start_play_works_with_exactly_enough_clues(play_service, game, add_clues):
-    add_clues(NUM_CLUES)
+def test_start_play_works_with_exactly_enough_clues(play_service, game):
     assert len(play_service.start_play(game.id).clue_ids) == NUM_CLUES
 
 
-def test_start_play_records_user_when_given(play_service, game, add_clues):
-    add_clues(NUM_CLUES)
+def test_start_play_records_user_when_given(play_service, game):
     assert play_service.start_play(game.id, user_id=7).play.user_id == 7
 
 
-def test_start_play_user_is_none_by_default(play_service, game, add_clues):
-    add_clues(NUM_CLUES)
+def test_start_play_user_is_none_by_default(play_service, game):
     assert play_service.start_play(game.id).play.user_id is None
 
 
-def test_start_play_raises_when_game_does_not_exist_and_saves_nothing(play_service, session, mock_game_repo):
+def test_start_play_raises_when_game_does_not_exist_and_saves_nothing(
+    play_service, session, mock_game_repo, mock_clue_repo
+):
     mock_game_repo.get_game.return_value = None
     with pytest.raises(GameNotFoundError):
         play_service.start_play(999)
     mock_game_repo.get_game.assert_called_once_with(999)
+    mock_clue_repo.get_random_clue_ids.assert_not_called()
     assert _saved_plays(session) == []
 
 
-def test_start_play_raises_when_not_enough_clues_and_saves_nothing(play_service, session, game, add_clues):
-    add_clues(NUM_CLUES - 1)
+def test_start_play_raises_when_not_enough_clues_and_saves_nothing(
+    play_service, session, game, mock_clue_repo
+):
+    picked = mock_clue_repo.get_random_clue_ids.return_value
+    mock_clue_repo.get_random_clue_ids.return_value = picked[:-1]  # one short
     with pytest.raises(ValueError, match="Not enough clues"):
         play_service.start_play(game.id)
     assert _saved_plays(session) == []
     assert session.exec(select(PlayClue)).all() == []
 
-def test_get_play_state_current_clue_is_first_when_nothing_solved(play_service, game, add_clues):
-    add_clues(5)
+def test_get_play_state_current_clue_is_first_when_nothing_solved(play_service, game):
     started = play_service.start_play(game.id)
     state = play_service.get_play_state(started.play.id)
     assert state.current_clue_id == started.clue_ids[0]
 
 
-def test_get_play_state_current_clue_skips_solved_ones(play_service, game, add_clues, solve_clue):
-    add_clues(5)
+def test_get_play_state_current_clue_skips_solved_ones(play_service, game, solve_clue):
     started = play_service.start_play(game.id)
     solve_clue(started.play.id, started.clue_ids[0])
     assert play_service.get_play_state(started.play.id).current_clue_id == started.clue_ids[1]
 
 
 def test_get_play_state_current_clue_is_lowest_unsolved_when_solved_out_of_order(
-    play_service, game, add_clues, solve_clue
+    play_service, game, solve_clue
 ):
-    add_clues(5)
     started = play_service.start_play(game.id)
     solve_clue(started.play.id, started.clue_ids[1])  # solve the 2nd clue first
     assert play_service.get_play_state(started.play.id).current_clue_id == started.clue_ids[0]
@@ -154,8 +160,7 @@ def test_get_play_state_current_clue_is_lowest_unsolved_when_solved_out_of_order
     assert play_service.get_play_state(started.play.id).current_clue_id == started.clue_ids[2]
 
 
-def test_get_play_state_current_clue_is_none_when_all_solved(play_service, game, add_clues, solve_clue):
-    add_clues(NUM_CLUES)
+def test_get_play_state_current_clue_is_none_when_all_solved(play_service, game, solve_clue):
     started = play_service.start_play(game.id)
     for clue_id in started.clue_ids:
         solve_clue(started.play.id, clue_id)
@@ -166,8 +171,7 @@ def test_get_play_state_raises_for_unknown_play(play_service):
     with pytest.raises(PlayNotFoundError):
         play_service.get_play_state(999)
 
-def test_get_play_state_counts_total_and_solved(play_service, game, add_clues, solve_clue):
-    add_clues(5)
+def test_get_play_state_counts_total_and_solved(play_service, game, solve_clue):
     started = play_service.start_play(game.id)
     state = play_service.get_play_state(started.play.id)
     assert (state.total_clues, state.solved_clues) == (NUM_CLUES, 0)
