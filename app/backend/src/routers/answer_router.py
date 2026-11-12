@@ -34,7 +34,7 @@ def submit_answer(
     except (ClueAlreadySolvedError, ClueNotCurrentError) as exc:
         raise HTTPException(status.HTTP_409_CONFLICT, str(exc)) from exc
     except ValueError as exc:  # raised by ocr_service._decode for unreadable images
-        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, str(exc)) from exc
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, str(exc)) from exc
     return AnswerResponse(
         correct=result.correct,
         message=result.message,
