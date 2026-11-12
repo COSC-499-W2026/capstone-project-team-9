@@ -1,8 +1,10 @@
 import pytest
 
 from models import Target
+from repositories import TargetRepository
+from services import LocationService
 from services.answer_service import (
-    CORRECT_MESSAGE, WRONG_MESSAGE, ClueNotFoundError, verify_answer,
+    CORRECT_MESSAGE, WRONG_MESSAGE, AnswerService, ClueNotFoundError
 )
 from services.location_service import WRONG_PLACE_MESSAGE
 
@@ -12,56 +14,51 @@ FAR_FROM_TARGET = (49.300, -123.300)
 
 
 @pytest.fixture
-def fake_clue(monkeypatch):
-    """Fake the clue repo's target lookup."""
-    def install(target):
-        monkeypatch.setattr("services.answer_service.get_target_by_id", lambda session, clue_id: target)
-    return install
+def mock_target_repo(mocker):
+    """Mock TargetRepository that returns TARGET for any clue by default."""
+    repo = mocker.create_autospec(TargetRepository, instance=True)
+    repo.get_target_for_clue.return_value = TARGET
+    return repo
 
 
 @pytest.fixture
-def fake_ocr(monkeypatch):
-    """Fake matches_room and record which room code it was asked about."""
-    calls = []
-
-    def install(result):
-        def fake(image_bytes, expected_room):
-            calls.append(expected_room)
-            return result
-        monkeypatch.setattr("services.answer_service.matches_room", fake)
-        return calls
-    return install
+def mock_matches_room(mocker):
+    """Mock the OCR check used by answer_service; returns True by default."""
+    return mocker.patch("services.answer_service.matches_room", return_value=True)
 
 
-def test_correct_answer_checks_room_code_from_target_name(session, fake_clue, fake_ocr):
-    fake_clue(TARGET)
-    calls = fake_ocr(True)
-    result = verify_answer(session, 1, b"image", *AT_TARGET)
+@pytest.fixture
+def answer_service(mock_target_repo):
+    return AnswerService(LocationService(), mock_target_repo)
+
+
+def test_correct_answer_checks_room_code_from_target_name(
+    answer_service, mock_target_repo, mock_matches_room
+):
+    result = answer_service.verify_answer(1, b"image", *AT_TARGET)
     assert result.correct is True
     assert result.message == CORRECT_MESSAGE
-    assert calls == ["COM201"]  # space stripped
+    mock_target_repo.get_target_for_clue.assert_called_once_with(1)
+    mock_matches_room.assert_called_once_with(b"image", "COM201")  # space stripped
 
 
-def test_wrong_photo_at_right_place(session, fake_clue, fake_ocr):
-    fake_clue(TARGET)
-    fake_ocr(False)
-    result = verify_answer(session, 1, b"image", *AT_TARGET)
+def test_wrong_photo_at_right_place(answer_service, mock_matches_room):
+    mock_matches_room.return_value = False
+    result = answer_service.verify_answer(1, b"image", *AT_TARGET)
     assert result.correct is False
     assert result.message == WRONG_MESSAGE
 
 
-def test_wrong_location_skips_ocr(session, fake_clue, fake_ocr):
-    fake_clue(TARGET)
-    calls = fake_ocr(True)
-    result = verify_answer(session, 1, b"image", *FAR_FROM_TARGET)
+def test_wrong_location_skips_ocr(answer_service, mock_matches_room):
+    result = answer_service.verify_answer(1, b"image", *FAR_FROM_TARGET)
     assert result.correct is False
     assert result.message == WRONG_PLACE_MESSAGE
-    assert calls == []
+    mock_matches_room.assert_not_called()
 
 
-def test_unknown_clue_raises(session, fake_clue, fake_ocr):
-    fake_clue(None)
-    calls = fake_ocr(True)
+def test_unknown_clue_raises(answer_service, mock_target_repo, mock_matches_room):
+    mock_target_repo.get_target_for_clue.return_value = None
     with pytest.raises(ClueNotFoundError):
-        verify_answer(session, 999, b"image", *AT_TARGET)
-    assert calls == []
+        answer_service.verify_answer(999, b"image", *AT_TARGET)
+    mock_target_repo.get_target_for_clue.assert_called_once_with(999)
+    mock_matches_room.assert_not_called()

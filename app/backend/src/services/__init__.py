@@ -12,4 +12,5 @@ the repository layer to save the results. No HTTP or raw SQL goes here.
 from .game_options_service import GameOptionsService
 from .game_service import GameService
 from .location_service import LocationService
+from .answer_service import AnswerService
 from .play_service import PlayService
