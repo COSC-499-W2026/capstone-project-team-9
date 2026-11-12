@@ -97,16 +97,58 @@ db-reset:
 psql:
     docker compose exec db psql -U {{db_user}} -d {{db_name}}
 
-# ---------- Local venv (for your IDE only, not for running the app) ----------
+# ---------- Local Stuff (for your explorer and IDE only, not for running the app) ----------
 
 # Create/recreate a venv and install dependencies
-[unix, group('IDE')]
+[unix, group('Local')]
 venv:
     [ -d .venv ] || python -m venv .venv
     .venv/bin/python -m pip install -e "./app/backend[test]"
 
 # Create/recreate a venv and install dependencies
-[windows, group('IDE')]
+[windows, group('Local')]
 venv:
     if (-not (Test-Path .venv)) { python -m venv .venv }
     .venv\Scripts\python.exe -m pip install -e "./app/backend[test]"
+
+
+empty_dirs := "app/backend/tests/backend app/backend/tests app/frontend/tests/frontend app/frontend/tests"
+
+# Delete caches, coverage output and empty test mount points; keeps .git and .venv
+[unix, group('Local')]
+clean:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo '🧹 cleaning...'
+
+    skip=( \( -name .git -o -name .venv \) )
+    build_dirs=( \( -name build -o -name __pycache__ -o -name node_modules -o -name '*.egg-info' -o -name .pytest_cache \) )
+    coverage_files=( \( -name .coverage -o -name pytest.xml \) )
+    empty_dirs="{{empty_dirs}}"
+
+    find . "${skip[@]}" -prune -o "${build_dirs[@]}" -type d -prune -exec rm -rf {} +
+    find . "${skip[@]}" -prune -o "${coverage_files[@]}" -type f -exec rm -f {} +
+    rmdir $empty_dirs 2>/dev/null || true 
+
+# Delete caches, coverage output and empty test mount points; keeps .git and .venv
+[windows, group('Local')]
+clean:
+    #!powershell.exe
+    Write-Host '🧹 cleaning...'
+
+    $skip  = '[\\/](\.git|\.venv)[\\/]'
+    $buildDirs  = 'build', '__pycache__', 'node_modules', '*.egg-info', '.pytest_cache'
+    $coverageFiles = '.coverage', 'pytest.xml'
+    $emptyDirs = '{{empty_dirs}}' -split ' '
+
+    Get-ChildItem -Recurse -Force -Directory -Include $buildDirs |
+        Where-Object { $_.FullName -notmatch $skip } |
+        Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+
+    Get-ChildItem -Recurse -Force -File -Include $coverageFiles |
+        Where-Object { $_.FullName -notmatch $skip } |
+        Remove-Item -Force
+
+    foreach ($dir in $emptyDirs) {
+        if (Test-Path $dir) { [System.IO.Directory]::Delete((Join-Path $PWD $dir)) }
+    }

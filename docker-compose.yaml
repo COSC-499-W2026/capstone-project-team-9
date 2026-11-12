@@ -5,7 +5,8 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./app/backend:/app
+      - ./app/backend/src:/app/src
+      - ./app/backend/scripts:/app/scripts
       - ./tests/backend:/app/tests/backend
     environment:
       ENV: ${ENV}
@@ -14,19 +15,19 @@ services:
       FRONTEND_URL: https://frontend:5173
       AUTH_TOKEN_SECRET: "${AUTH_TOKEN_SECRET:?Set AUTH_TOKEN_SECRET in .env to a random value of at least 32 characters}"
       PYTHONPATH: /app/src
+      PYTHONDONTWRITEBYTECODE: true  # prevents __pycache__ being written to bind-mounted folders
+      COVERAGE_FILE: /tmp/.coverage  # prevents .coverage being written to bind-mounted folders
 
   frontend:
-    image: node:22-slim
-    working_dir: /app
-    volumes:
-      - ./app/frontend:/app
-      - /app/node_modules
-      - ./tests/frontend:/app/tests/frontend
+    build:
+      context: ./app/frontend
     ports:
       - "5173:5173"
+    volumes:
+      - ./app/frontend/src:/app/src
+      - ./tests/frontend:/app/tests/frontend
     environment:
       BACKEND_URL: http://backend:8000
-    command: sh -c "npm install && npm run dev"
     depends_on:
       - backend
 
