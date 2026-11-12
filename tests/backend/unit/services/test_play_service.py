@@ -2,7 +2,7 @@ import pytest
 from sqlmodel import select
 
 from models import Game, Play, PlayClue
-from repositories import PlayRepository, ClueRepository, GameRepository # TODO in future: MOCK these repositories
+from repositories import PlayRepository, ClueRepository, GameRepository # TODO in future: MOCK PlayRepository and ClueRepository
 from services.answer_service import CORRECT_MESSAGE, WRONG_MESSAGE, AnswerResult, AnswerService
 from services.play_service import (
     ClueAlreadySolvedError,
@@ -18,10 +18,20 @@ WRONG = AnswerResult(False, WRONG_MESSAGE)
 
 
 @pytest.fixture
-def game(session):
+def mock_game_repo(mocker):
+    """Mock GameRepository; finds no game by default (the `game` fixture overrides that)."""
+    repo = mocker.create_autospec(GameRepository, instance=True)
+    repo.get_game.return_value = None
+    return repo
+
+@pytest.fixture
+def game(session, mock_game_repo):
+    """A game that mock_game_repo returns. It is also saved, because the real PlayRepository
+    still inserts plays that reference it."""
     game = Game(num_clues=NUM_CLUES, language_id=1, difficulty_id=1)
     session.add(game)
     session.commit()
+    mock_game_repo.get_game.return_value = game
     return game
 
 @pytest.fixture
@@ -32,9 +42,9 @@ def mock_answer_service(mocker):
     return service
 
 @pytest.fixture
-def play_service(session, mock_answer_service):
+def play_service(session, mock_answer_service, mock_game_repo):
     return PlayService(
-        mock_answer_service, PlayRepository(session), GameRepository(session), ClueRepository(session)
+        mock_answer_service, PlayRepository(session), mock_game_repo, ClueRepository(session)
     )
 
 
@@ -56,12 +66,13 @@ def _play_clue(session, started, clue_index=0):
 
 
 
-def test_start_play_saves_play_for_the_game(play_service, session, game, add_clues):
+def test_start_play_saves_play_for_the_game(play_service, session, game, add_clues, mock_game_repo):
     add_clues(5)
     started = play_service.start_play(game.id)
     assert started.play.id is not None
     assert started.play.game_id == game.id
     assert len(_saved_plays(session)) == 1
+    mock_game_repo.get_game.assert_called_once_with(game.id)
 
 
 def test_start_play_returns_the_requested_number_of_distinct_clues(play_service, game, add_clues):
@@ -103,9 +114,11 @@ def test_start_play_user_is_none_by_default(play_service, game, add_clues):
     assert play_service.start_play(game.id).play.user_id is None
 
 
-def test_start_play_raises_when_game_does_not_exist_and_saves_nothing(play_service, session):
+def test_start_play_raises_when_game_does_not_exist_and_saves_nothing(play_service, session, mock_game_repo):
+    mock_game_repo.get_game.return_value = None
     with pytest.raises(GameNotFoundError):
         play_service.start_play(999)
+    mock_game_repo.get_game.assert_called_once_with(999)
     assert _saved_plays(session) == []
 
 
