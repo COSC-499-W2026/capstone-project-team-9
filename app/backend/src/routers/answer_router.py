@@ -24,7 +24,7 @@ def submit_answer(
     """Check a photo and the player's location against a clue in their play, and record the attempt."""
     image_bytes = image.file.read(MAX_IMAGE_BYTES + 1)
     if len(image_bytes) > MAX_IMAGE_BYTES:
-        raise HTTPException(status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, "Image too large")
+        raise HTTPException(status.HTTP_413_CONTENT_TOO_LARGE, "Image too large")
     try:
         result = play_service.submit_answer(play_id, clue_id, image_bytes, latitude, longitude)
     except (PlayNotFoundError, ClueNotInPlayError) as exc:
