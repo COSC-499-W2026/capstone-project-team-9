@@ -29,6 +29,7 @@ class PlayClueState(BaseModel):
 class PlayStateResponse(BaseModel):
     id: int
     game_id: int | None
+    score: float
     completed: bool
     current_clue_id: int | None
     total_clues: int
