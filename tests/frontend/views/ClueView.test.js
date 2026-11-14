@@ -16,7 +16,7 @@ import { getPlayState, submitAnswer } from '@/api/game'
 import { getCurrentCoords } from '@/utils/geolocation'
 import ClueView from '@/views/ClueView.vue'
 
-const STATE = { id: 5, game_id: 1, completed: false, current_clue_id: 11, total_clues: 3, solved_clues: 0 }
+const STATE = { id: 5, game_id: 1, score: 0, completed: false, current_clue_id: 11, total_clues: 3, solved_clues: 0 }
 const PHOTO = new Blob(['jpeg'], { type: 'image/jpeg' })
 
 // The real camera is tested on its own; here a button stands in for "the player took a photo"
@@ -55,6 +55,7 @@ describe('ClueView', () => {
 
     expect(getPlayState).toHaveBeenCalledWith('5')
     expect(wrapper.text()).toContain('Clue 1 of 3')
+    expect(wrapper.text()).toContain('0 points')
   })
 
   it('numbers the clue by how many are solved', async () => {
@@ -79,10 +80,11 @@ describe('ClueView', () => {
   })
 
   it('shows the finish screen when the play is complete', async () => {
-    getPlayState.mockResolvedValue({ ...STATE, completed: true, current_clue_id: null, solved_clues: 3 })
+    getPlayState.mockResolvedValue({ ...STATE, score: 300, completed: true, current_clue_id: null, solved_clues: 3 })
     const wrapper = await mountLoaded()
 
     expect(wrapper.text()).toContain('You found them all')
+    expect(wrapper.text()).toContain('300 points')
     await buttonWithText(wrapper, 'Play again').trigger('click')
     expect(push).toHaveBeenCalledWith({ name: 'play' })
   })
@@ -170,11 +172,13 @@ describe('ClueView', () => {
     const wrapper = await mountLoaded()
     await takePhotoAndSubmit(wrapper)
 
-    getPlayState.mockResolvedValue({ ...STATE, completed: true, current_clue_id: null, solved_clues: 3 })
+
+    getPlayState.mockResolvedValue({ ...STATE, score: 300, completed: true, current_clue_id: null, solved_clues: 3 })
     await buttonWithText(wrapper, 'See results').trigger('click')
     await flushPromises()
 
     expect(wrapper.text()).toContain('You found them all')
+    expect(wrapper.text()).toContain('300 points')
   })
 
   it('explains when location access is denied', async () => {
