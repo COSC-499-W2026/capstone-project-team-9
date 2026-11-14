@@ -97,6 +97,10 @@ def test_start_play_records_user_when_given(play_service, game, add_clues):
     add_clues(NUM_CLUES)
     assert play_service.start_play(game.id, user_id=7).play.user_id == 7
 
+def test_start_play_initializes_score_to_zero(play_service, game, add_clues):
+    add_clues(NUM_CLUES)
+    assert play_service.start_play(game.id).play.score == 0
+
 
 def test_start_play_user_is_none_by_default(play_service, game, add_clues):
     add_clues(NUM_CLUES)
