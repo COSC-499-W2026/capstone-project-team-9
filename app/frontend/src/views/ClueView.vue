@@ -88,6 +88,7 @@ const exit = () => router.push({ name: 'play' })
         </button>
         <div v-if="state && !state.completed" class="topbar__progress">
           <span class="topbar__count">Clue {{ clueNumber }} of {{ state.total_clues }}</span>
+          <span class="topbar__score">{{ state.score }} points</span>
           <div class="bar" role="progressbar" :aria-valuenow="state.solved_clues" :aria-valuemax="state.total_clues">
             <div class="bar__fill" :style="{ transform: `scaleX(${progress})` }" />
           </div>
@@ -112,6 +113,7 @@ const exit = () => router.push({ name: 'play' })
         </div>
         <h1 class="done__title">You found them all.</h1>
         <p class="muted">All {{ state.total_clues }} clues solved. Nicely done.</p>
+        <p class="done__score">{{ state.score }} points</p>
         <button type="button" class="btn btn--primary" @click="exit">Play again</button>
       </section>
 
@@ -228,6 +230,12 @@ const exit = () => router.push({ name: 'play' })
 .topbar__count {
   font-size: 0.8125rem;
   font-weight: 600;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.topbar__score {
+  font-size: 0.75rem;
   text-align: center;
   color: var(--text-muted);
 }
@@ -357,6 +365,12 @@ const exit = () => router.push({ name: 'play' })
   margin: 0;
   font-size: clamp(2.25rem, 8vw, 3rem);
   font-weight: 700;
+}
+
+.done__score {
+  margin: 0.75rem 0 0;
+  font-size: 1.25rem;
+  font-weight: 600;
 }
 
 .done .btn {
