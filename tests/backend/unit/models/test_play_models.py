@@ -10,7 +10,7 @@ def test_play_gets_defaults(session):
     session.commit()
     assert play.id is not None
     assert play.started_at is not None
-    assert play.score is None
+    assert play.score == 0
     assert play.completed_at is None
 
 

@@ -73,6 +73,7 @@ def test_get_play_returns_progress(client, game, add_clues):
     assert r.json() == {
         "id": started["play"]["id"],
         "game_id": game.id,
+        "score": 0.0,
         "completed": False,
         "current_clue_id": clue_ids[0],
         "total_clues": NUM_CLUES,

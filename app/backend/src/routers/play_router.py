@@ -38,6 +38,7 @@ def get_play_state(play_id: int, play_service: PlayServiceDep):
     return PlayStateResponse(
         id=state.play.id,
         game_id=state.play.game_id,
+        score=state.play.score or 0,
         completed=state.play.completed_at is not None,
         current_clue_id=state.current_clue_id,
         total_clues=state.total_clues,
