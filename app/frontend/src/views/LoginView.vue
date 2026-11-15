@@ -1,24 +1,26 @@
 <script setup>
 import { ref } from 'vue'
-import { post } from '../api/client.js'
+import { useRouter } from 'vue-router'
+import { requestToken } from '../api/login.js'
+import { setToken } from '../utils/auth.js'
 
 const email = ref('')
 const password = ref('')
 const message = ref('')
+const router = useRouter()
 
 async function login() {
   message.value = ''
 
   try {
-    const user = await post('/login', {
-      email: email.value,
-      password: password.value,
-    })
-
-    message.value = `Welcome, ${user.name}!`
+    const { access_token } = await requestToken(email.value, password.value)
+    setToken(access_token)
   } catch {
     message.value = 'Login failed. Check your email and password.'
+    return
   }
+
+  await router.push({ name: 'play' })
 }
 </script>
 
