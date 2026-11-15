@@ -56,11 +56,10 @@ class PlayService:
         self.game_repo = game_repo
         self.clue_repo = clue_repo
 
-    def start_play(self, game_id: int, user_id: int | None = None) -> StartedPlay:
+    def start_play(self, game_id: int, user_id: int) -> StartedPlay:
         """
         Start a play of a game: pick random clues matching the game's ruleset and save them in order.
         Nothing is saved if the game is missing or too few clues exist.
-        user_id stays None until login exists.
         """
         game = self.game_repo.get_game(game_id)
         if game is None:
