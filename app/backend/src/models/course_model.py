@@ -5,7 +5,7 @@ from sqlmodel import Field, SQLModel
 
 from core.clock import utc_now
 
-class Class(SQLModel, table=True):
+class Course(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     name: str = Field(min_length=1, max_length=100)
     language_id: int | None = Field(default=None, foreign_key="language.id")
