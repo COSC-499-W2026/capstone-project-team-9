@@ -59,12 +59,16 @@ class PlayRepository(BaseRepository):
         return self.session.get(PlayClue, (play_id, clue_id))
 
 
-    def record_attempt(self, play_clue: PlayClue, solved: bool) -> PlayClue:
-        """Count one more attempt on a clue, and mark it solved if the attempt was correct."""
+    def record_attempt(
+        self, play_clue: PlayClue, solved: bool, play: Play, points_earned: int
+    ) -> PlayClue:
+        """Record an attempt and award points with the clue's solved state in one commit."""
         play_clue.attempts += 1
-        if solved:
+        if solved and play_clue.solved_at is None:
             play_clue.solved_at = utc_now()
+            play.score = (play.score or 0) + points_earned
         self.session.add(play_clue)
+        self.session.add(play)
         self.session.commit()
         self.session.refresh(play_clue)
         return play_clue

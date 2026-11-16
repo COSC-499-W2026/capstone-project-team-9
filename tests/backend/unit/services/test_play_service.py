@@ -96,7 +96,11 @@ def test_start_play_works_with_exactly_enough_clues(play_service, game, add_clue
 
 def test_start_play_records_the_user(play_service, game, add_clues):
     add_clues(NUM_CLUES)
-    assert play_service.start_play(game.id, 7).play.user_id == 7
+    assert play_service.start_play(game.id, user_id=7).play.user_id == 7
+
+def test_start_play_initializes_score_to_zero(play_service, game, add_clues):
+    add_clues(NUM_CLUES)
+    assert play_service.start_play(game.id, 7).play.score == 0
 
 
 def test_start_play_raises_when_game_does_not_exist_and_saves_nothing(play_service, session):
