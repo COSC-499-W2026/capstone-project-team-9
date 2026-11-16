@@ -12,3 +12,4 @@ from .game_model import Game
 from .play_model import Play
 from .play_clue_model import PlayClue
 from .class_model import Class
+from .enrollment_model import Enrollment
