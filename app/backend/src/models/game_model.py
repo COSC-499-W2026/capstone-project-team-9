@@ -14,6 +14,6 @@ class Game(SQLModel, table=True):
     due_at: datetime | None = Field(default=None, sa_type=DateTime(timezone=True))
     # Plain ints until the User and Course models exist; then add foreign_key="user.id" / "course.id"
     course_id: int | None = None
-    creator_id: int | None = None
+    creator_id: int | None = Field(default=None, foreign_key="user.id", ondelete="SET NULL")
     created_at: datetime = Field(default_factory=utc_now, sa_type=DateTime(timezone=True))
     updated_at: datetime = Field(default_factory=utc_now, sa_type=DateTime(timezone=True))
