@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlmodel import Session
 
@@ -19,12 +19,19 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/token")
 def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
     session: SessionDep,
-) -> User | None:
+) -> User:
     user_id = decode_access_token(token)
-    return get_by_id(session, user_id) if user_id is not None else None
+    user = get_by_id(session, user_id) if user_id is not None else None
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired access token.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return user
 
 
-CurrentUserDep = Annotated[User | None, Depends(get_current_user)]
+CurrentUserDep = Annotated[User, Depends(get_current_user)]
 
 # REPOSITORY DEPENDENCIES --------------------------------------------------------
 

@@ -12,6 +12,5 @@ class Play(SQLModel, table=True):
     score: float | None = 0.0
     started_at: datetime = Field(default_factory=utc_now, sa_type=DateTime(timezone=True))
     completed_at: datetime | None = Field(default=None, sa_type=DateTime(timezone=True))
-    # Nullable until login exists, like creator_id on Game; then make it required
-    user_id: int | None = Field(default=None, foreign_key="user.id", ondelete="CASCADE")
+    user_id: int = Field(foreign_key="user.id", ondelete="CASCADE")
     game_id: int | None = Field(default=None, foreign_key="game.id", ondelete="SET NULL")

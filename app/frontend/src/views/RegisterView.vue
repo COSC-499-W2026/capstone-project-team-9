@@ -20,7 +20,7 @@ async function register() {
     })
 
     successful.value = true
-    message.value = `Registration successful! Welcome, ${user.name}!`
+    message.value = `Account created for ${user.name}! You can now log in.`
 
     name.value = ''
     email.value = ''

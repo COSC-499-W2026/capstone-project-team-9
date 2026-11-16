@@ -4,6 +4,7 @@ from fastapi.testclient import TestClient
 from sqlmodel import select
 
 from core.db import get_session
+from core.dependencies import get_current_user
 from models import Game, Play
 from routers.play_router import router
 
@@ -11,10 +12,11 @@ NUM_CLUES = 3
 
 
 @pytest.fixture
-def client(session):
+def client(session, current_user):
     app = FastAPI()
     app.include_router(router)
     app.dependency_overrides[get_session] = lambda: session
+    app.dependency_overrides[get_current_user] = lambda: current_user
     return TestClient(app)
 
 
@@ -38,10 +40,11 @@ def test_start_play_returns_201_with_play_and_ordered_clues(client, game, add_cl
     assert set(clue_ids) <= set(available)
 
 
-def test_start_play_saves_the_play(client, session, game, add_clues):
+def test_start_play_saves_the_play(client, session, game, add_clues, current_user):
     add_clues(NUM_CLUES)
     play_id = client.post(f"/games/{game.id}/plays").json()["play"]["id"]
     assert session.get(Play, play_id) is not None
+    assert session.get(Play, play_id).user_id == current_user.id
 
 
 def test_start_play_returns_404_for_unknown_game(client, session):
@@ -61,6 +64,14 @@ def test_start_play_returns_422_when_not_enough_clues(client, session, game, add
 
 def test_start_play_rejects_non_integer_game_id(client):
     assert client.post("/games/abc/plays").status_code == 422
+
+
+def test_start_play_requires_login(session, game):
+    app = FastAPI()
+    app.include_router(router)
+    app.dependency_overrides[get_session] = lambda: session
+    assert TestClient(app).post(f"/games/{game.id}/plays").status_code == 401
+
 
 def test_get_play_returns_progress(client, game, add_clues):
     add_clues(5)

@@ -32,13 +32,10 @@ class GameService:
             raise ValueError("Difficulty does not exist")
 
 
-    def create_game(
-        self, settings: GameCreate, creator_id: int | None = None
-    ) -> Game:
+    def create_game(self, settings: GameCreate, creator_id: int) -> Game:
         """
         Validate the settings and save a new game (the ruleset only; clues are picked per play).
         Rejects games that could never be played because too few clues exist.
-        creator_id stays None until login exists.
         """
         self._validate_settings(settings)
 

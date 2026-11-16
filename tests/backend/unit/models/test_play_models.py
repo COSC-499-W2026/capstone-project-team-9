@@ -5,13 +5,19 @@ from models import Play, PlayClue
 
 
 def test_play_gets_defaults(session):
-    play = Play()
+    play = Play(user_id=1)
     session.add(play)
     session.commit()
     assert play.id is not None
     assert play.started_at is not None
     assert play.score == 0
     assert play.completed_at is None
+
+
+def test_play_requires_a_user(session):
+    session.add(Play())
+    with pytest.raises(IntegrityError):
+        session.commit()
 
 
 def test_play_clue_starts_unsolved_with_zero_attempts(session):
