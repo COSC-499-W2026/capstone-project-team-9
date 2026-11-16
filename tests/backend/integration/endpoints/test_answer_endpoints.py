@@ -43,13 +43,13 @@ def client(play_service):
 
 
 @pytest.fixture
-def started(play_service, session, add_clues):
+def started(play_service, session, add_clues, current_user):
     """A real play of a game with NUM_CLUES clues (StartedPlay: .play and ordered .clue_ids)."""
-    game = Game(num_clues=NUM_CLUES, language_id=1, difficulty_id=1)
+    game = Game(num_clues=NUM_CLUES, language_id=1, difficulty_id=1, creator_id=current_user.id)
     session.add(game)
     session.commit()
     add_clues(NUM_CLUES)
-    return play_service.start_play(game.id)
+    return play_service.start_play(game.id, current_user.id)
 
 
 def _post(client, play_id, clue_id, image=b"img"):
