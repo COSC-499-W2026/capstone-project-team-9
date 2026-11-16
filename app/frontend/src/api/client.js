@@ -1,8 +1,14 @@
+import { getToken }from '../utils/auth'
 const BASE_URL = '/api' // Vite proxies this to FastAPI (see vite.config.js)
 
-async function request(path, options = {}) {
+const authHeader = () => {
+  const token = getToken()
+  return token ? { Authorization: `Bearer ${token}` } : {}
+}
+
+async function request(path, { headers = { 'Content-Type': 'application/json' }, ...options } = {}) {
   const res = await fetch(BASE_URL + path, {
-    headers: { 'Content-Type': 'application/json' },
+    headers: { ...headers, ...authHeader() },
     ...options,
   })
   if (!res.ok) {

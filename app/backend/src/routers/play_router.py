@@ -3,7 +3,7 @@ from sqlmodel import Session
 
 from schemas.play_schema import ClueResponse, PlayResponse, PlayStartResponse, PlayStateResponse
 from services.play_service import GameNotFoundError, PlayNotFoundError
-from core.dependencies import PlayServiceDep
+from core.dependencies import PlayServiceDep, CurrentUserDep
 
 router = APIRouter(tags=["plays"])
 
@@ -13,10 +13,10 @@ router = APIRouter(tags=["plays"])
     response_model=PlayStartResponse,
     status_code=status.HTTP_201_CREATED,
 )
-def start_game_play(game_id: int, play_service: PlayServiceDep):
+def start_game_play(game_id: int, play_service: PlayServiceDep, current_user: CurrentUserDep):
     """Start a play of a game and return the play plus its ordered list of clue ids."""
     try:
-        started = play_service.start_play(game_id)
+        started = play_service.start_play(game_id, current_user.id)
     except GameNotFoundError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
     except ValueError as exc:
@@ -38,6 +38,7 @@ def get_play_state(play_id: int, play_service: PlayServiceDep):
     return PlayStateResponse(
         id=state.play.id,
         game_id=state.play.game_id,
+        score=state.play.score or 0,
         completed=state.play.completed_at is not None,
         current_clue_id=state.current_clue_id,
         total_clues=state.total_clues,
