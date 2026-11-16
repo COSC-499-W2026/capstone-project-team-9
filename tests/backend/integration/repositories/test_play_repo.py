@@ -125,16 +125,16 @@ def test_get_play_clue_is_scoped_to_its_play(play_repo):
 
 
 def test_record_attempt_wrong_counts_but_does_not_solve(play_repo):
-    play_clue = play_repo.record_attempt(play_repo.get_play_clue(play.id, 1), False, play, 0)
     play = play_repo.add_play_with_clues(Play(user_id=USER_ID), [1])
+    play_clue = play_repo.record_attempt(play_repo.get_play_clue(play.id, 1), False, play, 0)
     assert play_clue.attempts == 1
     assert play_clue.solved_at is None
     assert play.score == 0
 
 
 def test_record_attempt_correct_counts_and_solves(play_repo):
-    play_clue = play_repo.record_attempt(play_repo.get_play_clue(play.id, 1), True, play, 10)
     play = play_repo.add_play_with_clues(Play(user_id=USER_ID), [1])
+    play_clue = play_repo.record_attempt(play_repo.get_play_clue(play.id, 1), True, play, 10)
     assert play_clue.attempts == 1
     assert play_clue.solved_at is not None
     assert play.score == 10
@@ -150,8 +150,8 @@ def test_record_attempt_accumulates_attempts(play_repo):
 
 
 def test_record_attempt_only_touches_that_clue(play_repo):
-    play_repo.record_attempt(play_repo.get_play_clue(play.id, 1), True, play, 10)
     play = play_repo.add_play_with_clues(Play(user_id=USER_ID), [1, 2])
+    play_repo.record_attempt(play_repo.get_play_clue(play.id, 1), True, play, 10)
     other = play_repo.get_play_clue(play.id, 2)
     assert (other.attempts, other.solved_at) == (0, None)
 
