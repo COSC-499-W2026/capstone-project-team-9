@@ -2,8 +2,10 @@ import { createRouter, createWebHistory } from 'vue-router'
 import PlayView from '../views/PlayView.vue'
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
+import LandingView from '../views/LandingView.vue'
 
 const routes = [
+  { path: '/', name: 'landing', component: LandingView },
   { path: '/', name: 'play', component: PlayView },
   { path: '/play/:playId', name: 'clue', component: () => import('../views/ClueView.vue'), props: true },
   // add new screens here, e.g.
