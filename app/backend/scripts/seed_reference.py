@@ -47,7 +47,14 @@ TARGETS = [
         "latitude": 49.940448265795,
         "longitude": -119.39514546010396,
         "radius": 50,
-    }
+    },
+    {
+        "name": "LIB 312",
+        "latitude": 49.9400944574053,
+        "longitude": -119.39544469965789,
+        "radius": 50,
+    },
+
 ]
 
 def seed_reference(session: Session) -> None:
