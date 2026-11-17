@@ -22,37 +22,37 @@ TARGETS = [
         "name": "COM 201",
         "latitude": 49.94043704768778, 
         "longitude": -119.39543094595204,
-        "radius": 50,
+        "radius": 150,
     },
     {
         "name": "SCI 128",
         "latitude": 49.94012837262329,
         "longitude": -119.39629920540068,
-        "radius": 50,
+        "radius": 150,
     },
     {
         "name": "ART 366",
         "latitude": 49.939584452649505,
         "longitude": -119.39687951886633,
-        "radius": 50
+        "radius": 150
     },
     {
         "name": "COM 311",
         "latitude": 49.940448265795,
         "longitude": -119.39514546010396,
-        "radius": 50,
+        "radius": 150,
     },
     {
         "name": "COM 312",
         "latitude": 49.940448265795,
         "longitude": -119.39514546010396,
-        "radius": 50,
+        "radius": 150,
     },
     {
         "name": "LIB 312",
-        "latitude": 49.9400944574053,
-        "longitude": -119.39544469965789,
-        "radius": 50,
+        "latitude": 49.940012102853586,
+        "longitude": -119.39541455544226,
+        "radius": 150,
     },
 
 ]
