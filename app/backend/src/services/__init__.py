@@ -14,3 +14,4 @@ from .game_service import GameService
 from .location_service import LocationService
 from .answer_service import AnswerService
 from .play_service import PlayService
+from .course_service import CourseService

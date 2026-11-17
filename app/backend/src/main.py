@@ -8,7 +8,7 @@ from core.docker_guard import ensure_app_running_in_docker
 from routers import (
     health, location_router, play_router, user_router, 
     game_options_router, game_router, login_router, answer_router,
-    clue_router
+    clue_router, course_router
 )
 
 @asynccontextmanager
@@ -42,6 +42,7 @@ app.include_router(play_router.router)
 app.include_router(answer_router.router)
 app.include_router(login_router.router)
 app.include_router(clue_router.router)
+app.include_router(course_router.router)
 
 # Testing helpers (e.g. which room a clue points to). Never registered outside development.
 if os.getenv("ENV") == "development":
