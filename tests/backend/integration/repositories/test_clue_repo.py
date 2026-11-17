@@ -1,5 +1,6 @@
 import pytest
 from repositories import ClueRepository
+from models import Clue
 
 @pytest.fixture
 def clue_repo(session):
@@ -37,3 +38,22 @@ def test_count_clues_matches_language_and_difficulty_only(clue_repo, add_clues):
 
 def test_count_clues_is_zero_when_none_match(clue_repo):
     assert clue_repo.count_clues(1, 1) == 0
+
+def test_get_audio_returns_the_clues_audio(clue_repo, session, add_clues):
+    first, second = add_clues(2)
+    session.get(Clue, first).audio = b"first"
+    session.get(Clue, second).audio = b"second"
+    session.commit()
+    assert clue_repo.get_audio(first) == b"first"
+    assert clue_repo.get_audio(second) == b"second"
+
+
+def test_get_audio_is_none_when_clue_missing(clue_repo):
+    assert clue_repo.get_audio(999) is None
+
+
+def test_get_audio_is_none_when_audio_is_empty(clue_repo, session, add_clues):
+    clue_id = add_clues(1)[0]
+    session.get(Clue, clue_id).audio = b""
+    session.commit()
+    assert clue_repo.get_audio(clue_id) is None
