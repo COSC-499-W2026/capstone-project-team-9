@@ -11,12 +11,13 @@ class UserRole(str, Enum):
     STUDENT = "student"
     INSTRUCTOR = "instructor"
     ADMIN = "admin"
+    GUEST = "guest"
 
 
 class User(SQLModel, table=True):
     __table_args__ = (
         CheckConstraint(
-            '"role" IN (\'student\', \'instructor\', \'admin\')',
+            '"role" IN (\'student\', \'instructor\', \'admin\', \'guest\')',
             name="ck_user_role",
         ),
     )
