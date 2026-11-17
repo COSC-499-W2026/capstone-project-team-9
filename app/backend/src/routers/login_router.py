@@ -8,6 +8,7 @@ from core.security import create_access_token
 from schemas.login_schema import LoginRequest, TokenResponse
 from schemas.user_schema import UserResponse
 from services.login_service import authenticate_user
+from services.user_service import register_guest
 
 
 router = APIRouter(prefix="/login", tags=["login"])
@@ -71,3 +72,9 @@ def get_logged_in_user(user: CurrentUserDep) -> UserResponse:
         )
 
     return UserResponse(name=user.name, email=user.email, role=user.role)
+
+@router.post("/guest", response_model=TokenResponse)
+def guest_login(session: Session = Depends(get_session)) -> TokenResponse:
+    """Create a guest user and log them in."""
+    guest = register_guest(session)
+    return TokenResponse(access_token=create_access_token(guest.id), token_type="bearer")
