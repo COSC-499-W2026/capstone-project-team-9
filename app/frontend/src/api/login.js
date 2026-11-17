@@ -1,4 +1,4 @@
-import { postForm } from './client.js'
+import { post,postForm } from './client.js'
 
 /** Exchange email + password for a token. Resolves with {access_token, token_type}. */
 export function requestToken(email, password) {
@@ -7,3 +7,6 @@ export function requestToken(email, password) {
   form.append('password', password)
   return postForm('/login/token', form)
 }
+
+/** Create a guest user. Resolves with {access_token, token_type}. */
+export const requestGuestToken = () => post('/login/guest', {})
