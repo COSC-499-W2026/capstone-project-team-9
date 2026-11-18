@@ -16,7 +16,7 @@ export default defineConfig({
     port: 5173,
     allowedHosts: [
       'localhost',
-      'declared-bottom-cure.ngrok-free.dev',
+      process.env.LIVE_DEMO_HOST,
     ],
     proxy: {
       // the browser calls /api/..., Vite forwards it to FastAPI
