@@ -19,7 +19,15 @@ class NotAllowedToCreateCourseError(Exception):
 
 
 class CourseNotFoundError(Exception):
-    """Raised when no course matches the given access code."""
+    """Raised when no course matches the given access code or id."""
+
+
+class AlreadyEnrolledError(Exception):
+    """Raised when a user tries to enroll in a course they are already in."""
+
+
+class NotCourseInstructorError(Exception):
+    """Raised when a user who is not an instructor of the course asks for instructor-only data."""
 
 
 @dataclass(frozen=True)
@@ -73,19 +81,19 @@ class CourseService:
     def enroll(self, access_code: str, user: User) -> EnrolledCourse:
         """
         Enroll the user as a student in the course with this access code.
-        If the user is already enrolled, their existing enrollment is kept and returned.
-        Raise CourseNotFoundError if no course uses the code.
+        Raise CourseNotFoundError if no course uses the code,
+        or AlreadyEnrolledError if the user is already in the course.
         """
         course = self.course_repo.get_by_access_code(access_code.strip().upper())
         if course is None:
             raise CourseNotFoundError("No course matches that access code")
+        if self.course_repo.get_enrollment(user.id, course.id) is not None:
+            raise AlreadyEnrolledError("You are already enrolled in this course")
 
-        enrollment = self.course_repo.get_enrollment(user.id, course.id)
-        if enrollment is None:
-            enrollment = self.course_repo.add_enrollment(
-                Enrollment(user_id=user.id, course_id=course.id, is_instructor=False)
-            )
-        return EnrolledCourse(course, is_instructor=enrollment.is_instructor)
+        self.course_repo.add_enrollment(
+            Enrollment(user_id=user.id, course_id=course.id, is_instructor=False)
+        )
+        return EnrolledCourse(course, is_instructor=False)
 
 
     def get_courses_for_user(self, user: User) -> list[EnrolledCourse]:
@@ -94,3 +102,18 @@ class CourseService:
             EnrolledCourse(course, is_instructor=is_instructor)
             for course, is_instructor in self.course_repo.get_courses_for_user(user.id)
         ]
+
+
+    def get_access_code(self, course_id: int, user: User) -> str:
+        """
+        Return the course's access code so an instructor can share it with students.
+        Raise CourseNotFoundError if the course does not exist,
+        or NotCourseInstructorError if the user is not an instructor of the course.
+        """
+        course = self.course_repo.get_course(course_id)
+        if course is None:
+            raise CourseNotFoundError("Course does not exist")
+        enrollment = self.course_repo.get_enrollment(user.id, course_id)
+        if enrollment is None or not enrollment.is_instructor:
+            raise NotCourseInstructorError("Only instructors of this course can view its access code")
+        return course.access_code
