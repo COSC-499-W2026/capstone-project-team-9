@@ -28,6 +28,7 @@ services:
       - ./tests/frontend:/app/tests/frontend
     environment:
       BACKEND_URL: http://backend:8000
+      LIVE_DEMO_HOST: ${LIVE_DEMO_HOST:?} # defaults to empty string '' if unset, which is safe for vite config
     depends_on:
       - backend
 

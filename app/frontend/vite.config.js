@@ -12,8 +12,12 @@ export default defineConfig({
     include: ['tests/frontend/**/*.{test,spec}.{js,ts}'],
   },
   server: {
-    host: true,
+    host: '0.0.0.0',
     port: 5173,
+    allowedHosts: [
+      'localhost',
+      process.env.LIVE_DEMO_HOST,
+    ],
     proxy: {
       // the browser calls /api/..., Vite forwards it to FastAPI
       '/api': {
