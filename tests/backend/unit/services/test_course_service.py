@@ -8,9 +8,11 @@ from services.course_service import (
     ACCESS_CODE_ALPHABET,
     ACCESS_CODE_LENGTH,
     MAX_CODE_ATTEMPTS,
+    AlreadyEnrolledError,
     CourseNotFoundError,
     CourseService,
     NotAllowedToCreateCourseError,
+    NotCourseInstructorError,
 )
 from repositories import CourseRepository, GameOptionsRepository   # TODO in future: MOCK these repositories
 
@@ -147,15 +149,18 @@ def test_enroll_with_unknown_code_raises_and_saves_nothing(course_service, sessi
     assert session.get(Enrollment, (student.id, course.id)) is None
 
 
-def test_enrolling_twice_keeps_a_single_enrollment(course_service, session, course, student):
+def test_enrolling_twice_raises_and_keeps_a_single_enrollment(course_service, session, course, student):
     course_service.enroll(course.access_code, student)
-    course_service.enroll(course.access_code, student)
+    with pytest.raises(AlreadyEnrolledError):
+        course_service.enroll(course.access_code, student)
     enrollments = session.exec(select(Enrollment).where(Enrollment.user_id == student.id)).all()
     assert len(enrollments) == 1
 
 
-def test_instructor_enrolling_in_own_course_stays_instructor(course_service, course, instructor):
-    assert course_service.enroll(course.access_code, instructor).is_instructor is True
+def test_instructor_enrolling_in_own_course_raises_and_stays_instructor(course_service, session, course, instructor):
+    with pytest.raises(AlreadyEnrolledError):
+        course_service.enroll(course.access_code, instructor)
+    assert session.get(Enrollment, (instructor.id, course.id)).is_instructor is True
 
 
 def test_get_courses_for_user_lists_enrolled_courses_with_role(course_service, course, student, instructor):
@@ -168,3 +173,28 @@ def test_get_courses_for_user_lists_enrolled_courses_with_role(course_service, c
 
 def test_get_courses_for_user_is_empty_when_not_enrolled(course_service, course, student):
     assert course_service.get_courses_for_user(student) == []
+
+
+def test_instructor_can_get_the_access_code(course_service, course, instructor):
+    assert course_service.get_access_code(course.id, instructor) == course.access_code
+
+
+def test_enrolled_student_cannot_get_the_access_code(course_service, course, student):
+    course_service.enroll(course.access_code, student)
+    with pytest.raises(NotCourseInstructorError):
+        course_service.get_access_code(course.id, student)
+
+
+def test_instructor_of_another_course_cannot_get_the_access_code(course_service, session, course):
+    other_instructor = User(
+        name="Other", email="other@example.com", hashed_password="x", role=UserRole.INSTRUCTOR.value
+    )
+    session.add(other_instructor)
+    session.commit()
+    with pytest.raises(NotCourseInstructorError):
+        course_service.get_access_code(course.id, other_instructor)
+
+
+def test_get_access_code_for_unknown_course_raises(course_service, course, instructor):
+    with pytest.raises(CourseNotFoundError):
+        course_service.get_access_code(999, instructor)
