@@ -2,7 +2,7 @@
 import secrets
 from dataclasses import dataclass
 
-from models import Course, User
+from models import Course, Enrollment, User
 from models.user_model import UserRole
 from repositories import CourseRepository, GameOptionsRepository
 from schemas.course_schema import CourseCreate
@@ -16,6 +16,10 @@ COURSE_CREATOR_ROLES = {UserRole.INSTRUCTOR.value, UserRole.ADMIN.value}
 
 class NotAllowedToCreateCourseError(Exception):
     """Raised when a user without instructor permissions tries to create a course."""
+
+
+class CourseNotFoundError(Exception):
+    """Raised when no course matches the given access code."""
 
 
 @dataclass(frozen=True)
@@ -64,3 +68,29 @@ class CourseService:
             owner_id=creator.id,
             access_code=self._generate_access_code(),
         ))
+
+
+    def enroll(self, access_code: str, user: User) -> EnrolledCourse:
+        """
+        Enroll the user as a student in the course with this access code.
+        If the user is already enrolled, their existing enrollment is kept and returned.
+        Raise CourseNotFoundError if no course uses the code.
+        """
+        course = self.course_repo.get_by_access_code(access_code.strip().upper())
+        if course is None:
+            raise CourseNotFoundError("No course matches that access code")
+
+        enrollment = self.course_repo.get_enrollment(user.id, course.id)
+        if enrollment is None:
+            enrollment = self.course_repo.add_enrollment(
+                Enrollment(user_id=user.id, course_id=course.id, is_instructor=False)
+            )
+        return EnrolledCourse(course, is_instructor=enrollment.is_instructor)
+
+
+    def get_courses_for_user(self, user: User) -> list[EnrolledCourse]:
+        """Return every course the user is enrolled in, newest enrollment first."""
+        return [
+            EnrolledCourse(course, is_instructor=is_instructor)
+            for course, is_instructor in self.course_repo.get_courses_for_user(user.id)
+        ]
