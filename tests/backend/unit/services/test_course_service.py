@@ -8,6 +8,7 @@ from services.course_service import (
     ACCESS_CODE_ALPHABET,
     ACCESS_CODE_LENGTH,
     MAX_CODE_ATTEMPTS,
+    CourseNotFoundError,
     CourseService,
     NotAllowedToCreateCourseError,
 )
@@ -114,3 +115,56 @@ def test_access_code_generation_gives_up_if_every_code_is_taken(course_service, 
     with pytest.raises(RuntimeError):
         course_service._generate_access_code()
     assert exists.call_count == MAX_CODE_ATTEMPTS
+
+
+@pytest.fixture
+def student(make_user):
+    return make_user(UserRole.STUDENT.value)
+
+
+@pytest.fixture
+def course(course_service, seeded, instructor):
+    return course_service.create_course(_settings(), instructor)
+
+
+def test_enroll_adds_the_user_as_a_student(course_service, session, course, student):
+    enrolled = course_service.enroll(course.access_code, student)
+    assert enrolled.course.id == course.id
+    assert enrolled.is_instructor is False
+    enrollment = session.get(Enrollment, (student.id, course.id))
+    assert enrollment is not None
+    assert enrollment.is_instructor is False
+
+
+def test_enroll_accepts_lowercase_and_padded_codes(course_service, course, student):
+    enrolled = course_service.enroll(f"  {course.access_code.lower()}  ", student)
+    assert enrolled.course.id == course.id
+
+
+def test_enroll_with_unknown_code_raises_and_saves_nothing(course_service, session, course, student):
+    with pytest.raises(CourseNotFoundError):
+        course_service.enroll("ZZZZZZ", student)
+    assert session.get(Enrollment, (student.id, course.id)) is None
+
+
+def test_enrolling_twice_keeps_a_single_enrollment(course_service, session, course, student):
+    course_service.enroll(course.access_code, student)
+    course_service.enroll(course.access_code, student)
+    enrollments = session.exec(select(Enrollment).where(Enrollment.user_id == student.id)).all()
+    assert len(enrollments) == 1
+
+
+def test_instructor_enrolling_in_own_course_stays_instructor(course_service, course, instructor):
+    assert course_service.enroll(course.access_code, instructor).is_instructor is True
+
+
+def test_get_courses_for_user_lists_enrolled_courses_with_role(course_service, course, student, instructor):
+    course_service.enroll(course.access_code, student)
+    student_courses = course_service.get_courses_for_user(student)
+    instructor_courses = course_service.get_courses_for_user(instructor)
+    assert [(c.course.id, c.is_instructor) for c in student_courses] == [(course.id, False)]
+    assert [(c.course.id, c.is_instructor) for c in instructor_courses] == [(course.id, True)]
+
+
+def test_get_courses_for_user_is_empty_when_not_enrolled(course_service, course, student):
+    assert course_service.get_courses_for_user(student) == []
