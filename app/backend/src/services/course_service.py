@@ -107,12 +107,15 @@ class CourseService:
     def get_access_code(self, course_id: int, user: User) -> str:
         """
         Return the course's access code so an instructor can share it with students.
+        Admins can get the code for any course.
         Raise CourseNotFoundError if the course does not exist,
-        or NotCourseInstructorError if the user is not an instructor of the course.
+        or NotCourseInstructorError if the user is neither an admin nor an instructor of the course.
         """
         course = self.course_repo.get_course(course_id)
         if course is None:
             raise CourseNotFoundError("Course does not exist")
+        if user.role == UserRole.ADMIN.value:
+            return course.access_code
         enrollment = self.course_repo.get_enrollment(user.id, course_id)
         if enrollment is None or not enrollment.is_instructor:
             raise NotCourseInstructorError("Only instructors of this course can view its access code")

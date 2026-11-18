@@ -179,6 +179,11 @@ def test_instructor_can_get_the_access_code(course_service, course, instructor):
     assert course_service.get_access_code(course.id, instructor) == course.access_code
 
 
+def test_admin_can_get_the_access_code_without_being_enrolled(course_service, course, make_user):
+    admin = make_user(UserRole.ADMIN.value)
+    assert course_service.get_access_code(course.id, admin) == course.access_code
+
+
 def test_enrolled_student_cannot_get_the_access_code(course_service, course, student):
     course_service.enroll(course.access_code, student)
     with pytest.raises(NotCourseInstructorError):
