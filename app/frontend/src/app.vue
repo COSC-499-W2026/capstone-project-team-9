@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { getCurrentUser } from './api/course'
+import { getCurrentUser } from './api/login'
 import { getToken } from './utils/auth'
 import BackendStatus from './components/BackendStatus.vue'
 import UserStatus from './components/UserStatus.vue'

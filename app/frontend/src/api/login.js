@@ -10,3 +10,7 @@ export function requestToken(email, password) {
 
 /** Create a guest user. Resolves with {access_token, token_type}. */
 export const requestGuestToken = () => post('/login/guest', {})
+
+
+/** Resolves with {name, email, role} for the logged-in user. */
+export const getCurrentUser = () => get('/login/me')

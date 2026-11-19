@@ -1,7 +1,5 @@
 import { get, post } from './client'
 
-/** Resolves with {name, email, role} for the logged-in user. */
-export const getCurrentUser = () => get('/login/me')
 
 /** Every course the logged-in user is in, newest enrollment first. */
 export const getMyCourses = () => get('/courses')

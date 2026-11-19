@@ -1,4 +1,4 @@
-import { getCurrentUser } from '../api/course'
+import { getCurrentUser } from '../api/login'
 import { getToken } from '../utils/auth'
 
 /**
