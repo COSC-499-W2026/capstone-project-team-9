@@ -41,6 +41,12 @@ down:
 nuke:
     docker compose down -v
 
+# For live demos: Run the app locally and put it on your public ngrok URL via HTTP tunneling
+[group('App')]
+tunnel:
+    docker compose up -d
+    ngrok http 5173
+
 # ---------- Tests ----------
 
 backend_pytest := "docker compose exec -w /app/tests/backend backend pytest"
