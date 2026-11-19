@@ -27,6 +27,7 @@ This repo contains the source code for Team 9's Capstone Software Engineering pr
 - [Initialize, seed and inspect the database](#initialize-seed-and-inspect-the-database)
 - [Make your IDE happy with a venv](#make-your-ide-happy-with-a-venv)
 - [Poke around (Advanced Commands)](#poke-around-advanced-commands)
+- [Optional: Live demo with ngrok](#optional-live-demo-with-ngrok)
 
 ---
 
@@ -202,13 +203,13 @@ docker compose exec backend bash
 
 ---
 
-### Optional: Live Demo with Ngrok
+### Optional: Live demo with ngrok
 
 `ngrok` is a command-line tool for temporarily putting your local app on a public URL using "HTTP tunneling". Basically it lets us do a demo on any device without actually deploying our app.
 
 #### First-time set-up
 
-Install:
+1. Install ngrok
 ```
 # on MacOs
 brew install ngrok
@@ -218,13 +219,24 @@ brew install ngrok
 winget install Ngrok.Ngrok
 ```
 
-Make an account at [dashboard.ngrok.com/signup](https://dashboard.ngrok.com/signup).
-
-Get your ngrok auth token at [dashboard.ngrok.com/get-started/your-authtoken](https://dashboard.ngrok.com/get-started/your-authtoken).
-
-Authenticate your ngrok CLI:
+2. Make an account at [dashboard.ngrok.com/signup](https://dashboard.ngrok.com/signup).
+3. Get your ngrok auth token at [dashboard.ngrok.com/get-started/your-authtoken](https://dashboard.ngrok.com/get-started/your-authtoken).
+4. Authenticate your ngrok CLI:
 ```
 ngrok config add-authtoken $YOUR_AUTHTOKEN
 ```
+
+5. Run `just tunnel`, and look for the `Forwarding` line to find your free ngrok dev URL. Add it to your `.env` file (without the `https://`):
+```
+# hostname for live demos
+LIVE_DEMO_HOST=example.ngrok-free.dev
+```
+
+#### General use
+1. Run the app and open a tunnel:
+```
+just tunnel
+```
+3. Go to your ngrok URL on any device!
 
  
