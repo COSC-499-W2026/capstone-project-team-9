@@ -11,13 +11,18 @@ const showHeader = computed(() => route.name !== 'landing')
 <template>
   <header v-if="showHeader">
     <h1>Language Game</h1>
-    <UserStatus />
     <nav>
+    <!-- add links as screens are added -->
       <RouterLink to="/">Home</RouterLink>
       |
       <RouterLink to="/play">Play</RouterLink>
-      <!-- add links as screens are added -->
+      |
+      <RouterLink to="/login">Login</RouterLink>
+      |
+      <RouterLink to="/register">Register</RouterLink>
     </nav>
+    <UserStatus />
+    <hr>
   </header>
 
   <main>
