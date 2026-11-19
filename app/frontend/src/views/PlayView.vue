@@ -79,7 +79,7 @@ async function play() {
 
 <template>
   <section>
-    <button :disabled="loading" @click="play">Play</button>
+    <h2>Play</h2>
 
     <div>
       <label for="language">Language: </label>
@@ -106,6 +106,8 @@ async function play() {
         <option v-for="count in clueCounts" :key="count" :value="count">{{ count }}</option>
       </select>
     </div>
+
+    <button :disabled="loading" @click="play">Play</button>
 
     <p v-if="result">{{ result.allowed ? '✅' : '🚫' }} {{ result.message }}</p>
     <p v-if="error">Error: {{ error }}</p>
