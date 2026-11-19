@@ -95,3 +95,110 @@ def test_bad_token_returns_401(client_as):
 
 def test_missing_authorization_header_returns_401(app):
     assert TestClient(app).post("/courses", json=_body()).status_code == 401
+
+
+# ENROLLMENT -----------------------------------------------------------------
+
+@pytest.fixture
+def student(make_user):
+    return make_user(UserRole.STUDENT.value)
+
+
+@pytest.fixture
+def course(client_as, teacher):
+    """A course created by the teacher; returns the response JSON (includes access_code)."""
+    return client_as(teacher).post("/courses", json=_body()).json()
+
+
+def test_enroll_returns_201_and_hides_access_code(client_as, session, student, course):
+    r = client_as(student).post("/courses/enroll", json={"access_code": course["access_code"]})
+    assert r.status_code == 201
+    data = r.json()
+    assert data["id"] == course["id"]
+    assert data["is_instructor"] is False
+    assert data["access_code"] is None
+    enrollment = session.get(Enrollment, (student.id, course["id"]))
+    assert enrollment is not None and enrollment.is_instructor is False
+
+
+def test_enroll_accepts_lowercase_code_with_spaces(client_as, student, course):
+    code = f"  {course['access_code'].lower()} "
+    assert client_as(student).post("/courses/enroll", json={"access_code": code}).status_code == 201
+
+
+def test_enroll_unknown_code_returns_404(client_as, student, course):
+    r = client_as(student).post("/courses/enroll", json={"access_code": "ZZZZZZ"})
+    assert r.status_code == 404
+
+
+def test_enroll_twice_returns_409(client_as, student, course):
+    client = client_as(student)
+    client.post("/courses/enroll", json={"access_code": course["access_code"]})
+    r = client.post("/courses/enroll", json={"access_code": course["access_code"]})
+    assert r.status_code == 409
+
+
+def test_enroll_as_course_instructor_returns_409(client_as, teacher, course):
+    r = client_as(teacher).post("/courses/enroll", json={"access_code": course["access_code"]})
+    assert r.status_code == 409
+
+
+@pytest.mark.parametrize("code", ["", "ABC", "ABCDEFG"])
+def test_enroll_wrong_length_code_returns_422(client_as, student, code):
+    assert client_as(student).post("/courses/enroll", json={"access_code": code}).status_code == 422
+
+
+def test_enroll_bad_token_returns_401(client_as):
+    assert client_as(None).post("/courses/enroll", json={"access_code": "ABCDEF"}).status_code == 401
+
+
+# MY COURSES -----------------------------------------------------------------
+
+def test_get_courses_returns_empty_list_for_new_user(client_as, student):
+    r = client_as(student).get("/courses")
+    assert r.status_code == 200
+    assert r.json() == []
+
+
+def test_get_courses_shows_access_code_only_to_instructor(client_as, teacher, student, course):
+    client_as(student).post("/courses/enroll", json={"access_code": course["access_code"]})
+
+    [teacher_view] = client_as(teacher).get("/courses").json()
+    [student_view] = client_as(student).get("/courses").json()
+
+    assert teacher_view["is_instructor"] is True
+    assert teacher_view["access_code"] == course["access_code"]
+    assert student_view["is_instructor"] is False
+    assert student_view["access_code"] is None
+
+
+def test_get_courses_bad_token_returns_401(client_as):
+    assert client_as(None).get("/courses").status_code == 401
+
+
+# ACCESS CODE ----------------------------------------------------------------
+
+def test_instructor_gets_access_code(client_as, teacher, course):
+    r = client_as(teacher).get(f"/courses/{course['id']}/access-code")
+    assert r.status_code == 200
+    assert r.json() == {"access_code": course["access_code"]}
+
+
+def test_admin_gets_access_code_without_enrollment(client_as, make_user, course):
+    admin = make_user(UserRole.ADMIN.value)
+    r = client_as(admin).get(f"/courses/{course['id']}/access-code")
+    assert r.status_code == 200
+    assert r.json() == {"access_code": course["access_code"]}
+
+
+def test_enrolled_student_gets_403_for_access_code(client_as, student, course):
+    client_as(student).post("/courses/enroll", json={"access_code": course["access_code"]})
+    assert client_as(student).get(f"/courses/{course['id']}/access-code").status_code == 403
+
+
+def test_access_code_for_unknown_course_returns_404(client_as, teacher):
+    assert client_as(teacher).get("/courses/999/access-code").status_code == 404
+
+
+def test_access_code_bad_token_returns_401(client_as, course):
+    assert client_as(None).get(f"/courses/{course['id']}/access-code").status_code == 401

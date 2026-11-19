@@ -18,6 +18,10 @@ class EnrollRequest(BaseModel):
         return value.strip().upper() if isinstance(value, str) else value
 
 
+class AccessCodeResponse(BaseModel):
+    access_code: str
+
+
 class CourseResponse(BaseModel):
     """access_code is only included for users with instructor permissions in the course."""
 

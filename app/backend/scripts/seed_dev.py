@@ -16,13 +16,23 @@ from sqlmodel import Session, select
 from pathlib import Path
 
 from core.db import engine
+from core.security import hash_password
 from models import User, Clue, Difficulty, Language, Target
+from models.user_model import UserRole
 from seed_helpers import seed_if_empty
 
 FAKE_USERS = [
     {"email": "alice@example.com", "name": "Alice", "hashed_password": "..."},
     {"email": "bob@example.com", "name": "Bob", "hashed_password": "..."},
 ]
+
+# A teacher you can actually log in as (POST /login/token) to create courses and share access codes.
+TEACHER_USER = {
+    "email": "teacher@example.com",
+    "name": "Teacher",
+    "password": "teacher123",
+    "role": UserRole.INSTRUCTOR.value,
+}
 
 FAKE_CLUE_COUNTS = {
     ("French", "Medium"): 6,     # slider should show 1-6
@@ -56,9 +66,26 @@ def seed_dev(session: Session) -> None:
         sys.exit("Refusing to seed fake data: ENV is not 'development'.")
 
     seed_if_empty(session, User, FAKE_USERS)
+    _seed_teacher(session)
     _seed_fake_clues(session)
 
     session.commit()
+
+def _seed_teacher(session: Session) -> None:
+    """Add the teacher user unless someone already has that email (so it also works on databases that already have users)."""
+    if session.exec(select(User).where(User.email == TEACHER_USER["email"])).first():
+        print(f"Teacher: {TEACHER_USER['email']} already exists, skipping.")
+        return
+
+    session.add(User(
+        name=TEACHER_USER["name"],
+        email=TEACHER_USER["email"],
+        hashed_password=hash_password(TEACHER_USER["password"]),
+        role=TEACHER_USER["role"],
+    ))
+    session.flush()
+    print(f"Teacher: added {TEACHER_USER['email']} (password: {TEACHER_USER['password']}).")
+
 
 def _seed_fake_clues(session: Session) -> None:
     """Add placeholder targets and clues. Empty bytes stand in for audio/image (columns are NOT NULL)."""
