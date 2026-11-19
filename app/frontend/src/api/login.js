@@ -1,4 +1,4 @@
-import { post,postForm } from './client.js'
+import { get, post, postForm } from './client.js'
 
 /** Exchange email + password for a token. Resolves with {access_token, token_type}. */
 export function requestToken(email, password) {
