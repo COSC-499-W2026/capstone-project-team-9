@@ -30,6 +30,6 @@ const showHeader = computed(() => route.name !== 'landing')
   </main>
 
   <footer>
-    <BackendStatus />
+    <!-- <BackendStatus /> -->
   </footer>
 </template>
