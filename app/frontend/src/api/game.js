@@ -18,7 +18,7 @@ export const createGame = ({ languageId, difficultyId, numClues }) =>
 /** Resolves with {play, clues}. */
 export const startPlay = (gameId) => post(`/games/${gameId}/plays`, {})
 
-/** Resolves with {id, game_id, completed, current_clue_id, total_clues, solved_clues}. */
+/** Resolves with {id, game_id, score, completed, current_clue_id, total_clues, solved_clues}. */
 export const getPlayState = (playId) => get(`/plays/${playId}`)
 
 /** Create a game with these settings, start a play of it, and resolve with the play id. */
