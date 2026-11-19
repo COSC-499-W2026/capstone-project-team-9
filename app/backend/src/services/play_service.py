@@ -5,6 +5,7 @@ from models import Play
 from repositories import ClueRepository, GameRepository, PlayRepository
 from services import AnswerService
 
+POINTS_PER_CORRECT_ANSWER = 10
  
 class GameNotFoundError(Exception):
     """Raised when a play is started for a game that does not exist."""
@@ -56,11 +57,10 @@ class PlayService:
         self.game_repo = game_repo
         self.clue_repo = clue_repo
 
-    def start_play(self, game_id: int, user_id: int | None = None) -> StartedPlay:
+    def start_play(self, game_id: int, user_id: int) -> StartedPlay:
         """
         Start a play of a game: pick random clues matching the game's ruleset and save them in order.
         Nothing is saved if the game is missing or too few clues exist.
-        user_id stays None until login exists.
         """
         game = self.game_repo.get_game(game_id)
         if game is None:
@@ -70,7 +70,7 @@ class PlayService:
         )
         if len(clue_ids) < game.num_clues:
             raise ValueError("Not enough clues available for this game")
-        play = self.play_repo.add_play_with_clues(Play(game_id=game.id, user_id=user_id), clue_ids)
+        play = self.play_repo.add_play_with_clues(Play(game_id=game.id, user_id=user_id, score=0), clue_ids)
         return StartedPlay(play, clue_ids)
 
     def get_play_state(self, play_id: int) -> PlayState:
@@ -105,7 +105,12 @@ class PlayService:
             raise ClueNotCurrentError("Clue is not the current clue")
 
         answer = self.answer_service.verify_answer(clue_id, image_bytes, lat, lon)
-        self.play_repo.record_attempt(play_clue, answer.correct)
+        self.play_repo.record_attempt(
+            play_clue, 
+            answer.correct, 
+            play, 
+            POINTS_PER_CORRECT_ANSWER if answer.correct else 0,
+        )
 
         play_complete = answer.correct and self.play_repo.get_current_clue_id(play_id) is None
         if play_complete:

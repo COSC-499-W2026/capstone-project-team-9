@@ -256,3 +256,14 @@ def test_login_empty_password(client):
     )
 
     assert response.status_code == 422
+
+def test_guest_login_issues_a_token_for_a_guest_user(client, monkeypatch):
+    monkeypatch.setenv("AUTH_TOKEN_SECRET", "test-secret-with-at-least-32-characters")
+
+    response = client.post("/login/guest")
+
+    assert response.status_code == 200
+    token = response.json()["access_token"]
+    me = client.get("/login/me", headers={"Authorization": f"Bearer {token}"})
+    assert me.status_code == 200
+    assert me.json()["role"] == "guest"

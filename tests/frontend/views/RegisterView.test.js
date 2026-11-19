@@ -44,7 +44,7 @@ describe('RegisterView', () => {
     })
   })
 
-  it('displays a welcome message after successful registration', async () => {
+  it('displays a success message after successful registration', async () => {
     post.mockResolvedValue({
       name: 'Alice',
       email: 'alice@example.com',
@@ -60,7 +60,7 @@ describe('RegisterView', () => {
     await flushPromises()
 
     expect(wrapper.text()).toContain(
-      'Registration successful! Welcome, Alice!',
+      'Account created for Alice! You can now log in.',
     )
   })
 

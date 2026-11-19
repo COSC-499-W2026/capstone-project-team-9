@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import { h } from 'vue'
+import { fetchClueAudio } from '@/api/clue'
 
 const push = vi.fn()
 vi.mock('vue-router', () => ({ useRouter: () => ({ push }) }))
@@ -11,6 +12,7 @@ vi.mock('@/api/game', () => ({
 // The audio placeholder looks up a testing-only room; behave like outside development
 vi.mock('@/api/client', () => ({ get: vi.fn().mockRejectedValue(new Error('Request failed (404)')) }))
 vi.mock('@/utils/geolocation', () => ({ getCurrentCoords: vi.fn() }))
+vi.mock('@/api/clue', () => ({ fetchClueAudio: vi.fn() }))
 
 import { getPlayState, submitAnswer } from '@/api/game'
 import { getCurrentCoords } from '@/utils/geolocation'
@@ -45,6 +47,9 @@ async function takePhotoAndSubmit(wrapper) {
 
 beforeEach(() => {
   vi.resetAllMocks()
+  fetchClueAudio.mockResolvedValue(new Blob(['mp3'], { type: 'audio/mpeg' }))
+  URL.createObjectURL = vi.fn(() => 'blob:audio')
+  URL.revokeObjectURL = vi.fn()
   getPlayState.mockResolvedValue(STATE)
   getCurrentCoords.mockResolvedValue({ latitude: 49.94, longitude: -119.39 })
 })
@@ -65,10 +70,11 @@ describe('ClueView', () => {
     expect(wrapper.text()).toContain('Clue 3 of 3')
   })
 
-  it('shows the audio placeholder', async () => {
+  it('loads the audio for the current clue and shows a play button', async () => {
     const wrapper = await mountLoaded()
 
-    expect(wrapper.text()).toContain('Clue audio coming soon')
+    expect(fetchClueAudio).toHaveBeenCalledWith(11)
+    expect(wrapper.find('[aria-label="Play clue"]').exists()).toBe(true)
   })
 
   it('shows a Skip button that is disabled until the backend supports skipping', async () => {

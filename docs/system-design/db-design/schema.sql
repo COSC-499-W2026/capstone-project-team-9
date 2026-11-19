@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS "User" (
 	"name" TEXT NOT NULL,
 	"email" TEXT NOT NULL UNIQUE,
 	"password" TEXT NOT NULL,
-	"role" TEXT NOT NULL DEFAULT 'student' CHECK("role" IN ('student', 'instructor', 'admin')),
+	"role" TEXT NOT NULL DEFAULT 'student' CHECK("role" IN ('student', 'instructor', 'admin', 'guest')),
 	"created_at" TIMESTAMPTZ NOT NULL,
 	PRIMARY KEY("id")
 );

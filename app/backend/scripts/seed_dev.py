@@ -13,15 +13,26 @@ import os
 import sys
 
 from sqlmodel import Session, select
+from pathlib import Path
 
 from core.db import engine
+from core.security import hash_password
 from models import User, Clue, Difficulty, Language, Target
+from models.user_model import UserRole
 from seed_helpers import seed_if_empty
 
 FAKE_USERS = [
     {"email": "alice@example.com", "name": "Alice", "hashed_password": "..."},
     {"email": "bob@example.com", "name": "Bob", "hashed_password": "..."},
 ]
+
+# A teacher you can actually log in as (POST /login/token) to create courses and share access codes.
+TEACHER_USER = {
+    "email": "teacher@example.com",
+    "name": "Teacher",
+    "password": "teacher123",
+    "role": UserRole.INSTRUCTOR.value,
+}
 
 FAKE_CLUE_COUNTS = {
     ("French", "Medium"): 6,     # slider should show 1-6
@@ -32,9 +43,21 @@ FAKE_CLUE_COUNTS = {
 # Clues that point at real targets (seeded in seed_reference), so the play + answer flow can be tested end to end.
 # Kept in a combo with no placeholder clues, so every clue in a play can actually be solved.
 REAL_CLUES = [
-    ("French", "Easy", "COM 311"),
-    ("French", "Easy", "COM 312"),
+    ("French", "Easy", "COM 311",None),
+    ("French", "Easy", "COM 312",None),
+    ("Japanese", "Easy", "LIB 312", "japanese_easy_LIB312(j).mp3"),
 ]
+
+SEED_AUDIO_DIR = Path(__file__).parent / "seed_audio"
+
+def _load_audio(filename: str | None) -> bytes:
+    """Bytes of a file in seed_audio/, or empty bytes (the NOT NULL placeholder) when no file is given."""
+    if filename is None:
+        return b""
+    path = SEED_AUDIO_DIR / filename
+    if not path.exists():
+        sys.exit(f"ERROR. Seed audio {path} not found. Add the mp3 to scripts/seed_audio/.")
+    return path.read_bytes()
 
 
 def seed_dev(session: Session) -> None:
@@ -43,9 +66,26 @@ def seed_dev(session: Session) -> None:
         sys.exit("Refusing to seed fake data: ENV is not 'development'.")
 
     seed_if_empty(session, User, FAKE_USERS)
+    _seed_teacher(session)
     _seed_fake_clues(session)
 
     session.commit()
+
+def _seed_teacher(session: Session) -> None:
+    """Add the teacher user unless someone already has that email (so it also works on databases that already have users)."""
+    if session.exec(select(User).where(User.email == TEACHER_USER["email"])).first():
+        print(f"Teacher: {TEACHER_USER['email']} already exists, skipping.")
+        return
+
+    session.add(User(
+        name=TEACHER_USER["name"],
+        email=TEACHER_USER["email"],
+        hashed_password=hash_password(TEACHER_USER["password"]),
+        role=TEACHER_USER["role"],
+    ))
+    session.flush()
+    print(f"Teacher: added {TEACHER_USER['email']} (password: {TEACHER_USER['password']}).")
+
 
 def _seed_fake_clues(session: Session) -> None:
     """Add placeholder targets and clues. Empty bytes stand in for audio/image (columns are NOT NULL)."""
@@ -81,14 +121,14 @@ def _seed_real_clues(session: Session, language_ids: dict[str, int], difficulty_
     """Add clues that point at the real targets from seed_reference (e.g. COM 311)."""
     target_ids = {target.name: target.id for target in session.exec(select(Target))}
 
-    for language, difficulty, target_name in REAL_CLUES:
+    for language, difficulty, target_name, audio_file in REAL_CLUES:
         if target_name not in target_ids:
             sys.exit(
                 f"ERROR. Target {target_name} not found. "
                 "Run scripts/reset_db.py so seed_reference can add it."
             )
         session.add(Clue(
-            audio=b"",
+            audio=_load_audio(audio_file),
             language_id=language_ids[language],
             difficulty_id=difficulty_ids[difficulty],
             target_id=target_ids[target_name],

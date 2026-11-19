@@ -7,7 +7,7 @@ from sqlmodel.pool import StaticPool
 from core.docker_guard import ensure_tests_running_in_docker
 from core.clock import utc_now
 import models # registers the table models so create_all builds them
-from models import Clue, Target, PlayClue
+from models import Clue, Target, PlayClue, User
 
 # RUN ON TEST COLLECTION -----------------------------------------------------
 
@@ -78,6 +78,15 @@ def solve_clue(session):
         session.add(play_clue)
         session.commit()
     return _solve
+
+@pytest.fixture
+def current_user(session):
+    """A saved user, for tests that need someone logged in."""
+    user = User(name="Tester", email="tester@example.com", hashed_password="x")
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+    return user
 
 
 # PYTEST SETTINGS FUNCTIONS  ---------------------------------------

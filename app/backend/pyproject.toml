@@ -32,3 +32,10 @@ markers = [
     "integration: tests that use a real database session",
     "unit: tests that only test a single unit of code on one layer"
 ]
+filterwarnings = [
+    # we can't address these warnings because it's easyocr *using* torch that is generating them - better to ignore
+    "ignore:torch.ao.quantization is deprecated:DeprecationWarning",
+    "ignore:(?s).*quantized tensor creation functions.*deprecated:UserWarning",
+    "ignore:'pin_memory' argument is set as true but no accelerator is found:UserWarning"
+]
+

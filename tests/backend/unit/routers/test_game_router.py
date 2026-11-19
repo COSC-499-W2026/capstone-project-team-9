@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from core.db import get_session
+from core.dependencies import get_current_user
 from models import Difficulty, Game, Language
 from routers.game_router import router
 from services.game_options_service import MAX_GAME_LENGTH
@@ -11,12 +12,13 @@ NUM_CLUES = 3
 
 
 @pytest.fixture
-def client(session):
+def client(session, current_user):
     session.add_all([Language(name="French"), Difficulty(name="Easy")])
     session.commit()
     app = FastAPI()
     app.include_router(router)
     app.dependency_overrides[get_session] = lambda: session
+    app.dependency_overrides[get_current_user] = lambda: current_user
     return TestClient(app)
 
 
@@ -24,7 +26,7 @@ def _body(**overrides):
     return {"language_id": 1, "difficulty_id": 1, "num_clues": NUM_CLUES} | overrides
 
 
-def test_create_game_returns_201_with_game_settings_and_no_clues(client, session, add_clues):
+def test_create_game_returns_201_with_game_settings_and_no_clues(client, session, add_clues, current_user):
     add_clues(5)
     r = client.post("/games", json=_body())
     assert r.status_code == 201
@@ -32,6 +34,7 @@ def test_create_game_returns_201_with_game_settings_and_no_clues(client, session
     assert (data["language_id"], data["difficulty_id"], data["num_clues"]) == (1, 1, NUM_CLUES)
     assert "clues" not in data
     assert session.get(Game, data["id"]) is not None
+    assert session.get(Game, data["id"]).creator_id == current_user.id
 
 
 def test_create_game_returns_422_when_not_enough_clues(client, session, add_clues):
@@ -57,3 +60,10 @@ def test_create_game_rejects_unavailable_options_with_422(client, add_clues, ove
 @pytest.mark.parametrize("body", [{}, {"language_id": 1}, _body(num_clues=0), _body(language_id="x")])
 def test_create_game_rejects_malformed_body(client, body):
     assert client.post("/games", json=body).status_code == 422
+
+
+def test_create_game_requires_login(session):
+    app = FastAPI()
+    app.include_router(router)
+    app.dependency_overrides[get_session] = lambda: session
+    assert TestClient(app).post("/games", json=_body()).status_code == 401

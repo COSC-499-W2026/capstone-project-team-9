@@ -25,3 +25,8 @@ class ClueRepository(BaseRepository):
             Clue.language_id == language_id, Clue.difficulty_id == difficulty_id
         )
         return self.session.exec(statement).one()
+
+    def get_audio(self, clue_id: int) -> bytes | None:
+        """A clue's audio bytes, or None if the clue doesn't exist or its audio is empty."""
+        statement = select(Clue.audio).where(Clue.id == clue_id)
+        return self.session.exec(statement).first() or None

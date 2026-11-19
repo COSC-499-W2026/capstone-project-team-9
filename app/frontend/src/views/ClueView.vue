@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import CameraCapture from '../components/CameraCapture.vue'
-import ClueAudioPlaceholder from '../components/ClueAudioPlaceholder.vue'
+import ClueAudioPlayer from '../components/ClueAudioPlayer.vue'
 import { getPlayState, submitAnswer } from '../api/game'
 import { getCurrentCoords } from '../utils/geolocation'
 import '../styles/game.css'
@@ -122,7 +122,7 @@ const exit = () => router.push({ name: 'play' })
         <section :key="state.current_clue_id" class="clue">
           <div class="card">
             <p class="card__eyebrow">Listen</p>
-            <ClueAudioPlaceholder :clue-id="state.current_clue_id" />
+            <ClueAudioPlayer :clue-id="state.current_clue_id" />
           </div>
 
           <div class="card">

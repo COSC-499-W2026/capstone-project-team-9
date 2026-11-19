@@ -1,14 +1,14 @@
 from typing import Annotated
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlmodel import Session
 
 from core.db import get_session
 from core.security import decode_access_token
 from models import User
-from repositories import ClueRepository, GameRepository, GameOptionsRepository, PlayRepository, TargetRepository
+from repositories import ClueRepository, CourseRepository, GameRepository, GameOptionsRepository, PlayRepository, TargetRepository
 from repositories.user_repo import get_by_id
-from services import GameOptionsService, GameService, PlayService, LocationService, AnswerService
+from services import CourseService, GameOptionsService, GameService, PlayService, LocationService, AnswerService
 
 # SESSION DEPENDENCIES -----------------------------------------------------------
 
@@ -19,12 +19,32 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/token")
 def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
     session: SessionDep,
-) -> User | None:
+) -> User:
     user_id = decode_access_token(token)
-    return get_by_id(session, user_id) if user_id is not None else None
+    user = get_by_id(session, user_id) if user_id is not None else None
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired access token.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return user
 
 
-CurrentUserDep = Annotated[User | None, Depends(get_current_user)]
+CurrentUserDep = Annotated[User, Depends(get_current_user)]
+
+
+def get_required_user(user: CurrentUserDep) -> User:
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired access token.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return user
+
+
+RequiredUserDep = Annotated[User, Depends(get_required_user)]
 
 # REPOSITORY DEPENDENCIES --------------------------------------------------------
 
@@ -43,11 +63,15 @@ def get_target_repository(session: SessionDep) -> TargetRepository:
 def get_play_repository(session: SessionDep) -> PlayRepository:
     return PlayRepository(session)
 
+def get_course_repository(session: SessionDep) -> CourseRepository:
+    return CourseRepository(session)
+
 ClueRepositoryDep = Annotated[ClueRepository, Depends(get_clue_repository)]
 GameOptionsRepositoryDep = Annotated[GameOptionsRepository, Depends(get_game_options_repository)]
 GameRepositoryDep = Annotated[GameRepository, Depends(get_game_repository)]
 TargetRepositoryDep = Annotated[TargetRepository, Depends(get_target_repository)]
 PlayRepositoryDep = Annotated[PlayRepository, Depends(get_play_repository)]
+CourseRepositoryDep = Annotated[CourseRepository, Depends(get_course_repository)]
 
 # SERVICE DEPENDENCIES --------------------------------------------------------
 
@@ -94,3 +118,12 @@ def get_play_service(
     return PlayService(answer_service, play_repo, game_repo, clue_repo)
 
 PlayServiceDep = Annotated[PlayService, Depends(get_play_service)]
+
+
+def get_course_service(
+    course_repo: CourseRepositoryDep,
+    game_options_repo: GameOptionsRepositoryDep
+) -> CourseService:
+    return CourseService(course_repo, game_options_repo)
+
+CourseServiceDep = Annotated[CourseService, Depends(get_course_service)]
