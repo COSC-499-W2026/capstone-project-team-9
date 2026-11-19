@@ -17,6 +17,8 @@ const showHeader = computed(() => route.name !== 'landing')
       |
       <RouterLink to="/play">Play</RouterLink>
       |
+      <RouterLink to="/courses">Courses</RouterLink>
+      |
       <RouterLink to="/login">Login</RouterLink>
       |
       <RouterLink to="/register">Register</RouterLink>
