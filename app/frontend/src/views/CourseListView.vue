@@ -1,8 +1,9 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { createCourse, enrollInCourse, getCurrentUser, getMyCourses } from '../api/course'
-import { getLanguages } from '../api/game'
+import { createCourse, enrollInCourse, getMyCourses } from '@/api/course'
+import { getCurrentUser } from '@/api/login'
+import { getLanguages } from '@/api/game'
 
 const COURSE_CREATOR_ROLES = ['instructor', 'admin']
 

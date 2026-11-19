@@ -3,17 +3,18 @@ import { mount, flushPromises, RouterLinkStub } from '@vue/test-utils'
 
 const push = vi.fn()
 vi.mock('vue-router', () => ({ useRouter: () => ({ push }) }))
-vi.mock('../../../src/api/course.js', () => ({
-  getCurrentUser: vi.fn(),
+vi.mock('@/api/course', () => ({
   getMyCourses: vi.fn(),
   createCourse: vi.fn(),
-  enrollInCourse: vi.fn(),
+  enrollInCourse: vi.fn()
 }))
-vi.mock('../../../src/api/game.js', () => ({ getLanguages: vi.fn() }))
+vi.mock('@/api/login.js', () => ({ getCurrentUser: vi.fn() }))
+vi.mock('@/api/game.js', () => ({ getLanguages: vi.fn() }))
 
-import CourseListView from '../../../src/views/CourseListView.vue'
-import { createCourse, enrollInCourse, getCurrentUser, getMyCourses } from '../../../src/api/course.js'
-import { getLanguages } from '../../../src/api/game.js'
+import CourseListView from '@/views/CourseListView.vue'
+import { createCourse, enrollInCourse, getMyCourses } from '@/api/course'
+import { getCurrentUser } from '@/api/login'
+import { getLanguages } from '@/api/game'
 
 const LANGUAGES = [
   { id: 1, name: 'French' },
