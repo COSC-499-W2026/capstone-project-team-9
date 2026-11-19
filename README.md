@@ -59,7 +59,7 @@ brew install just
 winget install Casey.Just
 ```
 
-#### >_ Terminal Tips
+#### `>_` Terminal Tips
 
 `just` helps you waste less time in the terminal, and so do the following tricks!
 
@@ -201,4 +201,30 @@ docker compose exec backend bash
 - type `exit` to leave
 
 ---
+
+### Optional: Live Demo with Ngrok
+
+`ngrok` is a command-line tool for temporarily putting your local app on a public URL using "HTTP tunneling". Basically it lets us do a demo on any device without actually deploying our app.
+
+#### First-time set-up
+
+Install:
+```
+# on MacOs
+brew install ngrok
+```
+```
+# on Windows
+winget install Ngrok.Ngrok
+```
+
+Make an account at [dashboard.ngrok.com/signup](https://dashboard.ngrok.com/signup).
+
+Get your ngrok auth token at [dashboard.ngrok.com/get-started/your-authtoken](https://dashboard.ngrok.com/get-started/your-authtoken).
+
+Authenticate your ngrok CLI:
+```
+ngrok config add-authtoken $YOUR_AUTHTOKEN
+```
+
  
