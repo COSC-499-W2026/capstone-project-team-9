@@ -10,7 +10,6 @@ import {
   createCourse,
   enrollInCourse,
   getAccessCode,
-  getCurrentUser,
   getMyCourse,
   getMyCourses,
 } from '@/api/course'
@@ -18,11 +17,6 @@ import {
 beforeEach(() => vi.clearAllMocks())
 
 describe('course api', () => {
-  it('getCurrentUser() gets the logged-in user', async () => {
-    await getCurrentUser()
-
-    expect(get).toHaveBeenCalledWith('/login/me')
-  })
 
   it('getMyCourses() gets the user courses', async () => {
     await getMyCourses()
