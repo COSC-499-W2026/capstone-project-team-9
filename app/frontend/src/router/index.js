@@ -6,7 +6,7 @@ import LandingView from '../views/LandingView.vue'
 
 const routes = [
   { path: '/', name: 'landing', component: LandingView },
-  { path: '/', name: 'play', component: PlayView },
+  { path: '/play', name: 'play', component: PlayView },
   { path: '/play/:playId', name: 'clue', component: () => import('../views/ClueView.vue'), props: true },
   // add new screens here, e.g.
   { path: '/login', name: 'login', component: () => import('../views/LoginView.vue') },
