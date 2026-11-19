@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock
 
-from services.user_service import register_user
+from services.user_service import register_user, register_guest
 from repositories.user_repo import User, DuplicateUserError
 from schemas.user_schema import UserCreate
 
@@ -149,3 +149,11 @@ def test_register_user_duplicate_email(monkeypatch):
         register_user(session, user_data)
 
     assert str(exc_info.value) == "Email is already registered."
+
+def test_register_guest_creates_distinct_guest_users(session):
+    first = register_guest(session)
+    second = register_guest(session)
+
+    assert first.role == "guest"
+    assert first.id != second.id
+    assert first.email != second.email

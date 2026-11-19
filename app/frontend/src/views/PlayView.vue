@@ -79,33 +79,35 @@ async function play() {
 
 <template>
   <section>
-    <button :disabled="loading" @click="play">Play</button>
+    <h2>Play</h2>
 
-    <div>
+    <p>
       <label for="language">Language: </label>
       <select id="language" v-model="languageId">
         <option v-for="language in languages" :key="language.id" :value="language.id">
           {{ language.name }}
         </option>
       </select>
-    </div>
+    </p>
 
-    <div>
+    <p>
       <label for="difficulty">Difficulty: </label>
       <select id="difficulty" v-model="difficultyId">
         <option v-for="difficulty in difficulties" :key="difficulty.id" :value="difficulty.id">
           {{ difficulty.name }}
         </option>
       </select>
-    </div>
+    </p>
 
-    <div>
+    <p>
       <label for="num-clues">Questions: </label>
       <select id="num-clues" v-model="numClues" :disabled="!clueCounts.length">
         <option v-if="!clueCounts.length" :value="null">None available</option>
         <option v-for="count in clueCounts" :key="count" :value="count">{{ count }}</option>
       </select>
-    </div>
+    </p>
+
+    <button :disabled="loading" @click="play">Play</button>
 
     <p v-if="result">{{ result.allowed ? '✅' : '🚫' }} {{ result.message }}</p>
     <p v-if="error">Error: {{ error }}</p>

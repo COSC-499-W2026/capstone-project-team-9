@@ -1,20 +1,28 @@
 <script setup>
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 import BackendStatus from './components/BackendStatus.vue'
-import UserStatus from './components/UserStatus.vue';
+import UserStatus from './components/UserStatus.vue'
+
+const route = useRoute()
+const showHeader = computed(() => route.name !== 'landing')
 </script>
 
 <template>
-  <header>
+  <header v-if="showHeader">
     <h1>Language Game</h1>
-    <UserStatus />
     <nav>
-      <RouterLink to="/">Play</RouterLink>
+    <!-- add links as screens are added -->
+      <RouterLink to="/">Home</RouterLink>
+      |
+      <RouterLink to="/play">Play</RouterLink>
       |
       <RouterLink to="/login">Login</RouterLink>
       |
       <RouterLink to="/register">Register</RouterLink>
-      <!-- add links as screens are added -->
     </nav>
+    <UserStatus />
+    <hr>
   </header>
 
   <main>
@@ -22,6 +30,6 @@ import UserStatus from './components/UserStatus.vue';
   </main>
 
   <footer>
-    <BackendStatus />
+    <!-- <BackendStatus /> -->
   </footer>
 </template>
