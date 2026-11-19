@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-vi.mock('../../../src/api/course.js', () => ({ getCurrentUser: vi.fn() }))
-vi.mock('../../../src/utils/auth.js', () => ({ getToken: vi.fn() }))
+vi.mock('@/api/login.js', () => ({ getCurrentUser: vi.fn() }))
+vi.mock('@/utils/auth.js', () => ({ getToken: vi.fn() }))
 
-import { blockGuests } from '../../../src/router/guards.js'
-import { getCurrentUser } from '../../../src/api/course.js'
-import { getToken } from '../../../src/utils/auth.js'
+import { blockGuests } from '@/router/guards.js'
+import { getCurrentUser } from '@/api/login.js'
+import { getToken } from '@/utils/auth.js'
 
 const COURSE_ROUTE = { name: 'courses', meta: { noGuests: true } }
 
